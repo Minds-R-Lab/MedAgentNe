@@ -45,7 +45,7 @@ class R1Experiments:
 
     def __init__(self, config_dir="config", llm_provider=None,
                  base_seed=42, num_patients=150, out_dir="data/results_r1",
-                 concurrency=1):
+                 concurrency=1, n_seeds=3, consent_graphs=10):
         self.config_dir = config_dir
         self.llm = llm_provider
         self.base_seed = base_seed
@@ -54,7 +54,16 @@ class R1Experiments:
         # Applies to every experiment except E7, which varies concurrency
         # deliberately and pins its other sweeps to 1 so they stay comparable.
         self.concurrency = max(1, int(concurrency))
+        # Sweep sizes. Lowering these is the only way to cut the cost of the
+        # suite substantially: E2 and E4 together are roughly three quarters of
+        # it. Whatever is used must be reported in the paper.
+        self.n_seeds = max(1, int(n_seeds))
+        self.consent_graphs = max(1, int(consent_graphs))
         os.makedirs(out_dir, exist_ok=True)
+
+    def _seeds(self, n=None):
+        n = n or self.n_seeds
+        return tuple(self.base_seed + 1000 * i for i in range(n))
 
     # ── helper ───────────────────────────────────────────────────────────
 
@@ -76,7 +85,8 @@ class R1Experiments:
 
     # ── E1: tiers and leakage ────────────────────────────────────────────
 
-    def e1_tiers(self, seeds=(42, 1042, 2042)) -> dict:
+    def e1_tiers(self, seeds=None) -> dict:
+        seeds = seeds or self._seeds()
         rows = {}
         step, nsteps = 0, 3 * len(seeds)
         for tier in (1, 2, 3):
@@ -120,7 +130,8 @@ class R1Experiments:
     # ── E2: consent sweep ────────────────────────────────────────────────
 
     def e2_consent(self, fractions=(0.0, 0.2, 0.4, 0.6, 0.8, 1.0),
-                   n_graphs=10, seed=None) -> dict:
+                   n_graphs=None, seed=None) -> dict:
+        n_graphs = n_graphs or self.consent_graphs
         seed = self.base_seed if seed is None else seed
         rows = []
         step, nsteps = 0, len(fractions) * n_graphs
@@ -221,7 +232,8 @@ class R1Experiments:
 
     # ── E3: variance and generalisation ──────────────────────────────────
 
-    def e3_variance(self, seeds=(42, 1042, 2042, 3042, 4042)) -> dict:
+    def e3_variance(self, seeds=None) -> dict:
+        seeds = seeds or self._seeds(max(self.n_seeds, 5))
         dev, held = [], []
         for i, s in enumerate(seeds, 1):
             logger.info(f"  [E3 {i}/{len(seeds)}] seed {s}, development family")
@@ -241,7 +253,8 @@ class R1Experiments:
 
     # ── E4: ablations ────────────────────────────────────────────────────
 
-    def e4_ablations(self, seeds=(42, 1042, 2042)) -> dict:
+    def e4_ablations(self, seeds=None) -> dict:
+        seeds = seeds or self._seeds()
         rows = {}
         reference_grades = {}
         nvar = len(bl.ARCHITECTURE_VARIANTS)
@@ -284,7 +297,8 @@ class R1Experiments:
 
     # ── E5: external baselines ───────────────────────────────────────────
 
-    def e5_baselines(self, seeds=(42, 1042, 2042)) -> dict:
+    def e5_baselines(self, seeds=None) -> dict:
+        seeds = seeds or self._seeds()
         rows = {}
         ref_grades = None
         for s in seeds:
@@ -339,7 +353,8 @@ class R1Experiments:
 
     # ── E6: backend matrix ───────────────────────────────────────────────
 
-    def e6_backends(self, providers: dict, seeds=(42, 1042)) -> dict:
+    def e6_backends(self, providers: dict, seeds=None) -> dict:
+        seeds = seeds or self._seeds(min(self.n_seeds, 2))
         """`providers` maps a display name to a BaseLLMProvider instance."""
         rows = {}
         grade_ref = None
@@ -523,6 +538,8 @@ class R1Experiments:
                 "timestamp": datetime.now().isoformat(),
                 "base_seed": self.base_seed,
                 "num_patients": self.num_patients,
+                "n_seeds": self.n_seeds,
+                "consent_graphs": self.consent_graphs,
                 "provider": (self.llm.describe() if self.llm else "from config"),
                 "concurrency": self.concurrency,
                 "latency_note": (

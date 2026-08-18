@@ -60,14 +60,45 @@ costs concurrency. A 70B model needs roughly 1.4 GB per slot at 4096 on top of
 
 ### If Ollama still will not scale
 
-Ollama's scheduler is built for interactive use rather than batch throughput.
-If `bench_backend.py` plateaus around 2-3x, vLLM will do considerably better on
-the same card, and the harness speaks to it through the existing
-OpenAI-compatible backend:
+Ollama's scheduler is built for interactive use rather than batch throughput,
+and on a large card it commonly plateaus around 2-3x however many slots it is
+given. Two responses, in order of risk.
+
+**Cheap: shrink the sweeps.** E2 and E4 are roughly three quarters of the cost
+of the suite — E2 is six restriction levels times ten sampled graphs, E4 is ten
+configurations times three seeds. Both are comparative, and their effects are
+large, so fewer repetitions still separate them cleanly:
 
 ```bash
-pip install vllm
-python -m vllm.entrypoints.openai.api_server \
+--consent-graphs 5 --seeds 2
+```
+
+That cuts the suite by about half. Whatever is used must be stated in the paper;
+the manuscript currently says ten graphs and three seeds, so change the text if
+you change the flags.
+
+**More effective, and more disruptive: vLLM.** It will saturate an H100 where
+Ollama will not.
+
+> **Install it in a throwaway environment.** `pip install vllm` upgrades torch
+> and removes torchvision, torchaudio and triton to satisfy its own pins. In a
+> shared conda environment this breaks unrelated work, and on Python 3.10 under
+> conda the resulting wheels can fail to import at all with a `CXXABI` error
+> from an older `libstdc++`. Use a fresh virtual environment on Python 3.11 or
+> 3.12:
+>
+> ```bash
+> python3.11 -m venv ~/vllm-env      # NOT the environment you work in
+> ~/vllm-env/bin/pip install vllm
+> ~/vllm-env/bin/python -m vllm.entrypoints.openai.api_server ...
+> ```
+>
+> The harness itself stays in your normal environment and only talks to the
+> server over HTTP, so nothing else needs vLLM installed.
+
+```bash
+~/vllm-env/bin/pip install vllm
+~/vllm-env/bin/python -m vllm.entrypoints.openai.api_server \
   --model meta-llama/Llama-3.1-8B-Instruct \
   --served-model-name llama3.1:8b \
   --max-model-len 4096 --gpu-memory-utilization 0.90 &
@@ -128,6 +159,9 @@ python run_r1.py \
 ```
 
 ### Cost
+
+The two sweep sizes are adjustable with `--seeds` and `--consent-graphs`, and
+are recorded in the results metadata so a run always states what it did.
 
 One run at 200 patients is 232 scenarios and about 1,400 backend calls. The full
 suite performs 158 such runs — **roughly 222,000 calls** — because several

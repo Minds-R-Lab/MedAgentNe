@@ -117,6 +117,15 @@ def main():
                          "this changes throughput only. Match it to the model "
                          "server's parallelism (e.g. OLLAMA_NUM_PARALLEL).")
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--seeds", type=int, default=3,
+                    help="seeds per configuration in E1, E4 and E5. E3 uses at "
+                         "least 5. Lowering this is one of the two ways to cut "
+                         "the cost of the suite.")
+    ap.add_argument("--consent-graphs", type=int, default=10,
+                    help="independently sampled restriction graphs per level in "
+                         "E2. E2 is the single most expensive experiment; this "
+                         "is the other way to cut the cost of the suite. "
+                         "Whatever you use must be stated in the paper.")
     ap.add_argument("--experiments", nargs="+", default=DEFAULT_EXPERIMENTS,
                     choices=ALL_EXPERIMENTS)
     ap.add_argument("--backend-matrix", nargs="*", default=None,
@@ -150,13 +159,15 @@ def main():
     print(f"  base seed    : {args.seed}")
     print(f"  experiments  : {', '.join(args.experiments)}")
     print(f"  concurrency  : {args.concurrency}")
+    print(f"  seeds        : {args.seeds}   consent graphs: {args.consent_graphs}")
     if matrix:
         print(f"  backend matrix: {', '.join(matrix)}")
     print("=" * 72)
 
     exp = R1Experiments(config_dir=args.config_dir, llm_provider=provider,
                         base_seed=args.seed, num_patients=args.patients,
-                        out_dir=args.out_dir, concurrency=args.concurrency)
+                        out_dir=args.out_dir, concurrency=args.concurrency,
+                        n_seeds=args.seeds, consent_graphs=args.consent_graphs)
     results = exp.run_all(which=args.experiments, providers=matrix)
     path = exp.save(results, tag=args.tag or args.provider)
 
