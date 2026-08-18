@@ -1,0 +1,135 @@
+{
+  "timestamp": "2026-08-17T19:06:06.481742",
+  "tier_comparison": {
+    "experiment": "tier_comparison",
+    "num_patients": 20,
+    "results_by_tier": {
+      "1": {
+        "conflict_detection": {
+          "total_conflict_scenarios": 7,
+          "conflicts_detected": 7,
+          "detection_rate": 1.0,
+          "missed": 0
+        },
+        "pattern_detection": {
+          "total_pattern_scenarios": 10,
+          "patterns_detected": 8,
+          "detection_rate": 0.8,
+          "missed": 2
+        },
+        "false_positives": {
+          "routine_scenarios_checked": 0,
+          "false_positives": 0,
+          "false_positive_rate": 0
+        },
+        "performance": {
+          "average_response_time_seconds": 0.001529,
+          "max_response_time_seconds": 0.003,
+          "min_response_time_seconds": 0.001
+        },
+        "privacy_compliance": {
+          "total_events": 402,
+          "consent_denied_count": 0,
+          "consent_denial_rate": 0.0,
+          "tier_distribution": {
+            "1": 310,
+            "2": 92
+          },
+          "query_type_distribution": {
+            "MED_CONFLICT": 164,
+            "medication_conflict": 61,
+            "LONG_PATTERN": 146,
+            "pattern_detected": 31
+          },
+          "unique_patients": 12
+        },
+        "tier": 1,
+        "tier_name": "Flag Only"
+      },
+      "2": {
+        "conflict_detection": {
+          "total_conflict_scenarios": 7,
+          "conflicts_detected": 7,
+          "detection_rate": 1.0,
+          "missed": 0
+        },
+        "pattern_detection": {
+          "total_pattern_scenarios": 10,
+          "patterns_detected": 10,
+          "detection_rate": 1.0,
+          "missed": 0
+        },
+        "false_positives": {
+          "routine_scenarios_checked": 0,
+          "false_positives": 0,
+          "false_positive_rate": 0
+        },
+        "performance": {
+          "average_response_time_seconds": 0.001176,
+          "max_response_time_seconds": 0.002,
+          "min_response_time_seconds": 0.001
+        },
+        "privacy_compliance": {
+          "total_events": 345,
+          "consent_denied_count": 0,
+          "consent_denial_rate": 0.0,
+          "tier_distribution": {
+            "2": 345
+          },
+          "query_type_distribution": {
+            "MED_CONFLICT": 164,
+            "medication_conflict": 17,
+            "pattern_detected": 18,
+            "LONG_PATTERN": 146
+          },
+          "unique_patients": 12
+        },
+        "tier": 2,
+        "tier_name": "Clinical Summary"
+      },
+      "3": {
+        "conflict_detection": {
+          "total_conflict_scenarios": 7,
+          "conflicts_detected": 7,
+          "detection_rate": 1.0,
+          "missed": 0
+        },
+        "pattern_detection": {
+          "total_pattern_scenarios": 10,
+          "patterns_detected": 10,
+          "detection_rate": 1.0,
+          "missed": 0
+        },
+        "false_positives": {
+          "routine_scenarios_checked": 0,
+          "false_positives": 0,
+          "false_positive_rate": 0
+        },
+        "performance": {
+          "average_response_time_seconds": 0.001176,
+          "max_response_time_seconds": 0.002,
+          "min_response_time_seconds": 0.001
+        },
+        "privacy_compliance": {
+          "total_events": 345,
+          "consent_denied_count": 0,
+          "consent_denial_rate": 0.0,
+          "tier_distribution": {
+            "3": 310,
+            "2": 35
+          },
+          "query_type_distribution": {
+            "MED_CONFLICT": 164,
+            "medication_conflict": 17,
+            "pattern_detected": 18,
+            "LONG_PATTERN": 146
+          },
+          "unique_patients": 12
+        },
+        "tier": 3,
+        "tier_name": "Full Context"
+      }
+    }
+  },
+  "total_experiment_time_s": 0.26
+}

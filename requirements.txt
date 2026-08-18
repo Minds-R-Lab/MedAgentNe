@@ -1,0 +1,15 @@
+# Core -- everything except a live model backend runs with these two.
+pyyaml>=6.0
+requests>=2.31
+
+# Tests
+pytest>=7.4
+
+# Optional: the Streamlit demo in medagentnet/app.py (not required for any
+# experiment reported in the paper)
+# streamlit>=1.30
+
+# Optional: the HuggingFace backend
+# transformers>=4.40
+# torch>=2.2
+# bitsandbytes>=0.43

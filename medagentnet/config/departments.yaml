@@ -1,0 +1,141 @@
+departments:
+  cardiology:
+    name: "Cardiology"
+    description: "Heart and cardiovascular system"
+    specialization_keywords: ["heart","cardiac","cardiovascular","arrhythmia","hypertension","atrial fibrillation","coronary","blood pressure"]
+    relevant_for_procedures: ["surgery","extraction","anesthesia","sedation"]
+    common_medications:
+      - {name: "Warfarin", category: "anticoagulant", interactions: ["aspirin","ibuprofen","naproxen","amiodarone","methotrexate"], risk_flags: ["bleeding_risk","surgical_risk"]}
+      - {name: "Metoprolol", category: "beta_blocker", interactions: ["verapamil","clonidine","insulin","albuterol","timolol"], risk_flags: ["bradycardia_risk"]}
+      - {name: "Lisinopril", category: "ace_inhibitor", interactions: ["potassium_supplements","spironolactone","ibuprofen","naproxen","hydrochlorothiazide"], risk_flags: ["hypotension_risk","renal_risk"]}
+      - {name: "Amiodarone", category: "antiarrhythmic", interactions: ["warfarin","digoxin","simvastatin","carbamazepine"], risk_flags: ["thyroid_risk","liver_risk"]}
+      - {name: "Clopidogrel", category: "antiplatelet", interactions: ["omeprazole","aspirin"], risk_flags: ["bleeding_risk","surgical_risk"]}
+    common_conditions:
+      - {code: "I48", name: "Atrial Fibrillation", severity: "chronic"}
+      - {code: "I10", name: "Essential Hypertension", severity: "chronic"}
+      - {code: "I25", name: "Coronary Artery Disease", severity: "chronic"}
+      - {code: "I50", name: "Heart Failure", severity: "serious"}
+
+  dental:
+    name: "Dentistry"
+    description: "Oral health, teeth, and gums"
+    specialization_keywords: ["dental","tooth","oral","gum","extraction","cavity","periodontal"]
+    relevant_for_procedures: ["extraction","implant","root_canal","surgery"]
+    common_medications:
+      - {name: "Amoxicillin", category: "antibiotic", interactions: ["warfarin","methotrexate"], risk_flags: ["allergy_risk"]}
+      - {name: "Lidocaine", category: "local_anesthetic", interactions: ["beta_blockers","cimetidine"], risk_flags: ["cardiac_risk"]}
+      - {name: "Ibuprofen", category: "nsaid", interactions: ["warfarin","lisinopril","aspirin","lithium","methotrexate"], risk_flags: ["bleeding_risk","renal_risk","gi_risk"]}
+    common_conditions:
+      - {code: "K02", name: "Dental Caries", severity: "mild"}
+      - {code: "K05", name: "Periodontal Disease", severity: "moderate"}
+
+  general_practice:
+    name: "General Practice"
+    description: "Primary care and general medicine"
+    specialization_keywords: ["general","primary","routine","checkup","wellness"]
+    relevant_for_procedures: ["any"]
+    common_medications:
+      - {name: "Hydrochlorothiazide", category: "diuretic", interactions: ["lisinopril","lithium","digoxin","ibuprofen","naproxen"], risk_flags: ["electrolyte_risk","renal_risk"]}
+      - {name: "Omeprazole", category: "ppi", interactions: ["clopidogrel","methotrexate"], risk_flags: ["magnesium_risk"]}
+      - {name: "Aspirin", category: "antiplatelet", interactions: ["warfarin","ibuprofen","clopidogrel"], risk_flags: ["bleeding_risk","gi_risk"]}
+      - {name: "Amlodipine", category: "calcium_channel_blocker", interactions: ["simvastatin","cyclosporine"], risk_flags: ["hypotension_risk"]}
+    common_conditions:
+      - {code: "J06", name: "Upper Respiratory Infection", severity: "mild"}
+      - {code: "M54", name: "Back Pain", severity: "moderate"}
+      - {code: "E78", name: "Hyperlipidemia", severity: "chronic"}
+
+  endocrinology:
+    name: "Endocrinology"
+    description: "Hormones, diabetes, and metabolic disorders"
+    specialization_keywords: ["diabetes","thyroid","hormone","metabolic","insulin","glucose"]
+    relevant_for_procedures: ["surgery","anesthesia"]
+    common_medications:
+      - {name: "Metformin", category: "biguanide", interactions: ["alcohol","contrast_dye"], risk_flags: ["renal_risk","lactic_acidosis_risk"]}
+      - {name: "Insulin Glargine", category: "insulin", interactions: ["metoprolol","lisinopril","alcohol"], risk_flags: ["hypoglycemia_risk"]}
+      - {name: "Levothyroxine", category: "thyroid_hormone", interactions: ["calcium_supplements","iron_supplements","warfarin"], risk_flags: ["cardiac_risk"]}
+      - {name: "Glipizide", category: "sulfonylurea", interactions: ["fluconazole","aspirin","alcohol"], risk_flags: ["hypoglycemia_risk"]}
+    common_conditions:
+      - {code: "E11", name: "Type 2 Diabetes Mellitus", severity: "chronic"}
+      - {code: "E03", name: "Hypothyroidism", severity: "chronic"}
+      - {code: "E05", name: "Hyperthyroidism", severity: "moderate"}
+
+  ophthalmology:
+    name: "Ophthalmology"
+    description: "Eye and vision care"
+    specialization_keywords: ["eye","vision","retina","glaucoma","cataract"]
+    relevant_for_procedures: ["eye_surgery","laser"]
+    common_medications:
+      - {name: "Timolol Eye Drops", category: "beta_blocker_ophthalmic", interactions: ["metoprolol","verapamil","insulin"], risk_flags: ["bradycardia_risk","bronchospasm_risk"]}
+      - {name: "Latanoprost", category: "prostaglandin_analog", interactions: [], risk_flags: []}
+    common_conditions:
+      - {code: "H40", name: "Glaucoma", severity: "chronic"}
+      - {code: "H36", name: "Diabetic Retinopathy", severity: "serious"}
+      - {code: "H25", name: "Age-related Cataract", severity: "moderate"}
+
+  nephrology:
+    name: "Nephrology"
+    description: "Kidney function and renal diseases"
+    specialization_keywords: ["kidney","renal","dialysis","creatinine"]
+    relevant_for_procedures: ["surgery","contrast_imaging"]
+    common_medications:
+      - {name: "Furosemide", category: "loop_diuretic", interactions: ["lisinopril","gentamicin","lithium"], risk_flags: ["electrolyte_risk"]}
+      - {name: "Epoetin Alfa", category: "erythropoietin", interactions: [], risk_flags: ["hypertension_risk"]}
+    common_conditions:
+      - {code: "N18", name: "Chronic Kidney Disease", severity: "serious"}
+      - {code: "N17", name: "Acute Kidney Injury", severity: "critical"}
+
+  neurology:
+    name: "Neurology"
+    description: "Brain, spinal cord, and nervous system"
+    specialization_keywords: ["brain","nerve","seizure","stroke","neuropathy"]
+    relevant_for_procedures: ["surgery","anesthesia"]
+    common_medications:
+      - {name: "Gabapentin", category: "anticonvulsant", interactions: ["opioids","antacids"], risk_flags: ["sedation_risk"]}
+      - {name: "Carbamazepine", category: "anticonvulsant", interactions: ["warfarin","oral_contraceptives","simvastatin","amiodarone"], risk_flags: ["liver_risk"]}
+      - {name: "Levetiracetam", category: "antiepileptic", interactions: [], risk_flags: ["behavioral_risk"]}
+    common_conditions:
+      - {code: "G40", name: "Epilepsy", severity: "chronic"}
+      - {code: "G62", name: "Peripheral Neuropathy", severity: "moderate"}
+
+  rheumatology:
+    name: "Rheumatology"
+    description: "Joints, autoimmune and musculoskeletal conditions"
+    specialization_keywords: ["joint","arthritis","autoimmune","lupus","inflammation"]
+    relevant_for_procedures: ["surgery","joint_replacement"]
+    common_medications:
+      - {name: "Methotrexate", category: "dmard", interactions: ["nsaids","trimethoprim","amoxicillin","omeprazole","ibuprofen"], risk_flags: ["liver_risk","immunosuppression_risk","renal_risk"]}
+      - {name: "Prednisone", category: "corticosteroid", interactions: ["nsaids","warfarin","insulin","metformin","ibuprofen"], risk_flags: ["infection_risk","glucose_risk","bone_risk"]}
+      - {name: "Hydroxychloroquine", category: "dmard", interactions: ["digoxin","insulin"], risk_flags: ["retinal_risk","cardiac_risk"]}
+    common_conditions:
+      - {code: "M06", name: "Rheumatoid Arthritis", severity: "chronic"}
+      - {code: "M32", name: "Systemic Lupus Erythematosus", severity: "serious"}
+
+  pulmonology:
+    name: "Pulmonology"
+    description: "Lungs and respiratory system"
+    specialization_keywords: ["lung","respiratory","breathing","asthma","copd"]
+    relevant_for_procedures: ["surgery","anesthesia","sedation"]
+    common_medications:
+      - {name: "Albuterol", category: "bronchodilator", interactions: ["metoprolol","digoxin"], risk_flags: ["tachycardia_risk"]}
+      - {name: "Fluticasone", category: "inhaled_corticosteroid", interactions: ["ritonavir"], risk_flags: ["immunosuppression_risk"]}
+      - {name: "Tiotropium", category: "anticholinergic", interactions: [], risk_flags: ["urinary_retention_risk"]}
+    common_conditions:
+      - {code: "J45", name: "Asthma", severity: "chronic"}
+      - {code: "J44", name: "COPD", severity: "serious"}
+
+  laboratory:
+    name: "Laboratory Medicine"
+    description: "Clinical lab tests, pathology, and diagnostics"
+    specialization_keywords: ["lab","blood","test","pathology"]
+    relevant_for_procedures: ["any"]
+    common_medications: []
+    common_conditions: []
+    lab_tests:
+      - {name: "Complete Blood Count", code: "CBC"}
+      - {name: "HbA1c", code: "HBA1C", normal_range: [4.0, 5.6], prediabetes_range: [5.7, 6.4]}
+      - {name: "INR", code: "INR", normal_range: [0.8, 1.2], therapeutic_range: [2.0, 3.0]}
+      - {name: "Creatinine", code: "CREAT", normal_range: [0.6, 1.2]}
+      - {name: "Fasting Glucose", code: "FBG", normal_range: [3.9, 5.5], prediabetes_range: [5.6, 6.9]}
+      - {name: "TSH", code: "TSH", normal_range: [0.4, 4.0]}
+      - {name: "eGFR", code: "EGFR", normal_range: [90, 120]}
+      - {name: "Liver Function Tests", code: "LFT"}

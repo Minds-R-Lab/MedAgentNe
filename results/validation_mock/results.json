@@ -1,0 +1,7511 @@
+{
+  "meta": {
+    "timestamp": "2026-08-17T20:14:30.947664",
+    "base_seed": 42,
+    "num_patients": 200,
+    "provider": "Mock (rule-based)",
+    "total_seconds": 82.0,
+    "provider_stats": {
+      "provider": "Mock (rule-based)",
+      "calls": 165054,
+      "total_latency_s": 19.311,
+      "mean_latency_s": 0.0001,
+      "approx_prompt_tokens": 94153705,
+      "approx_completion_tokens": 24859431,
+      "format_failures": 0,
+      "format_failure_rate": 0.0,
+      "errors": 0
+    }
+  },
+  "e9": {
+    "experiment": "E9_query_context_audit",
+    "r0_construction": {
+      "n_contexts": 100,
+      "mean_keys": 10.88,
+      "mean_disallowed_keys": 9.28,
+      "contexts_carrying_ground_truth": 100,
+      "mean_label_terms_present": 2.4,
+      "contexts_with_any_label_term": 100
+    },
+    "r1_construction": {
+      "n_contexts": 232,
+      "mean_keys": 3.0,
+      "mean_disallowed_keys": 0.0,
+      "contexts_carrying_ground_truth": 0,
+      "mean_label_terms_present": 0.11,
+      "contexts_with_any_label_term": 26
+    },
+    "r0_pipeline_scores": {
+      "loose_criterion": {
+        "note": "R0 criterion: any actionable alert counts as a detection, with no check that it matches the planted finding.",
+        "conflict_detection": {
+          "k": 47,
+          "n": 60,
+          "rate": 0.7833,
+          "ci95": [
+            0.6638,
+            0.8688
+          ]
+        },
+        "pattern_detection": {
+          "k": 40,
+          "n": 40,
+          "rate": 1.0,
+          "ci95": [
+            0.9124,
+            1.0
+          ]
+        },
+        "all_positives": {
+          "k": 87,
+          "n": 100,
+          "rate": 0.87,
+          "ci95": [
+            0.7902,
+            0.9224
+          ]
+        }
+      },
+      "strict_criterion": {
+        "tp": 87,
+        "fp": 2,
+        "tn": 81,
+        "fn": 13,
+        "precision": 0.9775,
+        "recall": 0.87,
+        "f1": 0.9206,
+        "specificity": 0.9759,
+        "criterion": "true positive requires localised-or-better match to the planted finding; any actionable alert on a negative is a false positive"
+      }
+    },
+    "note": "The R0 context placed the conflict description or the expected diagnosis in the prompt, together with every department's medication list, at every disclosure tier.",
+    "_wall_seconds": 0.8
+  },
+  "e1": {
+    "experiment": "E1_disclosure_tiers",
+    "seeds": [
+      42,
+      1042,
+      2042
+    ],
+    "rows": {
+      "tier_1": {
+        "aggregate": {
+          "conflict_detection/localised_or_better/rate": {
+            "mean": 0.1333,
+            "std": 0.0577,
+            "min": 0.1,
+            "max": 0.2,
+            "n": 3
+          },
+          "conflict_detection/explained/rate": {
+            "mean": 0.1222,
+            "std": 0.0536,
+            "min": 0.0833,
+            "max": 0.1833,
+            "n": 3
+          },
+          "pattern_detection/localised_or_better/rate": {
+            "mean": 0.025,
+            "std": 0.0,
+            "min": 0.025,
+            "max": 0.025,
+            "n": 3
+          },
+          "pattern_detection/explained/rate": {
+            "mean": 0.025,
+            "std": 0.0,
+            "min": 0.025,
+            "max": 0.025,
+            "n": 3
+          },
+          "false_alarms/matched_negatives/rate": {
+            "mean": 0.0152,
+            "std": 0.0263,
+            "min": 0.0,
+            "max": 0.0455,
+            "n": 3
+          },
+          "false_alarms/clean_controls/rate": {
+            "mean": 0.0,
+            "std": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n": 3
+          },
+          "classification/precision": {
+            "mean": 0.9259,
+            "std": 0.1283,
+            "min": 0.7778,
+            "max": 1.0,
+            "n": 3
+          },
+          "classification/recall": {
+            "mean": 0.09,
+            "std": 0.0346,
+            "min": 0.07,
+            "max": 0.13,
+            "n": 3
+          },
+          "classification/f1": {
+            "mean": 0.1631,
+            "std": 0.058,
+            "min": 0.1284,
+            "max": 0.2301,
+            "n": 3
+          },
+          "classification/specificity": {
+            "mean": 0.9945,
+            "std": 0.0095,
+            "min": 0.9836,
+            "max": 1.0,
+            "n": 3
+          },
+          "latency_seconds/mean": {
+            "mean": 0.0011,
+            "std": 0.0001,
+            "min": 0.0011,
+            "max": 0.0012,
+            "n": 3
+          }
+        },
+        "pooled": {
+          "conflict_detection/localised_or_better": {
+            "k": 24,
+            "n": 180,
+            "rate": 0.1333,
+            "ci95": [
+              0.0913,
+              0.1907
+            ]
+          },
+          "pattern_detection/localised_or_better": {
+            "k": 3,
+            "n": 120,
+            "rate": 0.025,
+            "ci95": [
+              0.0085,
+              0.0709
+            ]
+          },
+          "false_alarms/matched_negatives": {
+            "k": 2,
+            "n": 135,
+            "rate": 0.0148,
+            "ci95": [
+              0.0041,
+              0.0524
+            ]
+          },
+          "false_alarms/clean_controls": {
+            "k": 0,
+            "n": 236,
+            "rate": 0.0,
+            "ci95": [
+              0.0,
+              0.016
+            ]
+          },
+          "classification": {
+            "tp": 27,
+            "fp": 2,
+            "tn": 369,
+            "fn": 273,
+            "precision": {
+              "k": 27,
+              "n": 29,
+              "rate": 0.931,
+              "ci95": [
+                0.7804,
+                0.9809
+              ]
+            },
+            "recall": {
+              "k": 27,
+              "n": 300,
+              "rate": 0.09,
+              "ci95": [
+                0.0626,
+                0.1278
+              ]
+            },
+            "specificity": {
+              "k": 369,
+              "n": 371,
+              "rate": 0.9946,
+              "ci95": [
+                0.9806,
+                0.9985
+              ]
+            },
+            "f1": 0.1641
+          }
+        },
+        "leakage": {
+          "mean_field_exposure": {
+            "mean": 0.0,
+            "std": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n": 3
+          },
+          "mean_items_disclosed": {
+            "mean": 0.0,
+            "std": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n": 3
+          },
+          "mean_anonymity_set": {
+            "mean": 0.0,
+            "std": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n": 0
+          },
+          "singled_out_rate": {
+            "mean": 0.0,
+            "std": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "n": 0
+          },
+          "responses_with_identifiable_content": 0,
+          "detail": {
+            "responses": 881,
+            "mean_items_disclosed": 0.0,
+            "mean_items_available": 6.479,
+            "mean_field_exposure": 0.0,
+            "max_field_exposure": 0.0,
+            "zero_disclosure_responses": 881,
+            "by_field_kind": {}
+          }
+        }
+      },
+      "tier_2": {
+        "aggregate": {
+          "conflict_detection/localised_or_better/rate": {
+            "mean": 1.0,
+            "std": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "n": 3
+          },
+          "conflict_detection/explained/rate": {
+            "mean": 1.0,
+            "std": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "n": 3
+          },
+          "pattern_detection/localised_or_better/rate": {
+            "mean": 1.0,
+            "std": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "n": 3
+          },
+          "pattern_detection/explained/rate": {
+            "mean": 1.0,
+            "std": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "n": 3
+          },
+          "false_alarms/matched_negatives/rate": {
+            "mean": 0.0226,
+            "std": 0.0228,
+            "min": 0.0,
+            "max": 0.0455,
+            "n": 3
+          },
+          "false_alarms/clean_controls/rate": {
+            "mean": 0.0085,
+            "std": 0.0148,
+            "min": 0.0,
+            "max": 0.0256,
+            "n": 3
+          },
+          "classification/precision": {
+            "mean": 0.9836,
+            "std": 0.0056,
+            "min": 0.9804,
+            "max": 0.9901,
+            "n": 3
+          },
+          "classification/recall": {
+            "mean": 1.0,
+            "std": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "n": 3
+          },
+          "classification/f1": {
+            "mean": 0.9917,
+            "std": 0.0028,
+            "min": 0.9901,
+            "max": 0.995,
+            "n": 3
+          },
+          "classification/specificity": {
+            "mean": 0.9865,
+            "std": 0.0048,
+            "min": 0.9836,
+            "max": 0.992,
+            "n": 3
+          },
+          "latency_seconds/mean": {
+            "mean": 0.0015,
+            "std": 0.0001,
+            "min": 0.0014,
+            "max": 0.0016,
+            "n": 3
+          }
+        },
+        "pooled": {
+          "conflict_detection/localised_or_better": {
+            "k": 180,
+            "n": 180,
+            "rate": 1.0,
+            "ci95": [
+              0.9791,
+              1.0
+            ]
+          },
+          "pattern_detection/localised_or_better": {
+            "k": 120,
+            "n": 120,
+            "rate": 1.0,
+            "ci95": [
+              0.969,
+              1.0
+            ]
+          },
+          "false_alarms/matched_negatives": {
+            "k": 3,
+            "n": 135,
+            "rate": 0.0222,
+            "ci95": [
+              0.0076,
+              0.0633
+            ]
+          },
+          "false_alarms/clean_controls": {
+            "k": 2,
+            "n": 236,
+            "rate": 0.0085,
+            "ci95": [
+              0.0023,
+              0.0304
+            ]
+          },
+          "classification": {
+            "tp": 300,
+            "fp": 5,
+            "tn": 366,
+            "fn": 0,
+            "precision": {
+              "k": 300,
+              "n": 305,
+              "rate": 0.9836,
+              "ci95": [
+                0.9622,
+                0.993
+              ]
+            },
+            "recall": {
+              "k": 300,
+              "n": 300,
+              "rate": 1.0,
+              "ci95": [
+                0.9874,
+                1.0
+              ]
+            },
+            "specificity": {
+              "k": 366,
+              "n": 371,
+              "rate": 0.9865,
+              "ci95": [
+                0.9688,
+                0.9942
+              ]
+            },
+            "f1": 0.9917
+          }
+        },
+        "leakage": {
+          "mean_field_exposure": {
+            "mean": 0.6895,
+            "std": 0.0122,
+            "min": 0.6764,
+            "max": 0.7004,
+            "n": 3
+          },
+          "mean_items_disclosed": {
+            "mean": 4.877,
+            "std": 0.1074,
+            "min": 4.783,
+            "max": 4.994,
+            "n": 3
+          },
+          "mean_anonymity_set": {
+            "mean": 16.432,
+            "std": 0.6682,
+            "min": 15.67,
+            "max": 16.918,
+            "n": 3
+          },
+          "singled_out_rate": {
+            "mean": 0.0784,
+            "std": 0.0072,
+            "min": 0.0702,
+            "max": 0.084,
+            "n": 3
+          },
+          "responses_with_identifiable_content": 1958,
+          "detail": {
+            "responses": 881,
+            "mean_items_disclosed": 4.854,
+            "mean_items_available": 6.479,
+            "mean_field_exposure": 0.7004,
+            "max_field_exposure": 1.0,
+            "zero_disclosure_responses": 2,
+            "by_field_kind": {
+              "medication": 660,
+              "condition": 715,
+              "lab_test": 1344,
+              "lab_value": 1557
+            }
+          }
+        }
+      },
+      "tier_3": {
+        "aggregate": {
+          "conflict_detection/localised_or_better/rate": {
+            "mean": 1.0,
+            "std": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "n": 3
+          },
+          "conflict_detection/explained/rate": {
+            "mean": 1.0,
+            "std": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "n": 3
+          },
+          "pattern_detection/localised_or_better/rate": {
+            "mean": 1.0,
+            "std": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "n": 3
+          },
+          "pattern_detection/explained/rate": {
+            "mean": 1.0,
+            "std": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "n": 3
+          },
+          "false_alarms/matched_negatives/rate": {
+            "mean": 0.045,
+            "std": 0.0389,
+            "min": 0.0,
+            "max": 0.0682,
+            "n": 3
+          },
+          "false_alarms/clean_controls/rate": {
+            "mean": 0.0337,
+            "std": 0.0141,
+            "min": 0.0256,
+            "max": 0.05,
+            "n": 3
+          },
+          "classification/precision": {
+            "mean": 0.9558,
+            "std": 0.0231,
+            "min": 0.9346,
+            "max": 0.9804,
+            "n": 3
+          },
+          "classification/recall": {
+            "mean": 1.0,
+            "std": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "n": 3
+          },
+          "classification/f1": {
+            "mean": 0.9773,
+            "std": 0.012,
+            "min": 0.9662,
+            "max": 0.9901,
+            "n": 3
+          },
+          "classification/specificity": {
+            "mean": 0.9623,
+            "std": 0.0202,
+            "min": 0.944,
+            "max": 0.9839,
+            "n": 3
+          },
+          "latency_seconds/mean": {
+            "mean": 0.0016,
+            "std": 0.0002,
+            "min": 0.0013,
+            "max": 0.0017,
+            "n": 3
+          }
+        },
+        "pooled": {
+          "conflict_detection/localised_or_better": {
+            "k": 180,
+            "n": 180,
+            "rate": 1.0,
+            "ci95": [
+              0.9791,
+              1.0
+            ]
+          },
+          "pattern_detection/localised_or_better": {
+            "k": 120,
+            "n": 120,
+            "rate": 1.0,
+            "ci95": [
+              0.969,
+              1.0
+            ]
+          },
+          "false_alarms/matched_negatives": {
+            "k": 6,
+            "n": 135,
+            "rate": 0.0444,
+            "ci95": [
+              0.0205,
+              0.0936
+            ]
+          },
+          "false_alarms/clean_controls": {
+            "k": 8,
+            "n": 236,
+            "rate": 0.0339,
+            "ci95": [
+              0.0173,
+              0.0655
+            ]
+          },
+          "classification": {
+            "tp": 300,
+            "fp": 14,
+            "tn": 357,
+            "fn": 0,
+            "precision": {
+              "k": 300,
+              "n": 314,
+              "rate": 0.9554,
+              "ci95": [
+                0.9266,
+                0.9733
+              ]
+            },
+            "recall": {
+              "k": 300,
+              "n": 300,
+              "rate": 1.0,
+              "ci95": [
+                0.9874,
+                1.0
+              ]
+            },
+            "specificity": {
+              "k": 357,
+              "n": 371,
+              "rate": 0.9623,
+              "ci95": [
+                0.9377,
+                0.9774
+              ]
+            },
+            "f1": 0.9772
+          }
+        },
+        "leakage": {
+          "mean_field_exposure": {
+            "mean": 0.6912,
+            "std": 0.0124,
+            "min": 0.6777,
+            "max": 0.702,
+            "n": 3
+          },
+          "mean_items_disclosed": {
+            "mean": 4.8877,
+            "std": 0.1081,
+            "min": 4.792,
+            "max": 5.005,
+            "n": 3
+          },
+          "mean_anonymity_set": {
+            "mean": 16.8133,
+            "std": 0.6291,
+            "min": 16.092,
+            "max": 17.248,
+            "n": 3
+          },
+          "singled_out_rate": {
+            "mean": 0.0783,
+            "std": 0.0077,
+            "min": 0.0695,
+            "max": 0.0828,
+            "n": 3
+          },
+          "responses_with_identifiable_content": 1984,
+          "detail": {
+            "responses": 881,
+            "mean_items_disclosed": 4.866,
+            "mean_items_available": 6.479,
+            "mean_field_exposure": 0.702,
+            "max_field_exposure": 1.0,
+            "zero_disclosure_responses": 1,
+            "by_field_kind": {
+              "medication": 671,
+              "condition": 715,
+              "lab_test": 1344,
+              "lab_value": 1557
+            }
+          }
+        }
+      }
+    },
+    "note": "Utility is reported under the strict, ground-truth-matched criterion. Exposure is the fraction of each responding department's identifiable facts that crossed the boundary.",
+    "_wall_seconds": 5.7
+  },
+  "e2": {
+    "experiment": "E2_consent_restriction",
+    "rows": [
+      {
+        "restriction_fraction": 0.0,
+        "n_graphs": 10,
+        "observed_denial_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "n": 10
+        },
+        "conflict_detection": {
+          "k": 600,
+          "n": 600,
+          "rate": 1.0,
+          "ci95": [
+            0.9936,
+            1.0
+          ]
+        },
+        "pattern_detection": {
+          "k": 400,
+          "n": 400,
+          "rate": 1.0,
+          "ci95": [
+            0.9905,
+            1.0
+          ]
+        },
+        "f1": {
+          "mean": 0.9901,
+          "std": 0.0,
+          "min": 0.9901,
+          "max": 0.9901,
+          "n": 10
+        },
+        "recall": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n": 10
+        },
+        "precision": {
+          "mean": 0.9804,
+          "std": 0.0,
+          "min": 0.9804,
+          "max": 0.9804,
+          "n": 10
+        }
+      },
+      {
+        "restriction_fraction": 0.2,
+        "n_graphs": 10,
+        "observed_denial_rate": {
+          "mean": 0.0861,
+          "std": 0.0076,
+          "min": 0.0771,
+          "max": 0.1039,
+          "n": 10
+        },
+        "conflict_detection": {
+          "k": 483,
+          "n": 600,
+          "rate": 0.805,
+          "ci95": [
+            0.7714,
+            0.8347
+          ]
+        },
+        "pattern_detection": {
+          "k": 299,
+          "n": 400,
+          "rate": 0.7475,
+          "ci95": [
+            0.7027,
+            0.7876
+          ]
+        },
+        "f1": {
+          "mean": 0.8668,
+          "std": 0.0378,
+          "min": 0.8,
+          "max": 0.9263,
+          "n": 10
+        },
+        "recall": {
+          "mean": 0.782,
+          "std": 0.0596,
+          "min": 0.68,
+          "max": 0.88,
+          "n": 10
+        },
+        "precision": {
+          "mean": 0.9749,
+          "std": 0.0019,
+          "min": 0.9714,
+          "max": 0.9778,
+          "n": 10
+        }
+      },
+      {
+        "restriction_fraction": 0.4,
+        "n_graphs": 10,
+        "observed_denial_rate": {
+          "mean": 0.1813,
+          "std": 0.0091,
+          "min": 0.1657,
+          "max": 0.1935,
+          "n": 10
+        },
+        "conflict_detection": {
+          "k": 374,
+          "n": 600,
+          "rate": 0.6233,
+          "ci95": [
+            0.5839,
+            0.6612
+          ]
+        },
+        "pattern_detection": {
+          "k": 210,
+          "n": 400,
+          "rate": 0.525,
+          "ci95": [
+            0.4761,
+            0.5735
+          ]
+        },
+        "f1": {
+          "mean": 0.7273,
+          "std": 0.0357,
+          "min": 0.6753,
+          "max": 0.7711,
+          "n": 10
+        },
+        "recall": {
+          "mean": 0.584,
+          "std": 0.045,
+          "min": 0.52,
+          "max": 0.64,
+          "n": 10
+        },
+        "precision": {
+          "mean": 0.9667,
+          "std": 0.0025,
+          "min": 0.963,
+          "max": 0.9697,
+          "n": 10
+        }
+      },
+      {
+        "restriction_fraction": 0.6,
+        "n_graphs": 10,
+        "observed_denial_rate": {
+          "mean": 0.2689,
+          "std": 0.0055,
+          "min": 0.2567,
+          "max": 0.2763,
+          "n": 10
+        },
+        "conflict_detection": {
+          "k": 278,
+          "n": 600,
+          "rate": 0.4633,
+          "ci95": [
+            0.4238,
+            0.5033
+          ]
+        },
+        "pattern_detection": {
+          "k": 110,
+          "n": 400,
+          "rate": 0.275,
+          "ci95": [
+            0.2335,
+            0.3207
+          ]
+        },
+        "f1": {
+          "mean": 0.5501,
+          "std": 0.0413,
+          "min": 0.5,
+          "max": 0.64,
+          "n": 10
+        },
+        "recall": {
+          "mean": 0.388,
+          "std": 0.0413,
+          "min": 0.34,
+          "max": 0.48,
+          "n": 10
+        },
+        "precision": {
+          "mean": 0.9506,
+          "std": 0.0046,
+          "min": 0.9444,
+          "max": 0.96,
+          "n": 10
+        }
+      },
+      {
+        "restriction_fraction": 0.8,
+        "n_graphs": 10,
+        "observed_denial_rate": {
+          "mean": 0.3634,
+          "std": 0.0053,
+          "min": 0.3578,
+          "max": 0.3716,
+          "n": 10
+        },
+        "conflict_detection": {
+          "k": 154,
+          "n": 600,
+          "rate": 0.2567,
+          "ci95": [
+            0.2233,
+            0.2931
+          ]
+        },
+        "pattern_detection": {
+          "k": 46,
+          "n": 400,
+          "rate": 0.115,
+          "ci95": [
+            0.0873,
+            0.15
+          ]
+        },
+        "f1": {
+          "mean": 0.3263,
+          "std": 0.0533,
+          "min": 0.2564,
+          "max": 0.4186,
+          "n": 10
+        },
+        "recall": {
+          "mean": 0.2,
+          "std": 0.0394,
+          "min": 0.15,
+          "max": 0.27,
+          "n": 10
+        },
+        "precision": {
+          "mean": 0.9065,
+          "std": 0.0159,
+          "min": 0.8824,
+          "max": 0.931,
+          "n": 10
+        }
+      },
+      {
+        "restriction_fraction": 1.0,
+        "n_graphs": 10,
+        "observed_denial_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n": 10
+        },
+        "conflict_detection": {
+          "k": 60,
+          "n": 600,
+          "rate": 0.1,
+          "ci95": [
+            0.0785,
+            0.1266
+          ]
+        },
+        "pattern_detection": {
+          "k": 10,
+          "n": 400,
+          "rate": 0.025,
+          "ci95": [
+            0.0136,
+            0.0454
+          ]
+        },
+        "f1": {
+          "mean": 0.1284,
+          "std": 0.0,
+          "min": 0.1284,
+          "max": 0.1284,
+          "n": 10
+        },
+        "recall": {
+          "mean": 0.07,
+          "std": 0.0,
+          "min": 0.07,
+          "max": 0.07,
+          "n": 10
+        },
+        "precision": {
+          "mean": 0.7778,
+          "std": 0.0,
+          "min": 0.7778,
+          "max": 0.7778,
+          "n": 10
+        }
+      }
+    ],
+    "targeted_removal": {
+      "rows": [
+        {
+          "removal": "random_matched",
+          "conflict_detection": {
+            "k": 34,
+            "n": 60,
+            "rate": 0.5667,
+            "ci95": [
+              0.441,
+              0.6843
+            ]
+          },
+          "pattern_detection": {
+            "k": 3,
+            "n": 40,
+            "rate": 0.075,
+            "ci95": [
+              0.0258,
+              0.1986
+            ]
+          },
+          "f1": 0.5324
+        },
+        {
+          "removal": "targeted",
+          "conflict_detection": {
+            "k": 6,
+            "n": 60,
+            "rate": 0.1,
+            "ci95": [
+              0.0466,
+              0.2015
+            ]
+          },
+          "pattern_detection": {
+            "k": 1,
+            "n": 40,
+            "rate": 0.025,
+            "ci95": [
+              0.0044,
+              0.1288
+            ]
+          },
+          "f1": 0.1284
+        }
+      ],
+      "note": "Matched by the number of pairs removed, so the difference isolates which pairs were removed rather than how many."
+    },
+    "sampling": "directed department pairs revoked uniformly at random per patient; independently resampled per graph",
+    "note": "R0 revoked a pair by deleting its profile entry, which fell through to the opt-in default; the recorded R0 runs show zero consent denials at 30 % and 60 % restriction. Denial rates observed here confirm the restriction now takes effect.",
+    "_wall_seconds": 30.3
+  },
+  "e3": {
+    "experiment": "E3_variance_and_generalisation",
+    "seeds": [
+      42,
+      1042,
+      2042,
+      3042,
+      4042
+    ],
+    "development_family": {
+      "per_run": [
+        {
+          "n_scenarios": 232,
+          "cohort_counts": {
+            "conflict": 60,
+            "pattern": 40,
+            "matched_negative": 44,
+            "clean_control": 78,
+            "ambiguous": 10
+          },
+          "conflict_detection": {
+            "n": 60,
+            "miss": {
+              "k": 0,
+              "n": 60,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0602
+              ]
+            },
+            "flagged_or_better": {
+              "k": 60,
+              "n": 60,
+              "rate": 1.0,
+              "ci95": [
+                0.9398,
+                1.0
+              ]
+            },
+            "localised_or_better": {
+              "k": 60,
+              "n": 60,
+              "rate": 1.0,
+              "ci95": [
+                0.9398,
+                1.0
+              ]
+            },
+            "explained": {
+              "k": 60,
+              "n": 60,
+              "rate": 1.0,
+              "ci95": [
+                0.9398,
+                1.0
+              ]
+            }
+          },
+          "pattern_detection": {
+            "n": 40,
+            "miss": {
+              "k": 0,
+              "n": 40,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0876
+              ]
+            },
+            "flagged_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "localised_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "explained": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            }
+          },
+          "false_alarms": {
+            "matched_negatives": {
+              "k": 2,
+              "n": 44,
+              "rate": 0.0455,
+              "ci95": [
+                0.0126,
+                0.1514
+              ]
+            },
+            "clean_controls": {
+              "k": 0,
+              "n": 78,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0469
+              ]
+            },
+            "all_negatives": {
+              "k": 2,
+              "n": 122,
+              "rate": 0.0164,
+              "ci95": [
+                0.0045,
+                0.0578
+              ]
+            }
+          },
+          "ambiguous_alert_rate": {
+            "k": 2,
+            "n": 10,
+            "rate": 0.2,
+            "ci95": [
+              0.0567,
+              0.5098
+            ]
+          },
+          "classification": {
+            "tp": 100,
+            "fp": 2,
+            "tn": 120,
+            "fn": 0,
+            "precision": 0.9804,
+            "recall": 1.0,
+            "f1": 0.9901,
+            "specificity": 0.9836,
+            "criterion": "true positive requires localised-or-better match to the planted finding; any actionable alert on a negative is a false positive"
+          },
+          "per_scenario": {
+            "beta_blocker_respiratory": {
+              "n": 13,
+              "localised": 13,
+              "explained": 13,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7719,
+                1.0
+              ]
+            },
+            "triple_whammy_aki": {
+              "n": 6,
+              "localised": 6,
+              "explained": 6,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6097,
+                1.0
+              ]
+            },
+            "anticoagulant_nsaid_bleeding": {
+              "n": 10,
+              "localised": 10,
+              "explained": 10,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7225,
+                1.0
+              ]
+            },
+            "methotrexate_nsaid_renal": {
+              "n": 7,
+              "localised": 7,
+              "explained": 7,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6457,
+                1.0
+              ]
+            },
+            "ophthalmic_systemic_beta_blocker": {
+              "n": 6,
+              "localised": 6,
+              "explained": 6,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6097,
+                1.0
+              ]
+            },
+            "metformin_renal_failure": {
+              "n": 6,
+              "localised": 6,
+              "explained": 6,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6097,
+                1.0
+              ]
+            },
+            "warfarin_dental_extraction": {
+              "n": 6,
+              "localised": 6,
+              "explained": 6,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6097,
+                1.0
+              ]
+            },
+            "carbamazepine_warfarin": {
+              "n": 6,
+              "localised": 6,
+              "explained": 6,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6097,
+                1.0
+              ]
+            },
+            "undiagnosed_diabetes": {
+              "n": 20,
+              "localised": 20,
+              "explained": 20,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.8389,
+                1.0
+              ]
+            },
+            "thyroid_cardiac_connection": {
+              "n": 14,
+              "localised": 14,
+              "explained": 14,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7847,
+                1.0
+              ]
+            },
+            "ckd_progression": {
+              "n": 6,
+              "localised": 6,
+              "explained": 6,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6097,
+                1.0
+              ]
+            }
+          },
+          "per_negative": {
+            "metformin_normal_renal": {
+              "n": 3,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "resolved_ckd_normal_function": {
+              "n": 11,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "warfarin_dental_checkup_no_procedure": {
+              "n": 7,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "methotrexate_with_folate": {
+              "n": 5,
+              "false_alarms": 1,
+              "false_alarm_rate": 0.2
+            },
+            "cardioselective_bb_no_airway_disease": {
+              "n": 2,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "ace_diuretic_no_nsaid": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "carbamazepine_alone": {
+              "n": 7,
+              "false_alarms": 1,
+              "false_alarm_rate": 0.1429
+            },
+            "warfarin_paracetamol_safe": {
+              "n": 3,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "discontinued_nsaid_on_warfarin": {
+              "n": 1,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            }
+          },
+          "by_record_quality": {
+            "contradiction": {
+              "k": 14,
+              "n": 14,
+              "rate": 1.0,
+              "ci95": [
+                0.7847,
+                1.0
+              ]
+            },
+            "stale_medication": {
+              "k": 18,
+              "n": 18,
+              "rate": 1.0,
+              "ci95": [
+                0.8241,
+                1.0
+              ]
+            },
+            "resolved_diagnosis": {
+              "k": 13,
+              "n": 13,
+              "rate": 1.0,
+              "ci95": [
+                0.7719,
+                1.0
+              ]
+            },
+            "duplicate_entry": {
+              "k": 9,
+              "n": 9,
+              "rate": 1.0,
+              "ci95": [
+                0.7008,
+                1.0
+              ]
+            },
+            "clean_record": {
+              "k": 55,
+              "n": 55,
+              "rate": 1.0,
+              "ci95": [
+                0.9347,
+                1.0
+              ]
+            },
+            "note_only_limb": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "ci95": [
+                0.5101,
+                1.0
+              ]
+            }
+          },
+          "heldout_split": {
+            "heldout": {
+              "n": 0,
+              "miss": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "flagged_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "localised_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "explained": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              }
+            },
+            "development": {
+              "n": 100,
+              "miss": {
+                "k": 0,
+                "n": 100,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.037
+                ]
+              },
+              "flagged_or_better": {
+                "k": 100,
+                "n": 100,
+                "rate": 1.0,
+                "ci95": [
+                  0.963,
+                  1.0
+                ]
+              },
+              "localised_or_better": {
+                "k": 100,
+                "n": 100,
+                "rate": 1.0,
+                "ci95": [
+                  0.963,
+                  1.0
+                ]
+              },
+              "explained": {
+                "k": 100,
+                "n": 100,
+                "rate": 1.0,
+                "ci95": [
+                  0.963,
+                  1.0
+                ]
+              }
+            }
+          },
+          "latency_seconds": {
+            "mean": 0.0016,
+            "std": 0.0012,
+            "min": 0.001,
+            "max": 0.019,
+            "n": 232,
+            "p50": 0.002,
+            "p90": 0.002,
+            "p95": 0.002,
+            "p99": 0.002
+          },
+          "legacy_loose_criterion": {
+            "note": "R0 criterion: any actionable alert counts as a detection, with no check that it matches the planted finding.",
+            "conflict_detection": {
+              "k": 60,
+              "n": 60,
+              "rate": 1.0,
+              "ci95": [
+                0.9398,
+                1.0
+              ]
+            },
+            "pattern_detection": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "all_positives": {
+              "k": 100,
+              "n": 100,
+              "rate": 1.0,
+              "ci95": [
+                0.963,
+                1.0
+              ]
+            }
+          }
+        },
+        {
+          "n_scenarios": 235,
+          "cohort_counts": {
+            "conflict": 60,
+            "pattern": 40,
+            "matched_negative": 45,
+            "clean_control": 80,
+            "ambiguous": 10
+          },
+          "conflict_detection": {
+            "n": 60,
+            "miss": {
+              "k": 0,
+              "n": 60,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0602
+              ]
+            },
+            "flagged_or_better": {
+              "k": 60,
+              "n": 60,
+              "rate": 1.0,
+              "ci95": [
+                0.9398,
+                1.0
+              ]
+            },
+            "localised_or_better": {
+              "k": 60,
+              "n": 60,
+              "rate": 1.0,
+              "ci95": [
+                0.9398,
+                1.0
+              ]
+            },
+            "explained": {
+              "k": 60,
+              "n": 60,
+              "rate": 1.0,
+              "ci95": [
+                0.9398,
+                1.0
+              ]
+            }
+          },
+          "pattern_detection": {
+            "n": 40,
+            "miss": {
+              "k": 0,
+              "n": 40,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0876
+              ]
+            },
+            "flagged_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "localised_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "explained": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            }
+          },
+          "false_alarms": {
+            "matched_negatives": {
+              "k": 1,
+              "n": 45,
+              "rate": 0.0222,
+              "ci95": [
+                0.0039,
+                0.1157
+              ]
+            },
+            "clean_controls": {
+              "k": 0,
+              "n": 80,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0458
+              ]
+            },
+            "all_negatives": {
+              "k": 1,
+              "n": 125,
+              "rate": 0.008,
+              "ci95": [
+                0.0014,
+                0.0439
+              ]
+            }
+          },
+          "ambiguous_alert_rate": {
+            "k": 1,
+            "n": 10,
+            "rate": 0.1,
+            "ci95": [
+              0.0179,
+              0.4042
+            ]
+          },
+          "classification": {
+            "tp": 100,
+            "fp": 1,
+            "tn": 124,
+            "fn": 0,
+            "precision": 0.9901,
+            "recall": 1.0,
+            "f1": 0.995,
+            "specificity": 0.992,
+            "criterion": "true positive requires localised-or-better match to the planted finding; any actionable alert on a negative is a false positive"
+          },
+          "per_scenario": {
+            "triple_whammy_aki": {
+              "n": 12,
+              "localised": 12,
+              "explained": 12,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7575,
+                1.0
+              ]
+            },
+            "methotrexate_nsaid_renal": {
+              "n": 11,
+              "localised": 11,
+              "explained": 11,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7412,
+                1.0
+              ]
+            },
+            "warfarin_dental_extraction": {
+              "n": 5,
+              "localised": 5,
+              "explained": 5,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.5655,
+                1.0
+              ]
+            },
+            "carbamazepine_warfarin": {
+              "n": 5,
+              "localised": 5,
+              "explained": 5,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.5655,
+                1.0
+              ]
+            },
+            "anticoagulant_nsaid_bleeding": {
+              "n": 4,
+              "localised": 4,
+              "explained": 4,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.5101,
+                1.0
+              ]
+            },
+            "beta_blocker_respiratory": {
+              "n": 7,
+              "localised": 7,
+              "explained": 7,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6457,
+                1.0
+              ]
+            },
+            "metformin_renal_failure": {
+              "n": 11,
+              "localised": 11,
+              "explained": 11,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7412,
+                1.0
+              ]
+            },
+            "ophthalmic_systemic_beta_blocker": {
+              "n": 5,
+              "localised": 5,
+              "explained": 5,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.5655,
+                1.0
+              ]
+            },
+            "undiagnosed_diabetes": {
+              "n": 18,
+              "localised": 18,
+              "explained": 18,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.8241,
+                1.0
+              ]
+            },
+            "ckd_progression": {
+              "n": 10,
+              "localised": 10,
+              "explained": 10,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7225,
+                1.0
+              ]
+            },
+            "thyroid_cardiac_connection": {
+              "n": 12,
+              "localised": 12,
+              "explained": 12,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7575,
+                1.0
+              ]
+            }
+          },
+          "per_negative": {
+            "resolved_ckd_normal_function": {
+              "n": 11,
+              "false_alarms": 1,
+              "false_alarm_rate": 0.0909
+            },
+            "warfarin_dental_checkup_no_procedure": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "ace_diuretic_no_nsaid": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "metformin_normal_renal": {
+              "n": 4,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "carbamazepine_alone": {
+              "n": 3,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "discontinued_nsaid_on_warfarin": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "warfarin_paracetamol_safe": {
+              "n": 1,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "cardioselective_bb_no_airway_disease": {
+              "n": 8,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "methotrexate_with_folate": {
+              "n": 3,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            }
+          },
+          "by_record_quality": {
+            "contradiction": {
+              "k": 13,
+              "n": 13,
+              "rate": 1.0,
+              "ci95": [
+                0.7719,
+                1.0
+              ]
+            },
+            "stale_medication": {
+              "k": 14,
+              "n": 14,
+              "rate": 1.0,
+              "ci95": [
+                0.7847,
+                1.0
+              ]
+            },
+            "resolved_diagnosis": {
+              "k": 19,
+              "n": 19,
+              "rate": 1.0,
+              "ci95": [
+                0.8318,
+                1.0
+              ]
+            },
+            "duplicate_entry": {
+              "k": 10,
+              "n": 10,
+              "rate": 1.0,
+              "ci95": [
+                0.7225,
+                1.0
+              ]
+            },
+            "clean_record": {
+              "k": 54,
+              "n": 54,
+              "rate": 1.0,
+              "ci95": [
+                0.9336,
+                1.0
+              ]
+            },
+            "note_only_limb": {
+              "k": 8,
+              "n": 8,
+              "rate": 1.0,
+              "ci95": [
+                0.6756,
+                1.0
+              ]
+            }
+          },
+          "heldout_split": {
+            "heldout": {
+              "n": 0,
+              "miss": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "flagged_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "localised_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "explained": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              }
+            },
+            "development": {
+              "n": 100,
+              "miss": {
+                "k": 0,
+                "n": 100,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.037
+                ]
+              },
+              "flagged_or_better": {
+                "k": 100,
+                "n": 100,
+                "rate": 1.0,
+                "ci95": [
+                  0.963,
+                  1.0
+                ]
+              },
+              "localised_or_better": {
+                "k": 100,
+                "n": 100,
+                "rate": 1.0,
+                "ci95": [
+                  0.963,
+                  1.0
+                ]
+              },
+              "explained": {
+                "k": 100,
+                "n": 100,
+                "rate": 1.0,
+                "ci95": [
+                  0.963,
+                  1.0
+                ]
+              }
+            }
+          },
+          "latency_seconds": {
+            "mean": 0.0016,
+            "std": 0.001,
+            "min": 0.001,
+            "max": 0.015,
+            "n": 235,
+            "p50": 0.002,
+            "p90": 0.002,
+            "p95": 0.002,
+            "p99": 0.003
+          },
+          "legacy_loose_criterion": {
+            "note": "R0 criterion: any actionable alert counts as a detection, with no check that it matches the planted finding.",
+            "conflict_detection": {
+              "k": 60,
+              "n": 60,
+              "rate": 1.0,
+              "ci95": [
+                0.9398,
+                1.0
+              ]
+            },
+            "pattern_detection": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "all_positives": {
+              "k": 100,
+              "n": 100,
+              "rate": 1.0,
+              "ci95": [
+                0.963,
+                1.0
+              ]
+            }
+          }
+        },
+        {
+          "n_scenarios": 234,
+          "cohort_counts": {
+            "conflict": 60,
+            "pattern": 40,
+            "matched_negative": 46,
+            "clean_control": 78,
+            "ambiguous": 10
+          },
+          "conflict_detection": {
+            "n": 60,
+            "miss": {
+              "k": 0,
+              "n": 60,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0602
+              ]
+            },
+            "flagged_or_better": {
+              "k": 60,
+              "n": 60,
+              "rate": 1.0,
+              "ci95": [
+                0.9398,
+                1.0
+              ]
+            },
+            "localised_or_better": {
+              "k": 60,
+              "n": 60,
+              "rate": 1.0,
+              "ci95": [
+                0.9398,
+                1.0
+              ]
+            },
+            "explained": {
+              "k": 60,
+              "n": 60,
+              "rate": 1.0,
+              "ci95": [
+                0.9398,
+                1.0
+              ]
+            }
+          },
+          "pattern_detection": {
+            "n": 40,
+            "miss": {
+              "k": 0,
+              "n": 40,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0876
+              ]
+            },
+            "flagged_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "localised_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "explained": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            }
+          },
+          "false_alarms": {
+            "matched_negatives": {
+              "k": 0,
+              "n": 46,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0771
+              ]
+            },
+            "clean_controls": {
+              "k": 2,
+              "n": 78,
+              "rate": 0.0256,
+              "ci95": [
+                0.0071,
+                0.0888
+              ]
+            },
+            "all_negatives": {
+              "k": 2,
+              "n": 124,
+              "rate": 0.0161,
+              "ci95": [
+                0.0044,
+                0.0569
+              ]
+            }
+          },
+          "ambiguous_alert_rate": {
+            "k": 4,
+            "n": 10,
+            "rate": 0.4,
+            "ci95": [
+              0.1682,
+              0.6873
+            ]
+          },
+          "classification": {
+            "tp": 100,
+            "fp": 2,
+            "tn": 122,
+            "fn": 0,
+            "precision": 0.9804,
+            "recall": 1.0,
+            "f1": 0.9901,
+            "specificity": 0.9839,
+            "criterion": "true positive requires localised-or-better match to the planted finding; any actionable alert on a negative is a false positive"
+          },
+          "per_scenario": {
+            "warfarin_dental_extraction": {
+              "n": 8,
+              "localised": 8,
+              "explained": 8,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6756,
+                1.0
+              ]
+            },
+            "methotrexate_nsaid_renal": {
+              "n": 10,
+              "localised": 10,
+              "explained": 10,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7225,
+                1.0
+              ]
+            },
+            "metformin_renal_failure": {
+              "n": 7,
+              "localised": 7,
+              "explained": 7,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6457,
+                1.0
+              ]
+            },
+            "triple_whammy_aki": {
+              "n": 8,
+              "localised": 8,
+              "explained": 8,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6756,
+                1.0
+              ]
+            },
+            "anticoagulant_nsaid_bleeding": {
+              "n": 8,
+              "localised": 8,
+              "explained": 8,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6756,
+                1.0
+              ]
+            },
+            "ophthalmic_systemic_beta_blocker": {
+              "n": 11,
+              "localised": 11,
+              "explained": 11,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7412,
+                1.0
+              ]
+            },
+            "beta_blocker_respiratory": {
+              "n": 5,
+              "localised": 5,
+              "explained": 5,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.5655,
+                1.0
+              ]
+            },
+            "carbamazepine_warfarin": {
+              "n": 3,
+              "localised": 3,
+              "explained": 3,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.4385,
+                1.0
+              ]
+            },
+            "undiagnosed_diabetes": {
+              "n": 9,
+              "localised": 9,
+              "explained": 9,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7008,
+                1.0
+              ]
+            },
+            "ckd_progression": {
+              "n": 15,
+              "localised": 15,
+              "explained": 15,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7961,
+                1.0
+              ]
+            },
+            "thyroid_cardiac_connection": {
+              "n": 16,
+              "localised": 16,
+              "explained": 16,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.8064,
+                1.0
+              ]
+            }
+          },
+          "per_negative": {
+            "warfarin_paracetamol_safe": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "methotrexate_with_folate": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "carbamazepine_alone": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "warfarin_dental_checkup_no_procedure": {
+              "n": 7,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "resolved_ckd_normal_function": {
+              "n": 9,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "cardioselective_bb_no_airway_disease": {
+              "n": 6,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "metformin_normal_renal": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "discontinued_nsaid_on_warfarin": {
+              "n": 3,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "ace_diuretic_no_nsaid": {
+              "n": 1,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            }
+          },
+          "by_record_quality": {
+            "contradiction": {
+              "k": 16,
+              "n": 16,
+              "rate": 1.0,
+              "ci95": [
+                0.8064,
+                1.0
+              ]
+            },
+            "stale_medication": {
+              "k": 19,
+              "n": 19,
+              "rate": 1.0,
+              "ci95": [
+                0.8318,
+                1.0
+              ]
+            },
+            "resolved_diagnosis": {
+              "k": 8,
+              "n": 8,
+              "rate": 1.0,
+              "ci95": [
+                0.6756,
+                1.0
+              ]
+            },
+            "duplicate_entry": {
+              "k": 9,
+              "n": 9,
+              "rate": 1.0,
+              "ci95": [
+                0.7008,
+                1.0
+              ]
+            },
+            "clean_record": {
+              "k": 59,
+              "n": 59,
+              "rate": 1.0,
+              "ci95": [
+                0.9389,
+                1.0
+              ]
+            },
+            "note_only_limb": {
+              "k": 5,
+              "n": 5,
+              "rate": 1.0,
+              "ci95": [
+                0.5655,
+                1.0
+              ]
+            }
+          },
+          "heldout_split": {
+            "heldout": {
+              "n": 0,
+              "miss": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "flagged_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "localised_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "explained": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              }
+            },
+            "development": {
+              "n": 100,
+              "miss": {
+                "k": 0,
+                "n": 100,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.037
+                ]
+              },
+              "flagged_or_better": {
+                "k": 100,
+                "n": 100,
+                "rate": 1.0,
+                "ci95": [
+                  0.963,
+                  1.0
+                ]
+              },
+              "localised_or_better": {
+                "k": 100,
+                "n": 100,
+                "rate": 1.0,
+                "ci95": [
+                  0.963,
+                  1.0
+                ]
+              },
+              "explained": {
+                "k": 100,
+                "n": 100,
+                "rate": 1.0,
+                "ci95": [
+                  0.963,
+                  1.0
+                ]
+              }
+            }
+          },
+          "latency_seconds": {
+            "mean": 0.0015,
+            "std": 0.001,
+            "min": 0.001,
+            "max": 0.015,
+            "n": 234,
+            "p50": 0.001,
+            "p90": 0.002,
+            "p95": 0.002,
+            "p99": 0.003
+          },
+          "legacy_loose_criterion": {
+            "note": "R0 criterion: any actionable alert counts as a detection, with no check that it matches the planted finding.",
+            "conflict_detection": {
+              "k": 60,
+              "n": 60,
+              "rate": 1.0,
+              "ci95": [
+                0.9398,
+                1.0
+              ]
+            },
+            "pattern_detection": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "all_positives": {
+              "k": 100,
+              "n": 100,
+              "rate": 1.0,
+              "ci95": [
+                0.963,
+                1.0
+              ]
+            }
+          }
+        },
+        {
+          "n_scenarios": 234,
+          "cohort_counts": {
+            "conflict": 60,
+            "pattern": 40,
+            "matched_negative": 46,
+            "clean_control": 78,
+            "ambiguous": 10
+          },
+          "conflict_detection": {
+            "n": 60,
+            "miss": {
+              "k": 0,
+              "n": 60,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0602
+              ]
+            },
+            "flagged_or_better": {
+              "k": 60,
+              "n": 60,
+              "rate": 1.0,
+              "ci95": [
+                0.9398,
+                1.0
+              ]
+            },
+            "localised_or_better": {
+              "k": 60,
+              "n": 60,
+              "rate": 1.0,
+              "ci95": [
+                0.9398,
+                1.0
+              ]
+            },
+            "explained": {
+              "k": 60,
+              "n": 60,
+              "rate": 1.0,
+              "ci95": [
+                0.9398,
+                1.0
+              ]
+            }
+          },
+          "pattern_detection": {
+            "n": 40,
+            "miss": {
+              "k": 0,
+              "n": 40,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0876
+              ]
+            },
+            "flagged_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "localised_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "explained": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            }
+          },
+          "false_alarms": {
+            "matched_negatives": {
+              "k": 0,
+              "n": 46,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0771
+              ]
+            },
+            "clean_controls": {
+              "k": 0,
+              "n": 78,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0469
+              ]
+            },
+            "all_negatives": {
+              "k": 0,
+              "n": 124,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.03
+              ]
+            }
+          },
+          "ambiguous_alert_rate": {
+            "k": 3,
+            "n": 10,
+            "rate": 0.3,
+            "ci95": [
+              0.1078,
+              0.6032
+            ]
+          },
+          "classification": {
+            "tp": 100,
+            "fp": 0,
+            "tn": 124,
+            "fn": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "specificity": 1.0,
+            "criterion": "true positive requires localised-or-better match to the planted finding; any actionable alert on a negative is a false positive"
+          },
+          "per_scenario": {
+            "beta_blocker_respiratory": {
+              "n": 9,
+              "localised": 9,
+              "explained": 9,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7008,
+                1.0
+              ]
+            },
+            "anticoagulant_nsaid_bleeding": {
+              "n": 7,
+              "localised": 7,
+              "explained": 7,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6457,
+                1.0
+              ]
+            },
+            "metformin_renal_failure": {
+              "n": 10,
+              "localised": 10,
+              "explained": 10,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7225,
+                1.0
+              ]
+            },
+            "ophthalmic_systemic_beta_blocker": {
+              "n": 8,
+              "localised": 8,
+              "explained": 8,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6756,
+                1.0
+              ]
+            },
+            "triple_whammy_aki": {
+              "n": 7,
+              "localised": 7,
+              "explained": 7,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6457,
+                1.0
+              ]
+            },
+            "carbamazepine_warfarin": {
+              "n": 7,
+              "localised": 7,
+              "explained": 7,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6457,
+                1.0
+              ]
+            },
+            "warfarin_dental_extraction": {
+              "n": 9,
+              "localised": 9,
+              "explained": 9,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7008,
+                1.0
+              ]
+            },
+            "methotrexate_nsaid_renal": {
+              "n": 3,
+              "localised": 3,
+              "explained": 3,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.4385,
+                1.0
+              ]
+            },
+            "ckd_progression": {
+              "n": 14,
+              "localised": 14,
+              "explained": 14,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7847,
+                1.0
+              ]
+            },
+            "undiagnosed_diabetes": {
+              "n": 11,
+              "localised": 11,
+              "explained": 11,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7412,
+                1.0
+              ]
+            },
+            "thyroid_cardiac_connection": {
+              "n": 15,
+              "localised": 15,
+              "explained": 15,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7961,
+                1.0
+              ]
+            }
+          },
+          "per_negative": {
+            "resolved_ckd_normal_function": {
+              "n": 9,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "methotrexate_with_folate": {
+              "n": 11,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "cardioselective_bb_no_airway_disease": {
+              "n": 3,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "ace_diuretic_no_nsaid": {
+              "n": 3,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "carbamazepine_alone": {
+              "n": 7,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "discontinued_nsaid_on_warfarin": {
+              "n": 6,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "metformin_normal_renal": {
+              "n": 4,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "warfarin_paracetamol_safe": {
+              "n": 2,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "warfarin_dental_checkup_no_procedure": {
+              "n": 1,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            }
+          },
+          "by_record_quality": {
+            "contradiction": {
+              "k": 16,
+              "n": 16,
+              "rate": 1.0,
+              "ci95": [
+                0.8064,
+                1.0
+              ]
+            },
+            "stale_medication": {
+              "k": 18,
+              "n": 18,
+              "rate": 1.0,
+              "ci95": [
+                0.8241,
+                1.0
+              ]
+            },
+            "resolved_diagnosis": {
+              "k": 16,
+              "n": 16,
+              "rate": 1.0,
+              "ci95": [
+                0.8064,
+                1.0
+              ]
+            },
+            "duplicate_entry": {
+              "k": 9,
+              "n": 9,
+              "rate": 1.0,
+              "ci95": [
+                0.7008,
+                1.0
+              ]
+            },
+            "clean_record": {
+              "k": 54,
+              "n": 54,
+              "rate": 1.0,
+              "ci95": [
+                0.9336,
+                1.0
+              ]
+            },
+            "note_only_limb": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "ci95": [
+                0.5101,
+                1.0
+              ]
+            }
+          },
+          "heldout_split": {
+            "heldout": {
+              "n": 0,
+              "miss": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "flagged_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "localised_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "explained": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              }
+            },
+            "development": {
+              "n": 100,
+              "miss": {
+                "k": 0,
+                "n": 100,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.037
+                ]
+              },
+              "flagged_or_better": {
+                "k": 100,
+                "n": 100,
+                "rate": 1.0,
+                "ci95": [
+                  0.963,
+                  1.0
+                ]
+              },
+              "localised_or_better": {
+                "k": 100,
+                "n": 100,
+                "rate": 1.0,
+                "ci95": [
+                  0.963,
+                  1.0
+                ]
+              },
+              "explained": {
+                "k": 100,
+                "n": 100,
+                "rate": 1.0,
+                "ci95": [
+                  0.963,
+                  1.0
+                ]
+              }
+            }
+          },
+          "latency_seconds": {
+            "mean": 0.0017,
+            "std": 0.0014,
+            "min": 0.001,
+            "max": 0.018,
+            "n": 234,
+            "p50": 0.002,
+            "p90": 0.002,
+            "p95": 0.002,
+            "p99": 0.002
+          },
+          "legacy_loose_criterion": {
+            "note": "R0 criterion: any actionable alert counts as a detection, with no check that it matches the planted finding.",
+            "conflict_detection": {
+              "k": 60,
+              "n": 60,
+              "rate": 1.0,
+              "ci95": [
+                0.9398,
+                1.0
+              ]
+            },
+            "pattern_detection": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "all_positives": {
+              "k": 100,
+              "n": 100,
+              "rate": 1.0,
+              "ci95": [
+                0.963,
+                1.0
+              ]
+            }
+          }
+        },
+        {
+          "n_scenarios": 230,
+          "cohort_counts": {
+            "conflict": 60,
+            "pattern": 40,
+            "matched_negative": 40,
+            "clean_control": 80,
+            "ambiguous": 10
+          },
+          "conflict_detection": {
+            "n": 60,
+            "miss": {
+              "k": 1,
+              "n": 60,
+              "rate": 0.0167,
+              "ci95": [
+                0.0029,
+                0.0886
+              ]
+            },
+            "flagged_or_better": {
+              "k": 59,
+              "n": 60,
+              "rate": 0.9833,
+              "ci95": [
+                0.9114,
+                0.9971
+              ]
+            },
+            "localised_or_better": {
+              "k": 59,
+              "n": 60,
+              "rate": 0.9833,
+              "ci95": [
+                0.9114,
+                0.9971
+              ]
+            },
+            "explained": {
+              "k": 59,
+              "n": 60,
+              "rate": 0.9833,
+              "ci95": [
+                0.9114,
+                0.9971
+              ]
+            }
+          },
+          "pattern_detection": {
+            "n": 40,
+            "miss": {
+              "k": 0,
+              "n": 40,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0876
+              ]
+            },
+            "flagged_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "localised_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "explained": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            }
+          },
+          "false_alarms": {
+            "matched_negatives": {
+              "k": 0,
+              "n": 40,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0876
+              ]
+            },
+            "clean_controls": {
+              "k": 0,
+              "n": 80,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0458
+              ]
+            },
+            "all_negatives": {
+              "k": 0,
+              "n": 120,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.031
+              ]
+            }
+          },
+          "ambiguous_alert_rate": {
+            "k": 3,
+            "n": 10,
+            "rate": 0.3,
+            "ci95": [
+              0.1078,
+              0.6032
+            ]
+          },
+          "classification": {
+            "tp": 99,
+            "fp": 0,
+            "tn": 120,
+            "fn": 1,
+            "precision": 1.0,
+            "recall": 0.99,
+            "f1": 0.995,
+            "specificity": 1.0,
+            "criterion": "true positive requires localised-or-better match to the planted finding; any actionable alert on a negative is a false positive"
+          },
+          "per_scenario": {
+            "ophthalmic_systemic_beta_blocker": {
+              "n": 11,
+              "localised": 11,
+              "explained": 11,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7412,
+                1.0
+              ]
+            },
+            "anticoagulant_nsaid_bleeding": {
+              "n": 10,
+              "localised": 9,
+              "explained": 9,
+              "miss": 1,
+              "detection_rate": 0.9,
+              "ci95": [
+                0.5958,
+                0.9821
+              ]
+            },
+            "beta_blocker_respiratory": {
+              "n": 8,
+              "localised": 8,
+              "explained": 8,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6756,
+                1.0
+              ]
+            },
+            "carbamazepine_warfarin": {
+              "n": 8,
+              "localised": 8,
+              "explained": 8,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6756,
+                1.0
+              ]
+            },
+            "methotrexate_nsaid_renal": {
+              "n": 8,
+              "localised": 8,
+              "explained": 8,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6756,
+                1.0
+              ]
+            },
+            "triple_whammy_aki": {
+              "n": 8,
+              "localised": 8,
+              "explained": 8,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6756,
+                1.0
+              ]
+            },
+            "metformin_renal_failure": {
+              "n": 3,
+              "localised": 3,
+              "explained": 3,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.4385,
+                1.0
+              ]
+            },
+            "warfarin_dental_extraction": {
+              "n": 4,
+              "localised": 4,
+              "explained": 4,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.5101,
+                1.0
+              ]
+            },
+            "thyroid_cardiac_connection": {
+              "n": 16,
+              "localised": 16,
+              "explained": 16,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.8064,
+                1.0
+              ]
+            },
+            "ckd_progression": {
+              "n": 15,
+              "localised": 15,
+              "explained": 15,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7961,
+                1.0
+              ]
+            },
+            "undiagnosed_diabetes": {
+              "n": 9,
+              "localised": 9,
+              "explained": 9,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7008,
+                1.0
+              ]
+            }
+          },
+          "per_negative": {
+            "metformin_normal_renal": {
+              "n": 4,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "discontinued_nsaid_on_warfarin": {
+              "n": 8,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "carbamazepine_alone": {
+              "n": 7,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "ace_diuretic_no_nsaid": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "resolved_ckd_normal_function": {
+              "n": 4,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "methotrexate_with_folate": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "warfarin_paracetamol_safe": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "warfarin_dental_checkup_no_procedure": {
+              "n": 1,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "cardioselective_bb_no_airway_disease": {
+              "n": 1,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            }
+          },
+          "by_record_quality": {
+            "contradiction": {
+              "k": 12,
+              "n": 13,
+              "rate": 0.9231,
+              "ci95": [
+                0.6669,
+                0.9863
+              ]
+            },
+            "stale_medication": {
+              "k": 20,
+              "n": 20,
+              "rate": 1.0,
+              "ci95": [
+                0.8389,
+                1.0
+              ]
+            },
+            "resolved_diagnosis": {
+              "k": 14,
+              "n": 14,
+              "rate": 1.0,
+              "ci95": [
+                0.7847,
+                1.0
+              ]
+            },
+            "duplicate_entry": {
+              "k": 8,
+              "n": 8,
+              "rate": 1.0,
+              "ci95": [
+                0.6756,
+                1.0
+              ]
+            },
+            "clean_record": {
+              "k": 55,
+              "n": 55,
+              "rate": 1.0,
+              "ci95": [
+                0.9347,
+                1.0
+              ]
+            },
+            "note_only_limb": {
+              "k": 6,
+              "n": 7,
+              "rate": 0.8571,
+              "ci95": [
+                0.4869,
+                0.9743
+              ]
+            }
+          },
+          "heldout_split": {
+            "heldout": {
+              "n": 0,
+              "miss": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "flagged_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "localised_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "explained": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              }
+            },
+            "development": {
+              "n": 100,
+              "miss": {
+                "k": 1,
+                "n": 100,
+                "rate": 0.01,
+                "ci95": [
+                  0.0018,
+                  0.0545
+                ]
+              },
+              "flagged_or_better": {
+                "k": 99,
+                "n": 100,
+                "rate": 0.99,
+                "ci95": [
+                  0.9455,
+                  0.9982
+                ]
+              },
+              "localised_or_better": {
+                "k": 99,
+                "n": 100,
+                "rate": 0.99,
+                "ci95": [
+                  0.9455,
+                  0.9982
+                ]
+              },
+              "explained": {
+                "k": 99,
+                "n": 100,
+                "rate": 0.99,
+                "ci95": [
+                  0.9455,
+                  0.9982
+                ]
+              }
+            }
+          },
+          "latency_seconds": {
+            "mean": 0.0015,
+            "std": 0.0013,
+            "min": 0.001,
+            "max": 0.019,
+            "n": 230,
+            "p50": 0.001,
+            "p90": 0.002,
+            "p95": 0.002,
+            "p99": 0.002
+          },
+          "legacy_loose_criterion": {
+            "note": "R0 criterion: any actionable alert counts as a detection, with no check that it matches the planted finding.",
+            "conflict_detection": {
+              "k": 59,
+              "n": 60,
+              "rate": 0.9833,
+              "ci95": [
+                0.9114,
+                0.9971
+              ]
+            },
+            "pattern_detection": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "all_positives": {
+              "k": 99,
+              "n": 100,
+              "rate": 0.99,
+              "ci95": [
+                0.9455,
+                0.9982
+              ]
+            }
+          }
+        }
+      ],
+      "across_runs": {
+        "conflict_detection/localised_or_better/rate": {
+          "mean": 0.9967,
+          "std": 0.0075,
+          "min": 0.9833,
+          "max": 1.0,
+          "n": 5
+        },
+        "conflict_detection/explained/rate": {
+          "mean": 0.9967,
+          "std": 0.0075,
+          "min": 0.9833,
+          "max": 1.0,
+          "n": 5
+        },
+        "pattern_detection/localised_or_better/rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n": 5
+        },
+        "pattern_detection/explained/rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n": 5
+        },
+        "false_alarms/matched_negatives/rate": {
+          "mean": 0.0135,
+          "std": 0.0203,
+          "min": 0.0,
+          "max": 0.0455,
+          "n": 5
+        },
+        "false_alarms/clean_controls/rate": {
+          "mean": 0.0051,
+          "std": 0.0114,
+          "min": 0.0,
+          "max": 0.0256,
+          "n": 5
+        },
+        "classification/precision": {
+          "mean": 0.9902,
+          "std": 0.0098,
+          "min": 0.9804,
+          "max": 1.0,
+          "n": 5
+        },
+        "classification/recall": {
+          "mean": 0.998,
+          "std": 0.0045,
+          "min": 0.99,
+          "max": 1.0,
+          "n": 5
+        },
+        "classification/f1": {
+          "mean": 0.994,
+          "std": 0.0041,
+          "min": 0.9901,
+          "max": 1.0,
+          "n": 5
+        },
+        "classification/specificity": {
+          "mean": 0.9919,
+          "std": 0.0081,
+          "min": 0.9836,
+          "max": 1.0,
+          "n": 5
+        },
+        "latency_seconds/mean": {
+          "mean": 0.0016,
+          "std": 0.0001,
+          "min": 0.0015,
+          "max": 0.0017,
+          "n": 5
+        }
+      },
+      "pooled": {
+        "conflict_detection/localised_or_better": {
+          "k": 299,
+          "n": 300,
+          "rate": 0.9967,
+          "ci95": [
+            0.9814,
+            0.9994
+          ]
+        },
+        "pattern_detection/localised_or_better": {
+          "k": 200,
+          "n": 200,
+          "rate": 1.0,
+          "ci95": [
+            0.9812,
+            1.0
+          ]
+        },
+        "false_alarms/matched_negatives": {
+          "k": 3,
+          "n": 221,
+          "rate": 0.0136,
+          "ci95": [
+            0.0046,
+            0.0391
+          ]
+        },
+        "false_alarms/clean_controls": {
+          "k": 2,
+          "n": 394,
+          "rate": 0.0051,
+          "ci95": [
+            0.0014,
+            0.0183
+          ]
+        },
+        "classification": {
+          "tp": 499,
+          "fp": 5,
+          "tn": 610,
+          "fn": 1,
+          "precision": {
+            "k": 499,
+            "n": 504,
+            "rate": 0.9901,
+            "ci95": [
+              0.977,
+              0.9958
+            ]
+          },
+          "recall": {
+            "k": 499,
+            "n": 500,
+            "rate": 0.998,
+            "ci95": [
+              0.9888,
+              0.9996
+            ]
+          },
+          "specificity": {
+            "k": 610,
+            "n": 615,
+            "rate": 0.9919,
+            "ci95": [
+              0.9811,
+              0.9965
+            ]
+          },
+          "f1": 0.994
+        }
+      }
+    },
+    "heldout_family": {
+      "per_run": [
+        {
+          "n_scenarios": 236,
+          "cohort_counts": {
+            "conflict": 60,
+            "pattern": 40,
+            "matched_negative": 46,
+            "clean_control": 80,
+            "ambiguous": 10
+          },
+          "conflict_detection": {
+            "n": 60,
+            "miss": {
+              "k": 2,
+              "n": 60,
+              "rate": 0.0333,
+              "ci95": [
+                0.0092,
+                0.1136
+              ]
+            },
+            "flagged_or_better": {
+              "k": 58,
+              "n": 60,
+              "rate": 0.9667,
+              "ci95": [
+                0.8864,
+                0.9908
+              ]
+            },
+            "localised_or_better": {
+              "k": 57,
+              "n": 60,
+              "rate": 0.95,
+              "ci95": [
+                0.863,
+                0.9829
+              ]
+            },
+            "explained": {
+              "k": 57,
+              "n": 60,
+              "rate": 0.95,
+              "ci95": [
+                0.863,
+                0.9829
+              ]
+            }
+          },
+          "pattern_detection": {
+            "n": 40,
+            "miss": {
+              "k": 0,
+              "n": 40,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0876
+              ]
+            },
+            "flagged_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "localised_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "explained": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            }
+          },
+          "false_alarms": {
+            "matched_negatives": {
+              "k": 1,
+              "n": 46,
+              "rate": 0.0217,
+              "ci95": [
+                0.0038,
+                0.1134
+              ]
+            },
+            "clean_controls": {
+              "k": 0,
+              "n": 80,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0458
+              ]
+            },
+            "all_negatives": {
+              "k": 1,
+              "n": 126,
+              "rate": 0.0079,
+              "ci95": [
+                0.0014,
+                0.0436
+              ]
+            }
+          },
+          "ambiguous_alert_rate": {
+            "k": 2,
+            "n": 10,
+            "rate": 0.2,
+            "ci95": [
+              0.0567,
+              0.5098
+            ]
+          },
+          "classification": {
+            "tp": 97,
+            "fp": 1,
+            "tn": 125,
+            "fn": 3,
+            "precision": 0.9898,
+            "recall": 0.97,
+            "f1": 0.9798,
+            "specificity": 0.9921,
+            "criterion": "true positive requires localised-or-better match to the planted finding; any actionable alert on a negative is a false positive"
+          },
+          "per_scenario": {
+            "ssri_nsaid_gi_bleed": {
+              "n": 10,
+              "localised": 10,
+              "explained": 10,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7225,
+                1.0
+              ]
+            },
+            "digoxin_amiodarone_toxicity": {
+              "n": 19,
+              "localised": 17,
+              "explained": 17,
+              "miss": 1,
+              "detection_rate": 0.8947,
+              "ci95": [
+                0.6861,
+                0.9706
+              ]
+            },
+            "statin_macrolide_rhabdo": {
+              "n": 8,
+              "localised": 8,
+              "explained": 8,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6756,
+                1.0
+              ]
+            },
+            "levothyroxine_calcium_absorption": {
+              "n": 4,
+              "localised": 4,
+              "explained": 4,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.5101,
+                1.0
+              ]
+            },
+            "allopurinol_azathioprine_marrow": {
+              "n": 7,
+              "localised": 7,
+              "explained": 7,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6457,
+                1.0
+              ]
+            },
+            "potassium_sparing_ace_hyperkalaemia": {
+              "n": 12,
+              "localised": 11,
+              "explained": 11,
+              "miss": 1,
+              "detection_rate": 0.9167,
+              "ci95": [
+                0.6461,
+                0.9851
+              ]
+            },
+            "occult_gi_blood_loss": {
+              "n": 8,
+              "localised": 8,
+              "explained": 8,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6756,
+                1.0
+              ]
+            },
+            "drug_induced_liver_injury": {
+              "n": 15,
+              "localised": 15,
+              "explained": 15,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7961,
+                1.0
+              ]
+            },
+            "heart_failure_decompensation": {
+              "n": 17,
+              "localised": 17,
+              "explained": 17,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.8157,
+                1.0
+              ]
+            }
+          },
+          "per_negative": {
+            "warfarin_dental_checkup_no_procedure": {
+              "n": 4,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "methotrexate_with_folate": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "cardioselective_bb_no_airway_disease": {
+              "n": 3,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "resolved_ckd_normal_function": {
+              "n": 8,
+              "false_alarms": 1,
+              "false_alarm_rate": 0.125
+            },
+            "metformin_normal_renal": {
+              "n": 8,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "warfarin_paracetamol_safe": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "carbamazepine_alone": {
+              "n": 9,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "discontinued_nsaid_on_warfarin": {
+              "n": 3,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "ace_diuretic_no_nsaid": {
+              "n": 1,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            }
+          },
+          "by_record_quality": {
+            "contradiction": {
+              "k": 8,
+              "n": 9,
+              "rate": 0.8889,
+              "ci95": [
+                0.565,
+                0.9801
+              ]
+            },
+            "stale_medication": {
+              "k": 18,
+              "n": 19,
+              "rate": 0.9474,
+              "ci95": [
+                0.7536,
+                0.9906
+              ]
+            },
+            "resolved_diagnosis": {
+              "k": 17,
+              "n": 17,
+              "rate": 1.0,
+              "ci95": [
+                0.8157,
+                1.0
+              ]
+            },
+            "duplicate_entry": {
+              "k": 3,
+              "n": 3,
+              "rate": 1.0,
+              "ci95": [
+                0.4385,
+                1.0
+              ]
+            },
+            "clean_record": {
+              "k": 60,
+              "n": 61,
+              "rate": 0.9836,
+              "ci95": [
+                0.9128,
+                0.9971
+              ]
+            },
+            "note_only_limb": {
+              "k": 4,
+              "n": 7,
+              "rate": 0.5714,
+              "ci95": [
+                0.2505,
+                0.8418
+              ]
+            }
+          },
+          "heldout_split": {
+            "heldout": {
+              "n": 100,
+              "miss": {
+                "k": 2,
+                "n": 100,
+                "rate": 0.02,
+                "ci95": [
+                  0.0055,
+                  0.07
+                ]
+              },
+              "flagged_or_better": {
+                "k": 98,
+                "n": 100,
+                "rate": 0.98,
+                "ci95": [
+                  0.93,
+                  0.9945
+                ]
+              },
+              "localised_or_better": {
+                "k": 97,
+                "n": 100,
+                "rate": 0.97,
+                "ci95": [
+                  0.9155,
+                  0.9897
+                ]
+              },
+              "explained": {
+                "k": 97,
+                "n": 100,
+                "rate": 0.97,
+                "ci95": [
+                  0.9155,
+                  0.9897
+                ]
+              }
+            },
+            "development": {
+              "n": 0,
+              "miss": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "flagged_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "localised_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "explained": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              }
+            }
+          },
+          "latency_seconds": {
+            "mean": 0.0016,
+            "std": 0.001,
+            "min": 0.001,
+            "max": 0.014,
+            "n": 236,
+            "p50": 0.001,
+            "p90": 0.002,
+            "p95": 0.002,
+            "p99": 0.002
+          },
+          "legacy_loose_criterion": {
+            "note": "R0 criterion: any actionable alert counts as a detection, with no check that it matches the planted finding.",
+            "conflict_detection": {
+              "k": 58,
+              "n": 60,
+              "rate": 0.9667,
+              "ci95": [
+                0.8864,
+                0.9908
+              ]
+            },
+            "pattern_detection": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "all_positives": {
+              "k": 98,
+              "n": 100,
+              "rate": 0.98,
+              "ci95": [
+                0.93,
+                0.9945
+              ]
+            }
+          }
+        },
+        {
+          "n_scenarios": 231,
+          "cohort_counts": {
+            "conflict": 60,
+            "pattern": 40,
+            "matched_negative": 45,
+            "clean_control": 76,
+            "ambiguous": 10
+          },
+          "conflict_detection": {
+            "n": 60,
+            "miss": {
+              "k": 8,
+              "n": 60,
+              "rate": 0.1333,
+              "ci95": [
+                0.0691,
+                0.2417
+              ]
+            },
+            "flagged_or_better": {
+              "k": 52,
+              "n": 60,
+              "rate": 0.8667,
+              "ci95": [
+                0.7583,
+                0.9309
+              ]
+            },
+            "localised_or_better": {
+              "k": 52,
+              "n": 60,
+              "rate": 0.8667,
+              "ci95": [
+                0.7583,
+                0.9309
+              ]
+            },
+            "explained": {
+              "k": 52,
+              "n": 60,
+              "rate": 0.8667,
+              "ci95": [
+                0.7583,
+                0.9309
+              ]
+            }
+          },
+          "pattern_detection": {
+            "n": 40,
+            "miss": {
+              "k": 0,
+              "n": 40,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0876
+              ]
+            },
+            "flagged_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "localised_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "explained": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            }
+          },
+          "false_alarms": {
+            "matched_negatives": {
+              "k": 0,
+              "n": 45,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0787
+              ]
+            },
+            "clean_controls": {
+              "k": 0,
+              "n": 76,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0481
+              ]
+            },
+            "all_negatives": {
+              "k": 0,
+              "n": 121,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0308
+              ]
+            }
+          },
+          "ambiguous_alert_rate": {
+            "k": 3,
+            "n": 10,
+            "rate": 0.3,
+            "ci95": [
+              0.1078,
+              0.6032
+            ]
+          },
+          "classification": {
+            "tp": 92,
+            "fp": 0,
+            "tn": 121,
+            "fn": 8,
+            "precision": 1.0,
+            "recall": 0.92,
+            "f1": 0.9583,
+            "specificity": 1.0,
+            "criterion": "true positive requires localised-or-better match to the planted finding; any actionable alert on a negative is a false positive"
+          },
+          "per_scenario": {
+            "allopurinol_azathioprine_marrow": {
+              "n": 14,
+              "localised": 12,
+              "explained": 12,
+              "miss": 2,
+              "detection_rate": 0.8571,
+              "ci95": [
+                0.6006,
+                0.9599
+              ]
+            },
+            "potassium_sparing_ace_hyperkalaemia": {
+              "n": 7,
+              "localised": 7,
+              "explained": 7,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6457,
+                1.0
+              ]
+            },
+            "ssri_nsaid_gi_bleed": {
+              "n": 11,
+              "localised": 9,
+              "explained": 9,
+              "miss": 2,
+              "detection_rate": 0.8182,
+              "ci95": [
+                0.523,
+                0.9486
+              ]
+            },
+            "digoxin_amiodarone_toxicity": {
+              "n": 15,
+              "localised": 13,
+              "explained": 13,
+              "miss": 2,
+              "detection_rate": 0.8667,
+              "ci95": [
+                0.6212,
+                0.9626
+              ]
+            },
+            "statin_macrolide_rhabdo": {
+              "n": 9,
+              "localised": 8,
+              "explained": 8,
+              "miss": 1,
+              "detection_rate": 0.8889,
+              "ci95": [
+                0.565,
+                0.9801
+              ]
+            },
+            "levothyroxine_calcium_absorption": {
+              "n": 4,
+              "localised": 3,
+              "explained": 3,
+              "miss": 1,
+              "detection_rate": 0.75,
+              "ci95": [
+                0.3006,
+                0.9544
+              ]
+            },
+            "heart_failure_decompensation": {
+              "n": 16,
+              "localised": 16,
+              "explained": 16,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.8064,
+                1.0
+              ]
+            },
+            "occult_gi_blood_loss": {
+              "n": 12,
+              "localised": 12,
+              "explained": 12,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7575,
+                1.0
+              ]
+            },
+            "drug_induced_liver_injury": {
+              "n": 12,
+              "localised": 12,
+              "explained": 12,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7575,
+                1.0
+              ]
+            }
+          },
+          "per_negative": {
+            "methotrexate_with_folate": {
+              "n": 6,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "cardioselective_bb_no_airway_disease": {
+              "n": 7,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "warfarin_dental_checkup_no_procedure": {
+              "n": 7,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "metformin_normal_renal": {
+              "n": 4,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "discontinued_nsaid_on_warfarin": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "ace_diuretic_no_nsaid": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "resolved_ckd_normal_function": {
+              "n": 7,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "carbamazepine_alone": {
+              "n": 3,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "warfarin_paracetamol_safe": {
+              "n": 1,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            }
+          },
+          "by_record_quality": {
+            "contradiction": {
+              "k": 15,
+              "n": 16,
+              "rate": 0.9375,
+              "ci95": [
+                0.7167,
+                0.9889
+              ]
+            },
+            "stale_medication": {
+              "k": 14,
+              "n": 14,
+              "rate": 1.0,
+              "ci95": [
+                0.7847,
+                1.0
+              ]
+            },
+            "resolved_diagnosis": {
+              "k": 14,
+              "n": 15,
+              "rate": 0.9333,
+              "ci95": [
+                0.7018,
+                0.9881
+              ]
+            },
+            "duplicate_entry": {
+              "k": 6,
+              "n": 6,
+              "rate": 1.0,
+              "ci95": [
+                0.6097,
+                1.0
+              ]
+            },
+            "clean_record": {
+              "k": 54,
+              "n": 60,
+              "rate": 0.9,
+              "ci95": [
+                0.7985,
+                0.9534
+              ]
+            },
+            "note_only_limb": {
+              "k": 7,
+              "n": 15,
+              "rate": 0.4667,
+              "ci95": [
+                0.2481,
+                0.6988
+              ]
+            }
+          },
+          "heldout_split": {
+            "heldout": {
+              "n": 100,
+              "miss": {
+                "k": 8,
+                "n": 100,
+                "rate": 0.08,
+                "ci95": [
+                  0.0411,
+                  0.15
+                ]
+              },
+              "flagged_or_better": {
+                "k": 92,
+                "n": 100,
+                "rate": 0.92,
+                "ci95": [
+                  0.85,
+                  0.9589
+                ]
+              },
+              "localised_or_better": {
+                "k": 92,
+                "n": 100,
+                "rate": 0.92,
+                "ci95": [
+                  0.85,
+                  0.9589
+                ]
+              },
+              "explained": {
+                "k": 92,
+                "n": 100,
+                "rate": 0.92,
+                "ci95": [
+                  0.85,
+                  0.9589
+                ]
+              }
+            },
+            "development": {
+              "n": 0,
+              "miss": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "flagged_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "localised_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "explained": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              }
+            }
+          },
+          "latency_seconds": {
+            "mean": 0.0016,
+            "std": 0.0013,
+            "min": 0.001,
+            "max": 0.02,
+            "n": 231,
+            "p50": 0.001,
+            "p90": 0.002,
+            "p95": 0.002,
+            "p99": 0.002
+          },
+          "legacy_loose_criterion": {
+            "note": "R0 criterion: any actionable alert counts as a detection, with no check that it matches the planted finding.",
+            "conflict_detection": {
+              "k": 52,
+              "n": 60,
+              "rate": 0.8667,
+              "ci95": [
+                0.7583,
+                0.9309
+              ]
+            },
+            "pattern_detection": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "all_positives": {
+              "k": 92,
+              "n": 100,
+              "rate": 0.92,
+              "ci95": [
+                0.85,
+                0.9589
+              ]
+            }
+          }
+        },
+        {
+          "n_scenarios": 236,
+          "cohort_counts": {
+            "conflict": 60,
+            "pattern": 40,
+            "matched_negative": 46,
+            "clean_control": 80,
+            "ambiguous": 10
+          },
+          "conflict_detection": {
+            "n": 60,
+            "miss": {
+              "k": 6,
+              "n": 60,
+              "rate": 0.1,
+              "ci95": [
+                0.0466,
+                0.2015
+              ]
+            },
+            "flagged_or_better": {
+              "k": 54,
+              "n": 60,
+              "rate": 0.9,
+              "ci95": [
+                0.7985,
+                0.9534
+              ]
+            },
+            "localised_or_better": {
+              "k": 52,
+              "n": 60,
+              "rate": 0.8667,
+              "ci95": [
+                0.7583,
+                0.9309
+              ]
+            },
+            "explained": {
+              "k": 52,
+              "n": 60,
+              "rate": 0.8667,
+              "ci95": [
+                0.7583,
+                0.9309
+              ]
+            }
+          },
+          "pattern_detection": {
+            "n": 40,
+            "miss": {
+              "k": 0,
+              "n": 40,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0876
+              ]
+            },
+            "flagged_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "localised_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "explained": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            }
+          },
+          "false_alarms": {
+            "matched_negatives": {
+              "k": 1,
+              "n": 46,
+              "rate": 0.0217,
+              "ci95": [
+                0.0038,
+                0.1134
+              ]
+            },
+            "clean_controls": {
+              "k": 0,
+              "n": 80,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0458
+              ]
+            },
+            "all_negatives": {
+              "k": 1,
+              "n": 126,
+              "rate": 0.0079,
+              "ci95": [
+                0.0014,
+                0.0436
+              ]
+            }
+          },
+          "ambiguous_alert_rate": {
+            "k": 1,
+            "n": 10,
+            "rate": 0.1,
+            "ci95": [
+              0.0179,
+              0.4042
+            ]
+          },
+          "classification": {
+            "tp": 92,
+            "fp": 1,
+            "tn": 125,
+            "fn": 8,
+            "precision": 0.9892,
+            "recall": 0.92,
+            "f1": 0.9534,
+            "specificity": 0.9921,
+            "criterion": "true positive requires localised-or-better match to the planted finding; any actionable alert on a negative is a false positive"
+          },
+          "per_scenario": {
+            "potassium_sparing_ace_hyperkalaemia": {
+              "n": 9,
+              "localised": 8,
+              "explained": 8,
+              "miss": 1,
+              "detection_rate": 0.8889,
+              "ci95": [
+                0.565,
+                0.9801
+              ]
+            },
+            "ssri_nsaid_gi_bleed": {
+              "n": 10,
+              "localised": 10,
+              "explained": 10,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7225,
+                1.0
+              ]
+            },
+            "allopurinol_azathioprine_marrow": {
+              "n": 11,
+              "localised": 11,
+              "explained": 11,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7412,
+                1.0
+              ]
+            },
+            "digoxin_amiodarone_toxicity": {
+              "n": 15,
+              "localised": 11,
+              "explained": 11,
+              "miss": 3,
+              "detection_rate": 0.7333,
+              "ci95": [
+                0.4805,
+                0.891
+              ]
+            },
+            "levothyroxine_calcium_absorption": {
+              "n": 9,
+              "localised": 6,
+              "explained": 6,
+              "miss": 2,
+              "detection_rate": 0.6667,
+              "ci95": [
+                0.3542,
+                0.8794
+              ]
+            },
+            "statin_macrolide_rhabdo": {
+              "n": 6,
+              "localised": 6,
+              "explained": 6,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6097,
+                1.0
+              ]
+            },
+            "drug_induced_liver_injury": {
+              "n": 15,
+              "localised": 15,
+              "explained": 15,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7961,
+                1.0
+              ]
+            },
+            "occult_gi_blood_loss": {
+              "n": 10,
+              "localised": 10,
+              "explained": 10,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7225,
+                1.0
+              ]
+            },
+            "heart_failure_decompensation": {
+              "n": 15,
+              "localised": 15,
+              "explained": 15,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7961,
+                1.0
+              ]
+            }
+          },
+          "per_negative": {
+            "warfarin_paracetamol_safe": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "cardioselective_bb_no_airway_disease": {
+              "n": 7,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "resolved_ckd_normal_function": {
+              "n": 4,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "warfarin_dental_checkup_no_procedure": {
+              "n": 7,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "metformin_normal_renal": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "discontinued_nsaid_on_warfarin": {
+              "n": 4,
+              "false_alarms": 1,
+              "false_alarm_rate": 0.25
+            },
+            "methotrexate_with_folate": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "carbamazepine_alone": {
+              "n": 6,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "ace_diuretic_no_nsaid": {
+              "n": 3,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            }
+          },
+          "by_record_quality": {
+            "contradiction": {
+              "k": 5,
+              "n": 6,
+              "rate": 0.8333,
+              "ci95": [
+                0.4365,
+                0.9699
+              ]
+            },
+            "stale_medication": {
+              "k": 14,
+              "n": 16,
+              "rate": 0.875,
+              "ci95": [
+                0.6398,
+                0.965
+              ]
+            },
+            "resolved_diagnosis": {
+              "k": 17,
+              "n": 18,
+              "rate": 0.9444,
+              "ci95": [
+                0.7424,
+                0.9901
+              ]
+            },
+            "duplicate_entry": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "ci95": [
+                0.5101,
+                1.0
+              ]
+            },
+            "clean_record": {
+              "k": 59,
+              "n": 63,
+              "rate": 0.9365,
+              "ci95": [
+                0.8478,
+                0.975
+              ]
+            },
+            "note_only_limb": {
+              "k": 3,
+              "n": 11,
+              "rate": 0.2727,
+              "ci95": [
+                0.0975,
+                0.5657
+              ]
+            }
+          },
+          "heldout_split": {
+            "heldout": {
+              "n": 100,
+              "miss": {
+                "k": 6,
+                "n": 100,
+                "rate": 0.06,
+                "ci95": [
+                  0.0278,
+                  0.1248
+                ]
+              },
+              "flagged_or_better": {
+                "k": 94,
+                "n": 100,
+                "rate": 0.94,
+                "ci95": [
+                  0.8752,
+                  0.9722
+                ]
+              },
+              "localised_or_better": {
+                "k": 92,
+                "n": 100,
+                "rate": 0.92,
+                "ci95": [
+                  0.85,
+                  0.9589
+                ]
+              },
+              "explained": {
+                "k": 92,
+                "n": 100,
+                "rate": 0.92,
+                "ci95": [
+                  0.85,
+                  0.9589
+                ]
+              }
+            },
+            "development": {
+              "n": 0,
+              "miss": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "flagged_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "localised_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "explained": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              }
+            }
+          },
+          "latency_seconds": {
+            "mean": 0.0015,
+            "std": 0.0012,
+            "min": 0.001,
+            "max": 0.018,
+            "n": 236,
+            "p50": 0.001,
+            "p90": 0.002,
+            "p95": 0.002,
+            "p99": 0.002
+          },
+          "legacy_loose_criterion": {
+            "note": "R0 criterion: any actionable alert counts as a detection, with no check that it matches the planted finding.",
+            "conflict_detection": {
+              "k": 54,
+              "n": 60,
+              "rate": 0.9,
+              "ci95": [
+                0.7985,
+                0.9534
+              ]
+            },
+            "pattern_detection": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "all_positives": {
+              "k": 94,
+              "n": 100,
+              "rate": 0.94,
+              "ci95": [
+                0.8752,
+                0.9722
+              ]
+            }
+          }
+        },
+        {
+          "n_scenarios": 232,
+          "cohort_counts": {
+            "conflict": 60,
+            "pattern": 40,
+            "matched_negative": 42,
+            "clean_control": 80,
+            "ambiguous": 10
+          },
+          "conflict_detection": {
+            "n": 60,
+            "miss": {
+              "k": 8,
+              "n": 60,
+              "rate": 0.1333,
+              "ci95": [
+                0.0691,
+                0.2417
+              ]
+            },
+            "flagged_or_better": {
+              "k": 52,
+              "n": 60,
+              "rate": 0.8667,
+              "ci95": [
+                0.7583,
+                0.9309
+              ]
+            },
+            "localised_or_better": {
+              "k": 52,
+              "n": 60,
+              "rate": 0.8667,
+              "ci95": [
+                0.7583,
+                0.9309
+              ]
+            },
+            "explained": {
+              "k": 52,
+              "n": 60,
+              "rate": 0.8667,
+              "ci95": [
+                0.7583,
+                0.9309
+              ]
+            }
+          },
+          "pattern_detection": {
+            "n": 40,
+            "miss": {
+              "k": 0,
+              "n": 40,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0876
+              ]
+            },
+            "flagged_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "localised_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "explained": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            }
+          },
+          "false_alarms": {
+            "matched_negatives": {
+              "k": 0,
+              "n": 42,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0838
+              ]
+            },
+            "clean_controls": {
+              "k": 2,
+              "n": 80,
+              "rate": 0.025,
+              "ci95": [
+                0.0069,
+                0.0866
+              ]
+            },
+            "all_negatives": {
+              "k": 2,
+              "n": 122,
+              "rate": 0.0164,
+              "ci95": [
+                0.0045,
+                0.0578
+              ]
+            }
+          },
+          "ambiguous_alert_rate": {
+            "k": 3,
+            "n": 10,
+            "rate": 0.3,
+            "ci95": [
+              0.1078,
+              0.6032
+            ]
+          },
+          "classification": {
+            "tp": 92,
+            "fp": 2,
+            "tn": 120,
+            "fn": 8,
+            "precision": 0.9787,
+            "recall": 0.92,
+            "f1": 0.9485,
+            "specificity": 0.9836,
+            "criterion": "true positive requires localised-or-better match to the planted finding; any actionable alert on a negative is a false positive"
+          },
+          "per_scenario": {
+            "levothyroxine_calcium_absorption": {
+              "n": 9,
+              "localised": 8,
+              "explained": 8,
+              "miss": 1,
+              "detection_rate": 0.8889,
+              "ci95": [
+                0.565,
+                0.9801
+              ]
+            },
+            "potassium_sparing_ace_hyperkalaemia": {
+              "n": 7,
+              "localised": 6,
+              "explained": 6,
+              "miss": 1,
+              "detection_rate": 0.8571,
+              "ci95": [
+                0.4869,
+                0.9743
+              ]
+            },
+            "statin_macrolide_rhabdo": {
+              "n": 10,
+              "localised": 10,
+              "explained": 10,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7225,
+                1.0
+              ]
+            },
+            "allopurinol_azathioprine_marrow": {
+              "n": 11,
+              "localised": 11,
+              "explained": 11,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7412,
+                1.0
+              ]
+            },
+            "digoxin_amiodarone_toxicity": {
+              "n": 15,
+              "localised": 11,
+              "explained": 11,
+              "miss": 4,
+              "detection_rate": 0.7333,
+              "ci95": [
+                0.4805,
+                0.891
+              ]
+            },
+            "ssri_nsaid_gi_bleed": {
+              "n": 8,
+              "localised": 6,
+              "explained": 6,
+              "miss": 2,
+              "detection_rate": 0.75,
+              "ci95": [
+                0.4093,
+                0.9285
+              ]
+            },
+            "drug_induced_liver_injury": {
+              "n": 8,
+              "localised": 8,
+              "explained": 8,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6756,
+                1.0
+              ]
+            },
+            "heart_failure_decompensation": {
+              "n": 20,
+              "localised": 20,
+              "explained": 20,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.8389,
+                1.0
+              ]
+            },
+            "occult_gi_blood_loss": {
+              "n": 12,
+              "localised": 12,
+              "explained": 12,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7575,
+                1.0
+              ]
+            }
+          },
+          "per_negative": {
+            "discontinued_nsaid_on_warfarin": {
+              "n": 4,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "resolved_ckd_normal_function": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "methotrexate_with_folate": {
+              "n": 6,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "warfarin_paracetamol_safe": {
+              "n": 4,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "cardioselective_bb_no_airway_disease": {
+              "n": 4,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "ace_diuretic_no_nsaid": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "metformin_normal_renal": {
+              "n": 1,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "warfarin_dental_checkup_no_procedure": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "carbamazepine_alone": {
+              "n": 8,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            }
+          },
+          "by_record_quality": {
+            "contradiction": {
+              "k": 9,
+              "n": 10,
+              "rate": 0.9,
+              "ci95": [
+                0.5958,
+                0.9821
+              ]
+            },
+            "stale_medication": {
+              "k": 18,
+              "n": 19,
+              "rate": 0.9474,
+              "ci95": [
+                0.7536,
+                0.9906
+              ]
+            },
+            "resolved_diagnosis": {
+              "k": 16,
+              "n": 16,
+              "rate": 1.0,
+              "ci95": [
+                0.8064,
+                1.0
+              ]
+            },
+            "duplicate_entry": {
+              "k": 5,
+              "n": 5,
+              "rate": 1.0,
+              "ci95": [
+                0.5655,
+                1.0
+              ]
+            },
+            "clean_record": {
+              "k": 52,
+              "n": 58,
+              "rate": 0.8966,
+              "ci95": [
+                0.7921,
+                0.9517
+              ]
+            },
+            "note_only_limb": {
+              "k": 7,
+              "n": 15,
+              "rate": 0.4667,
+              "ci95": [
+                0.2481,
+                0.6988
+              ]
+            }
+          },
+          "heldout_split": {
+            "heldout": {
+              "n": 100,
+              "miss": {
+                "k": 8,
+                "n": 100,
+                "rate": 0.08,
+                "ci95": [
+                  0.0411,
+                  0.15
+                ]
+              },
+              "flagged_or_better": {
+                "k": 92,
+                "n": 100,
+                "rate": 0.92,
+                "ci95": [
+                  0.85,
+                  0.9589
+                ]
+              },
+              "localised_or_better": {
+                "k": 92,
+                "n": 100,
+                "rate": 0.92,
+                "ci95": [
+                  0.85,
+                  0.9589
+                ]
+              },
+              "explained": {
+                "k": 92,
+                "n": 100,
+                "rate": 0.92,
+                "ci95": [
+                  0.85,
+                  0.9589
+                ]
+              }
+            },
+            "development": {
+              "n": 0,
+              "miss": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "flagged_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "localised_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "explained": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              }
+            }
+          },
+          "latency_seconds": {
+            "mean": 0.0015,
+            "std": 0.0011,
+            "min": 0.001,
+            "max": 0.016,
+            "n": 232,
+            "p50": 0.001,
+            "p90": 0.002,
+            "p95": 0.002,
+            "p99": 0.002
+          },
+          "legacy_loose_criterion": {
+            "note": "R0 criterion: any actionable alert counts as a detection, with no check that it matches the planted finding.",
+            "conflict_detection": {
+              "k": 52,
+              "n": 60,
+              "rate": 0.8667,
+              "ci95": [
+                0.7583,
+                0.9309
+              ]
+            },
+            "pattern_detection": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "all_positives": {
+              "k": 92,
+              "n": 100,
+              "rate": 0.92,
+              "ci95": [
+                0.85,
+                0.9589
+              ]
+            }
+          }
+        },
+        {
+          "n_scenarios": 234,
+          "cohort_counts": {
+            "conflict": 60,
+            "pattern": 40,
+            "matched_negative": 44,
+            "clean_control": 80,
+            "ambiguous": 10
+          },
+          "conflict_detection": {
+            "n": 60,
+            "miss": {
+              "k": 2,
+              "n": 60,
+              "rate": 0.0333,
+              "ci95": [
+                0.0092,
+                0.1136
+              ]
+            },
+            "flagged_or_better": {
+              "k": 58,
+              "n": 60,
+              "rate": 0.9667,
+              "ci95": [
+                0.8864,
+                0.9908
+              ]
+            },
+            "localised_or_better": {
+              "k": 57,
+              "n": 60,
+              "rate": 0.95,
+              "ci95": [
+                0.863,
+                0.9829
+              ]
+            },
+            "explained": {
+              "k": 57,
+              "n": 60,
+              "rate": 0.95,
+              "ci95": [
+                0.863,
+                0.9829
+              ]
+            }
+          },
+          "pattern_detection": {
+            "n": 40,
+            "miss": {
+              "k": 0,
+              "n": 40,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0876
+              ]
+            },
+            "flagged_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "localised_or_better": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "explained": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            }
+          },
+          "false_alarms": {
+            "matched_negatives": {
+              "k": 1,
+              "n": 44,
+              "rate": 0.0227,
+              "ci95": [
+                0.004,
+                0.1181
+              ]
+            },
+            "clean_controls": {
+              "k": 0,
+              "n": 80,
+              "rate": 0.0,
+              "ci95": [
+                0.0,
+                0.0458
+              ]
+            },
+            "all_negatives": {
+              "k": 1,
+              "n": 124,
+              "rate": 0.0081,
+              "ci95": [
+                0.0014,
+                0.0443
+              ]
+            }
+          },
+          "ambiguous_alert_rate": {
+            "k": 1,
+            "n": 10,
+            "rate": 0.1,
+            "ci95": [
+              0.0179,
+              0.4042
+            ]
+          },
+          "classification": {
+            "tp": 97,
+            "fp": 1,
+            "tn": 123,
+            "fn": 3,
+            "precision": 0.9898,
+            "recall": 0.97,
+            "f1": 0.9798,
+            "specificity": 0.9919,
+            "criterion": "true positive requires localised-or-better match to the planted finding; any actionable alert on a negative is a false positive"
+          },
+          "per_scenario": {
+            "levothyroxine_calcium_absorption": {
+              "n": 12,
+              "localised": 11,
+              "explained": 11,
+              "miss": 1,
+              "detection_rate": 0.9167,
+              "ci95": [
+                0.6461,
+                0.9851
+              ]
+            },
+            "digoxin_amiodarone_toxicity": {
+              "n": 10,
+              "localised": 9,
+              "explained": 9,
+              "miss": 1,
+              "detection_rate": 0.9,
+              "ci95": [
+                0.5958,
+                0.9821
+              ]
+            },
+            "ssri_nsaid_gi_bleed": {
+              "n": 10,
+              "localised": 9,
+              "explained": 9,
+              "miss": 0,
+              "detection_rate": 0.9,
+              "ci95": [
+                0.5958,
+                0.9821
+              ]
+            },
+            "allopurinol_azathioprine_marrow": {
+              "n": 9,
+              "localised": 9,
+              "explained": 9,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7008,
+                1.0
+              ]
+            },
+            "statin_macrolide_rhabdo": {
+              "n": 9,
+              "localised": 9,
+              "explained": 9,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7008,
+                1.0
+              ]
+            },
+            "potassium_sparing_ace_hyperkalaemia": {
+              "n": 10,
+              "localised": 10,
+              "explained": 10,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7225,
+                1.0
+              ]
+            },
+            "heart_failure_decompensation": {
+              "n": 14,
+              "localised": 14,
+              "explained": 14,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.7847,
+                1.0
+              ]
+            },
+            "occult_gi_blood_loss": {
+              "n": 18,
+              "localised": 18,
+              "explained": 18,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.8241,
+                1.0
+              ]
+            },
+            "drug_induced_liver_injury": {
+              "n": 8,
+              "localised": 8,
+              "explained": 8,
+              "miss": 0,
+              "detection_rate": 1.0,
+              "ci95": [
+                0.6756,
+                1.0
+              ]
+            }
+          },
+          "per_negative": {
+            "resolved_ckd_normal_function": {
+              "n": 7,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "cardioselective_bb_no_airway_disease": {
+              "n": 3,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "warfarin_paracetamol_safe": {
+              "n": 10,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "discontinued_nsaid_on_warfarin": {
+              "n": 7,
+              "false_alarms": 1,
+              "false_alarm_rate": 0.1429
+            },
+            "metformin_normal_renal": {
+              "n": 5,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "carbamazepine_alone": {
+              "n": 4,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "ace_diuretic_no_nsaid": {
+              "n": 4,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "warfarin_dental_checkup_no_procedure": {
+              "n": 2,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            },
+            "methotrexate_with_folate": {
+              "n": 2,
+              "false_alarms": 0,
+              "false_alarm_rate": 0.0
+            }
+          },
+          "by_record_quality": {
+            "contradiction": {
+              "k": 18,
+              "n": 19,
+              "rate": 0.9474,
+              "ci95": [
+                0.7536,
+                0.9906
+              ]
+            },
+            "stale_medication": {
+              "k": 14,
+              "n": 14,
+              "rate": 1.0,
+              "ci95": [
+                0.7847,
+                1.0
+              ]
+            },
+            "resolved_diagnosis": {
+              "k": 15,
+              "n": 16,
+              "rate": 0.9375,
+              "ci95": [
+                0.7167,
+                0.9889
+              ]
+            },
+            "duplicate_entry": {
+              "k": 4,
+              "n": 4,
+              "rate": 1.0,
+              "ci95": [
+                0.5101,
+                1.0
+              ]
+            },
+            "clean_record": {
+              "k": 57,
+              "n": 58,
+              "rate": 0.9828,
+              "ci95": [
+                0.9086,
+                0.997
+              ]
+            },
+            "note_only_limb": {
+              "k": 4,
+              "n": 7,
+              "rate": 0.5714,
+              "ci95": [
+                0.2505,
+                0.8418
+              ]
+            }
+          },
+          "heldout_split": {
+            "heldout": {
+              "n": 100,
+              "miss": {
+                "k": 2,
+                "n": 100,
+                "rate": 0.02,
+                "ci95": [
+                  0.0055,
+                  0.07
+                ]
+              },
+              "flagged_or_better": {
+                "k": 98,
+                "n": 100,
+                "rate": 0.98,
+                "ci95": [
+                  0.93,
+                  0.9945
+                ]
+              },
+              "localised_or_better": {
+                "k": 97,
+                "n": 100,
+                "rate": 0.97,
+                "ci95": [
+                  0.9155,
+                  0.9897
+                ]
+              },
+              "explained": {
+                "k": 97,
+                "n": 100,
+                "rate": 0.97,
+                "ci95": [
+                  0.9155,
+                  0.9897
+                ]
+              }
+            },
+            "development": {
+              "n": 0,
+              "miss": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "flagged_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "localised_or_better": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "explained": {
+                "k": 0,
+                "n": 0,
+                "rate": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              }
+            }
+          },
+          "latency_seconds": {
+            "mean": 0.0015,
+            "std": 0.001,
+            "min": 0.001,
+            "max": 0.015,
+            "n": 234,
+            "p50": 0.001,
+            "p90": 0.002,
+            "p95": 0.002,
+            "p99": 0.002
+          },
+          "legacy_loose_criterion": {
+            "note": "R0 criterion: any actionable alert counts as a detection, with no check that it matches the planted finding.",
+            "conflict_detection": {
+              "k": 58,
+              "n": 60,
+              "rate": 0.9667,
+              "ci95": [
+                0.8864,
+                0.9908
+              ]
+            },
+            "pattern_detection": {
+              "k": 40,
+              "n": 40,
+              "rate": 1.0,
+              "ci95": [
+                0.9124,
+                1.0
+              ]
+            },
+            "all_positives": {
+              "k": 98,
+              "n": 100,
+              "rate": 0.98,
+              "ci95": [
+                0.93,
+                0.9945
+              ]
+            }
+          }
+        }
+      ],
+      "across_runs": {
+        "conflict_detection/localised_or_better/rate": {
+          "mean": 0.9,
+          "std": 0.0456,
+          "min": 0.8667,
+          "max": 0.95,
+          "n": 5
+        },
+        "conflict_detection/explained/rate": {
+          "mean": 0.9,
+          "std": 0.0456,
+          "min": 0.8667,
+          "max": 0.95,
+          "n": 5
+        },
+        "pattern_detection/localised_or_better/rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n": 5
+        },
+        "pattern_detection/explained/rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n": 5
+        },
+        "false_alarms/matched_negatives/rate": {
+          "mean": 0.0132,
+          "std": 0.0121,
+          "min": 0.0,
+          "max": 0.0227,
+          "n": 5
+        },
+        "false_alarms/clean_controls/rate": {
+          "mean": 0.005,
+          "std": 0.0112,
+          "min": 0.0,
+          "max": 0.025,
+          "n": 5
+        },
+        "classification/precision": {
+          "mean": 0.9895,
+          "std": 0.0075,
+          "min": 0.9787,
+          "max": 1.0,
+          "n": 5
+        },
+        "classification/recall": {
+          "mean": 0.94,
+          "std": 0.0274,
+          "min": 0.92,
+          "max": 0.97,
+          "n": 5
+        },
+        "classification/f1": {
+          "mean": 0.964,
+          "std": 0.0149,
+          "min": 0.9485,
+          "max": 0.9798,
+          "n": 5
+        },
+        "classification/specificity": {
+          "mean": 0.9919,
+          "std": 0.0058,
+          "min": 0.9836,
+          "max": 1.0,
+          "n": 5
+        },
+        "latency_seconds/mean": {
+          "mean": 0.0015,
+          "std": 0.0001,
+          "min": 0.0015,
+          "max": 0.0016,
+          "n": 5
+        }
+      },
+      "pooled": {
+        "conflict_detection/localised_or_better": {
+          "k": 270,
+          "n": 300,
+          "rate": 0.9,
+          "ci95": [
+            0.8608,
+            0.9291
+          ]
+        },
+        "pattern_detection/localised_or_better": {
+          "k": 200,
+          "n": 200,
+          "rate": 1.0,
+          "ci95": [
+            0.9812,
+            1.0
+          ]
+        },
+        "false_alarms/matched_negatives": {
+          "k": 3,
+          "n": 223,
+          "rate": 0.0135,
+          "ci95": [
+            0.0046,
+            0.0388
+          ]
+        },
+        "false_alarms/clean_controls": {
+          "k": 2,
+          "n": 396,
+          "rate": 0.0051,
+          "ci95": [
+            0.0014,
+            0.0182
+          ]
+        },
+        "classification": {
+          "tp": 470,
+          "fp": 5,
+          "tn": 614,
+          "fn": 30,
+          "precision": {
+            "k": 470,
+            "n": 475,
+            "rate": 0.9895,
+            "ci95": [
+              0.9756,
+              0.9955
+            ]
+          },
+          "recall": {
+            "k": 470,
+            "n": 500,
+            "rate": 0.94,
+            "ci95": [
+              0.9156,
+              0.9577
+            ]
+          },
+          "specificity": {
+            "k": 614,
+            "n": 619,
+            "rate": 0.9919,
+            "ci95": [
+              0.9812,
+              0.9965
+            ]
+          },
+          "f1": 0.9641
+        }
+      }
+    },
+    "note": "The held-out family was written after the prompts, the routing rules and the interaction table were frozen; no held-out drug or disease appears in any prompt.",
+    "_wall_seconds": 6.2
+  },
+  "e4": {
+    "experiment": "E4_ablation_matrix",
+    "seeds": [
+      42,
+      1042,
+      2042
+    ],
+    "rows": {
+      "medagentnet": {
+        "config": {
+          "routing_mode": "relevance",
+          "synthesis_mode": "hybrid",
+          "enforce_consent": true,
+          "enforce_tiers": true,
+          "structured_output": true,
+          "freetext_fallback": true
+        },
+        "f1": {
+          "mean": 0.9917,
+          "std": 0.0028,
+          "min": 0.9901,
+          "max": 0.995,
+          "n": 3
+        },
+        "precision": {
+          "mean": 0.9836,
+          "std": 0.0056,
+          "min": 0.9804,
+          "max": 0.9901,
+          "n": 3
+        },
+        "recall": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n": 3
+        },
+        "conflict_detection": {
+          "k": 180,
+          "n": 180,
+          "rate": 1.0,
+          "ci95": [
+            0.9791,
+            1.0
+          ]
+        },
+        "pattern_detection": {
+          "k": 120,
+          "n": 120,
+          "rate": 1.0,
+          "ci95": [
+            0.969,
+            1.0
+          ]
+        },
+        "false_alarms_matched": {
+          "k": 3,
+          "n": 135,
+          "rate": 0.0222,
+          "ci95": [
+            0.0076,
+            0.0633
+          ]
+        },
+        "queries_per_scenario": {
+          "mean": 9.0,
+          "std": 0.0,
+          "min": 9.0,
+          "max": 9.0,
+          "n": 3
+        }
+      },
+      "medagentnet_grounded_only": {
+        "config": {
+          "routing_mode": "relevance",
+          "synthesis_mode": "rules"
+        },
+        "f1": {
+          "mean": 0.9917,
+          "std": 0.0028,
+          "min": 0.9901,
+          "max": 0.995,
+          "n": 3
+        },
+        "precision": {
+          "mean": 0.9836,
+          "std": 0.0056,
+          "min": 0.9804,
+          "max": 0.9901,
+          "n": 3
+        },
+        "recall": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n": 3
+        },
+        "conflict_detection": {
+          "k": 180,
+          "n": 180,
+          "rate": 1.0,
+          "ci95": [
+            0.9791,
+            1.0
+          ]
+        },
+        "pattern_detection": {
+          "k": 120,
+          "n": 120,
+          "rate": 1.0,
+          "ci95": [
+            0.969,
+            1.0
+          ]
+        },
+        "false_alarms_matched": {
+          "k": 3,
+          "n": 135,
+          "rate": 0.0222,
+          "ci95": [
+            0.0076,
+            0.0633
+          ]
+        },
+        "queries_per_scenario": {
+          "mean": 9.0,
+          "std": 0.0,
+          "min": 9.0,
+          "max": 9.0,
+          "n": 3
+        },
+        "vs_medagentnet": {
+          "b": 0,
+          "c": 0,
+          "statistic": 0.0,
+          "p_value": 1.0,
+          "both_correct": 100,
+          "both_wrong": 132,
+          "n_paired": 232
+        }
+      },
+      "medagentnet_llm_only": {
+        "config": {
+          "routing_mode": "relevance",
+          "synthesis_mode": "llm"
+        },
+        "f1": {
+          "mean": 0.7225,
+          "std": 0.041,
+          "min": 0.6753,
+          "max": 0.75,
+          "n": 3
+        },
+        "precision": {
+          "mean": 0.9877,
+          "std": 0.0214,
+          "min": 0.963,
+          "max": 1.0,
+          "n": 3
+        },
+        "recall": {
+          "mean": 0.57,
+          "std": 0.0436,
+          "min": 0.52,
+          "max": 0.6,
+          "n": 3
+        },
+        "conflict_detection": {
+          "k": 138,
+          "n": 180,
+          "rate": 0.7667,
+          "ci95": [
+            0.6997,
+            0.8225
+          ]
+        },
+        "pattern_detection": {
+          "k": 33,
+          "n": 120,
+          "rate": 0.275,
+          "ci95": [
+            0.203,
+            0.3609
+          ]
+        },
+        "false_alarms_matched": {
+          "k": 2,
+          "n": 135,
+          "rate": 0.0148,
+          "ci95": [
+            0.0041,
+            0.0524
+          ]
+        },
+        "queries_per_scenario": {
+          "mean": 9.0,
+          "std": 0.0,
+          "min": 9.0,
+          "max": 9.0,
+          "n": 3
+        },
+        "vs_medagentnet": {
+          "b": 48,
+          "c": 0,
+          "statistic": 46.0208,
+          "p_value": 0.0,
+          "both_correct": 52,
+          "both_wrong": 132,
+          "n_paired": 232
+        }
+      },
+      "ablate_synthesis": {
+        "config": {
+          "routing_mode": "relevance",
+          "synthesis_mode": "none"
+        },
+        "f1": {
+          "mean": 0.2917,
+          "std": 0.0818,
+          "min": 0.2105,
+          "max": 0.374,
+          "n": 3
+        },
+        "precision": {
+          "mean": 0.9524,
+          "std": 0.0825,
+          "min": 0.8571,
+          "max": 1.0,
+          "n": 3
+        },
+        "recall": {
+          "mean": 0.1733,
+          "std": 0.0551,
+          "min": 0.12,
+          "max": 0.23,
+          "n": 3
+        },
+        "conflict_detection": {
+          "k": 19,
+          "n": 180,
+          "rate": 0.1056,
+          "ci95": [
+            0.0686,
+            0.159
+          ]
+        },
+        "pattern_detection": {
+          "k": 33,
+          "n": 120,
+          "rate": 0.275,
+          "ci95": [
+            0.203,
+            0.3609
+          ]
+        },
+        "false_alarms_matched": {
+          "k": 2,
+          "n": 135,
+          "rate": 0.0148,
+          "ci95": [
+            0.0041,
+            0.0524
+          ]
+        },
+        "queries_per_scenario": {
+          "mean": 9.0,
+          "std": 0.0,
+          "min": 9.0,
+          "max": 9.0,
+          "n": 3
+        },
+        "vs_medagentnet": {
+          "b": 88,
+          "c": 0,
+          "statistic": 86.0114,
+          "p_value": 0.0,
+          "both_correct": 12,
+          "both_wrong": 132,
+          "n_paired": 232
+        }
+      },
+      "ablate_orchestration": {
+        "config": {
+          "routing_mode": "local",
+          "synthesis_mode": "hybrid"
+        },
+        "f1": {
+          "mean": 0.158,
+          "std": 0.063,
+          "min": 0.1132,
+          "max": 0.2301,
+          "n": 3
+        },
+        "precision": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n": 3
+        },
+        "recall": {
+          "mean": 0.0867,
+          "std": 0.0379,
+          "min": 0.06,
+          "max": 0.13,
+          "n": 3
+        },
+        "conflict_detection": {
+          "k": 23,
+          "n": 180,
+          "rate": 0.1278,
+          "ci95": [
+            0.0867,
+            0.1844
+          ]
+        },
+        "pattern_detection": {
+          "k": 3,
+          "n": 120,
+          "rate": 0.025,
+          "ci95": [
+            0.0085,
+            0.0709
+          ]
+        },
+        "false_alarms_matched": {
+          "k": 0,
+          "n": 135,
+          "rate": 0.0,
+          "ci95": [
+            0.0,
+            0.0277
+          ]
+        },
+        "queries_per_scenario": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n": 3
+        },
+        "vs_medagentnet": {
+          "b": 93,
+          "c": 0,
+          "statistic": 91.0108,
+          "p_value": 0.0,
+          "both_correct": 7,
+          "both_wrong": 132,
+          "n_paired": 232
+        }
+      },
+      "ablate_relevance_routing": {
+        "config": {
+          "routing_mode": "broadcast",
+          "synthesis_mode": "hybrid"
+        },
+        "f1": {
+          "mean": 0.9917,
+          "std": 0.0028,
+          "min": 0.9901,
+          "max": 0.995,
+          "n": 3
+        },
+        "precision": {
+          "mean": 0.9836,
+          "std": 0.0056,
+          "min": 0.9804,
+          "max": 0.9901,
+          "n": 3
+        },
+        "recall": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n": 3
+        },
+        "conflict_detection": {
+          "k": 180,
+          "n": 180,
+          "rate": 1.0,
+          "ci95": [
+            0.9791,
+            1.0
+          ]
+        },
+        "pattern_detection": {
+          "k": 120,
+          "n": 120,
+          "rate": 1.0,
+          "ci95": [
+            0.969,
+            1.0
+          ]
+        },
+        "false_alarms_matched": {
+          "k": 3,
+          "n": 135,
+          "rate": 0.0222,
+          "ci95": [
+            0.0076,
+            0.0633
+          ]
+        },
+        "queries_per_scenario": {
+          "mean": 9.0,
+          "std": 0.0,
+          "min": 9.0,
+          "max": 9.0,
+          "n": 3
+        },
+        "vs_medagentnet": {
+          "b": 0,
+          "c": 0,
+          "statistic": 0.0,
+          "p_value": 1.0,
+          "both_correct": 100,
+          "both_wrong": 132,
+          "n_paired": 232
+        }
+      },
+      "ablate_tiers": {
+        "config": {
+          "routing_mode": "relevance",
+          "synthesis_mode": "hybrid",
+          "enforce_tiers": false
+        },
+        "f1": {
+          "mean": 0.9773,
+          "std": 0.012,
+          "min": 0.9662,
+          "max": 0.9901,
+          "n": 3
+        },
+        "precision": {
+          "mean": 0.9558,
+          "std": 0.0231,
+          "min": 0.9346,
+          "max": 0.9804,
+          "n": 3
+        },
+        "recall": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n": 3
+        },
+        "conflict_detection": {
+          "k": 180,
+          "n": 180,
+          "rate": 1.0,
+          "ci95": [
+            0.9791,
+            1.0
+          ]
+        },
+        "pattern_detection": {
+          "k": 120,
+          "n": 120,
+          "rate": 1.0,
+          "ci95": [
+            0.969,
+            1.0
+          ]
+        },
+        "false_alarms_matched": {
+          "k": 6,
+          "n": 135,
+          "rate": 0.0444,
+          "ci95": [
+            0.0205,
+            0.0936
+          ]
+        },
+        "queries_per_scenario": {
+          "mean": 9.0,
+          "std": 0.0,
+          "min": 9.0,
+          "max": 9.0,
+          "n": 3
+        },
+        "vs_medagentnet": {
+          "b": 0,
+          "c": 0,
+          "statistic": 0.0,
+          "p_value": 1.0,
+          "both_correct": 100,
+          "both_wrong": 132,
+          "n_paired": 232
+        }
+      },
+      "ablate_consent": {
+        "config": {
+          "routing_mode": "relevance",
+          "synthesis_mode": "hybrid",
+          "enforce_consent": false
+        },
+        "f1": {
+          "mean": 0.9773,
+          "std": 0.012,
+          "min": 0.9662,
+          "max": 0.9901,
+          "n": 3
+        },
+        "precision": {
+          "mean": 0.9558,
+          "std": 0.0231,
+          "min": 0.9346,
+          "max": 0.9804,
+          "n": 3
+        },
+        "recall": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n": 3
+        },
+        "conflict_detection": {
+          "k": 180,
+          "n": 180,
+          "rate": 1.0,
+          "ci95": [
+            0.9791,
+            1.0
+          ]
+        },
+        "pattern_detection": {
+          "k": 120,
+          "n": 120,
+          "rate": 1.0,
+          "ci95": [
+            0.969,
+            1.0
+          ]
+        },
+        "false_alarms_matched": {
+          "k": 6,
+          "n": 135,
+          "rate": 0.0444,
+          "ci95": [
+            0.0205,
+            0.0936
+          ]
+        },
+        "queries_per_scenario": {
+          "mean": 9.0,
+          "std": 0.0,
+          "min": 9.0,
+          "max": 9.0,
+          "n": 3
+        },
+        "vs_medagentnet": {
+          "b": 0,
+          "c": 0,
+          "statistic": 0.0,
+          "p_value": 1.0,
+          "both_correct": 100,
+          "both_wrong": 132,
+          "n_paired": 232
+        }
+      },
+      "ablate_structured_protocol": {
+        "config": {
+          "routing_mode": "relevance",
+          "synthesis_mode": "hybrid",
+          "structured_output": false
+        },
+        "f1": {
+          "mean": 0.9917,
+          "std": 0.0028,
+          "min": 0.9901,
+          "max": 0.995,
+          "n": 3
+        },
+        "precision": {
+          "mean": 0.9836,
+          "std": 0.0056,
+          "min": 0.9804,
+          "max": 0.9901,
+          "n": 3
+        },
+        "recall": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n": 3
+        },
+        "conflict_detection": {
+          "k": 180,
+          "n": 180,
+          "rate": 1.0,
+          "ci95": [
+            0.9791,
+            1.0
+          ]
+        },
+        "pattern_detection": {
+          "k": 120,
+          "n": 120,
+          "rate": 1.0,
+          "ci95": [
+            0.969,
+            1.0
+          ]
+        },
+        "false_alarms_matched": {
+          "k": 3,
+          "n": 135,
+          "rate": 0.0222,
+          "ci95": [
+            0.0076,
+            0.0633
+          ]
+        },
+        "queries_per_scenario": {
+          "mean": 9.0,
+          "std": 0.0,
+          "min": 9.0,
+          "max": 9.0,
+          "n": 3
+        },
+        "vs_medagentnet": {
+          "b": 0,
+          "c": 0,
+          "statistic": 0.0,
+          "p_value": 1.0,
+          "both_correct": 100,
+          "both_wrong": 132,
+          "n_paired": 232
+        }
+      },
+      "ablate_freetext_parser": {
+        "config": {
+          "routing_mode": "relevance",
+          "synthesis_mode": "hybrid",
+          "freetext_fallback": false
+        },
+        "f1": {
+          "mean": 0.9917,
+          "std": 0.0028,
+          "min": 0.9901,
+          "max": 0.995,
+          "n": 3
+        },
+        "precision": {
+          "mean": 0.9836,
+          "std": 0.0056,
+          "min": 0.9804,
+          "max": 0.9901,
+          "n": 3
+        },
+        "recall": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n": 3
+        },
+        "conflict_detection": {
+          "k": 180,
+          "n": 180,
+          "rate": 1.0,
+          "ci95": [
+            0.9791,
+            1.0
+          ]
+        },
+        "pattern_detection": {
+          "k": 120,
+          "n": 120,
+          "rate": 1.0,
+          "ci95": [
+            0.969,
+            1.0
+          ]
+        },
+        "false_alarms_matched": {
+          "k": 3,
+          "n": 135,
+          "rate": 0.0222,
+          "ci95": [
+            0.0076,
+            0.0633
+          ]
+        },
+        "queries_per_scenario": {
+          "mean": 9.0,
+          "std": 0.0,
+          "min": 9.0,
+          "max": 9.0,
+          "n": 3
+        },
+        "vs_medagentnet": {
+          "b": 0,
+          "c": 0,
+          "statistic": 0.0,
+          "p_value": 1.0,
+          "both_correct": 100,
+          "both_wrong": 132,
+          "n_paired": 232
+        }
+      }
+    },
+    "_wall_seconds": 22.6
+  },
+  "e5": {
+    "experiment": "E5_baselines",
+    "seeds": [
+      42,
+      1042,
+      2042
+    ],
+    "rows": {
+      "medagentnet": {
+        "f1": {
+          "mean": 0.9917,
+          "std": 0.0028,
+          "min": 0.9901,
+          "max": 0.995,
+          "n": 3
+        },
+        "precision": {
+          "mean": 0.9836,
+          "std": 0.0056,
+          "min": 0.9804,
+          "max": 0.9901,
+          "n": 3
+        },
+        "recall": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n": 3
+        },
+        "latency_s": {
+          "mean": 0.0016,
+          "std": 0.0001,
+          "min": 0.0016,
+          "max": 0.0017,
+          "n": 3
+        },
+        "data_centralised": false
+      },
+      "centralized_rules": {
+        "f1": {
+          "mean": 0.9847,
+          "std": 0.0103,
+          "min": 0.9744,
+          "max": 0.995,
+          "n": 3
+        },
+        "precision": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n": 3
+        },
+        "recall": {
+          "mean": 0.97,
+          "std": 0.02,
+          "min": 0.95,
+          "max": 0.99,
+          "n": 3
+        },
+        "latency_s": {
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "n": 3
+        },
+        "data_centralised": true,
+        "vs_medagentnet": {
+          "b": 1,
+          "c": 0,
+          "statistic": 0.0,
+          "p_value": 1.0,
+          "both_correct": 99,
+          "both_wrong": 132,
+          "n_paired": 232
+        }
+      },
+      "centralized_llm": {
+        "f1": {
+          "mean": 0.7565,
+          "std": 0.0383,
+          "min": 0.7219,
+          "max": 0.7977,
+          "n": 3
+        },
+        "precision": {
+          "mean": 0.9186,
+          "std": 0.0313,
+          "min": 0.8841,
+          "max": 0.9452,
+          "n": 3
+        },
+        "recall": {
+          "mean": 0.6433,
+          "std": 0.0416,
+          "min": 0.61,
+          "max": 0.69,
+          "n": 3
+        },
+        "latency_s": {
+          "mean": 0.0007,
+          "std": 0.0006,
+          "min": 0.0,
+          "max": 0.001,
+          "n": 3
+        },
+        "data_centralised": true,
+        "vs_medagentnet": {
+          "b": 39,
+          "c": 0,
+          "statistic": 37.0256,
+          "p_value": 0.0,
+          "both_correct": 61,
+          "both_wrong": 132,
+          "n_paired": 232
+        }
+      },
+      "direct_retrieval": {
+        "f1": {
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "n": 3
+        },
+        "precision": {
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "n": 3
+        },
+        "recall": {
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "n": 3
+        },
+        "latency_s": {
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "n": 3
+        },
+        "data_centralised": false,
+        "vs_medagentnet": {
+          "b": 100,
+          "c": 0,
+          "statistic": 98.01,
+          "p_value": 0.0,
+          "both_correct": 0,
+          "both_wrong": 132,
+          "n_paired": 232
+        }
+      }
+    },
+    "note": "All systems are run on identical patients and identical queries and scored by the same criterion. The centralized arms require the record to be aggregated in one place, which is the configuration the architecture is intended to avoid.",
+    "_wall_seconds": 4.3
+  },
+  "e7": {
+    "experiment": "E7_scalability",
+    "by_patient_count": [
+      {
+        "patients": 50,
+        "scenarios": 55,
+        "wall_seconds": 0.08,
+        "scenarios_per_second": 655.5388,
+        "inter_agent_queries": 495,
+        "queries_per_scenario": 9.0,
+        "queries_per_second": 5899.849,
+        "departments": 10,
+        "f1": 1.0,
+        "latency": {
+          "mean": 0.0015,
+          "std": 0.0005,
+          "min": 0.001,
+          "max": 0.002,
+          "n": 55,
+          "p50": 0.001,
+          "p90": 0.002,
+          "p95": 0.002,
+          "p99": 0.002
+        }
+      },
+      {
+        "patients": 100,
+        "scenarios": 119,
+        "wall_seconds": 0.19,
+        "scenarios_per_second": 613.8932,
+        "inter_agent_queries": 1071,
+        "queries_per_scenario": 9.0,
+        "queries_per_second": 5525.0387,
+        "departments": 10,
+        "f1": 1.0,
+        "latency": {
+          "mean": 0.0016,
+          "std": 0.0011,
+          "min": 0.001,
+          "max": 0.012,
+          "n": 119,
+          "p50": 0.001,
+          "p90": 0.002,
+          "p95": 0.002,
+          "p99": 0.002
+        }
+      },
+      {
+        "patients": 250,
+        "scenarios": 293,
+        "wall_seconds": 0.46,
+        "scenarios_per_second": 637.0575,
+        "inter_agent_queries": 2637,
+        "queries_per_scenario": 9.0,
+        "queries_per_second": 5733.5176,
+        "departments": 10,
+        "f1": 1.0,
+        "latency": {
+          "mean": 0.0015,
+          "std": 0.0013,
+          "min": 0.001,
+          "max": 0.022,
+          "n": 293,
+          "p50": 0.001,
+          "p90": 0.002,
+          "p95": 0.002,
+          "p99": 0.002
+        }
+      },
+      {
+        "patients": 500,
+        "scenarios": 584,
+        "wall_seconds": 1.0,
+        "scenarios_per_second": 582.4065,
+        "inter_agent_queries": 5256,
+        "queries_per_scenario": 9.0,
+        "queries_per_second": 5241.6583,
+        "departments": 10,
+        "f1": 0.992,
+        "latency": {
+          "mean": 0.0017,
+          "std": 0.002,
+          "min": 0.001,
+          "max": 0.038,
+          "n": 584,
+          "p50": 0.002,
+          "p90": 0.002,
+          "p95": 0.002,
+          "p99": 0.003
+        }
+      }
+    ],
+    "by_department_count": [
+      {
+        "departments": 4,
+        "scenarios": 234,
+        "wall_seconds": 0.32,
+        "scenarios_per_second": 734.5492,
+        "inter_agent_queries": 702,
+        "queries_per_scenario": 3.0,
+        "queries_per_second": 2203.6475,
+        "f1": 0.9804,
+        "recall": 1.0,
+        "latency": {
+          "mean": 0.0013,
+          "std": 0.0005,
+          "min": 0.001,
+          "max": 0.003,
+          "n": 234,
+          "p50": 0.001,
+          "p90": 0.002,
+          "p95": 0.002,
+          "p99": 0.003
+        }
+      },
+      {
+        "departments": 6,
+        "scenarios": 232,
+        "wall_seconds": 0.3,
+        "scenarios_per_second": 771.5063,
+        "inter_agent_queries": 1160,
+        "queries_per_scenario": 5.0,
+        "queries_per_second": 3857.5315,
+        "f1": 1.0,
+        "recall": 1.0,
+        "latency": {
+          "mean": 0.0012,
+          "std": 0.001,
+          "min": 0.001,
+          "max": 0.016,
+          "n": 232,
+          "p50": 0.001,
+          "p90": 0.001,
+          "p95": 0.002,
+          "p99": 0.002
+        }
+      },
+      {
+        "departments": 8,
+        "scenarios": 233,
+        "wall_seconds": 0.33,
+        "scenarios_per_second": 701.2095,
+        "inter_agent_queries": 1631,
+        "queries_per_scenario": 7.0,
+        "queries_per_second": 4908.4663,
+        "f1": 0.9706,
+        "recall": 0.99,
+        "latency": {
+          "mean": 0.0013,
+          "std": 0.0009,
+          "min": 0.001,
+          "max": 0.014,
+          "n": 233,
+          "p50": 0.001,
+          "p90": 0.002,
+          "p95": 0.002,
+          "p99": 0.002
+        }
+      },
+      {
+        "departments": 10,
+        "scenarios": 232,
+        "wall_seconds": 0.35,
+        "scenarios_per_second": 654.4084,
+        "inter_agent_queries": 2088,
+        "queries_per_scenario": 9.0,
+        "queries_per_second": 5889.676,
+        "f1": 0.9901,
+        "recall": 1.0,
+        "latency": {
+          "mean": 0.0015,
+          "std": 0.0012,
+          "min": 0.001,
+          "max": 0.018,
+          "n": 232,
+          "p50": 0.001,
+          "p90": 0.002,
+          "p95": 0.002,
+          "p99": 0.002
+        }
+      }
+    ],
+    "by_concurrency": [
+      {
+        "concurrency": 1,
+        "scenarios": 232,
+        "wall_seconds": 0.34,
+        "scenarios_per_second": 686.056,
+        "inter_agent_queries": 2088,
+        "queries_per_scenario": 9.0,
+        "queries_per_second": 6174.5041,
+        "departments": 10,
+        "f1": 0.9901,
+        "latency": {
+          "mean": 0.0014,
+          "std": 0.0013,
+          "min": 0.001,
+          "max": 0.02,
+          "n": 232,
+          "p50": 0.001,
+          "p90": 0.002,
+          "p95": 0.002,
+          "p99": 0.002
+        }
+      },
+      {
+        "concurrency": 2,
+        "scenarios": 232,
+        "wall_seconds": 0.61,
+        "scenarios_per_second": 378.1893,
+        "inter_agent_queries": 2088,
+        "queries_per_scenario": 9.0,
+        "queries_per_second": 3403.7041,
+        "departments": 10,
+        "f1": 0.9901,
+        "latency": {
+          "mean": 0.0051,
+          "std": 0.0044,
+          "min": 0.002,
+          "max": 0.03,
+          "n": 232,
+          "p50": 0.004,
+          "p90": 0.009,
+          "p95": 0.014,
+          "p99": 0.029
+        }
+      },
+      {
+        "concurrency": 4,
+        "scenarios": 232,
+        "wall_seconds": 0.66,
+        "scenarios_per_second": 349.2334,
+        "inter_agent_queries": 2088,
+        "queries_per_scenario": 9.0,
+        "queries_per_second": 3143.1008,
+        "departments": 10,
+        "f1": 0.9901,
+        "latency": {
+          "mean": 0.0113,
+          "std": 0.0065,
+          "min": 0.002,
+          "max": 0.037,
+          "n": 232,
+          "p50": 0.01,
+          "p90": 0.02,
+          "p95": 0.023,
+          "p99": 0.032
+        }
+      },
+      {
+        "concurrency": 8,
+        "scenarios": 232,
+        "wall_seconds": 0.76,
+        "scenarios_per_second": 303.3538,
+        "inter_agent_queries": 2088,
+        "queries_per_scenario": 9.0,
+        "queries_per_second": 2730.184,
+        "departments": 10,
+        "f1": 0.9901,
+        "latency": {
+          "mean": 0.0254,
+          "std": 0.0128,
+          "min": 0.002,
+          "max": 0.067,
+          "n": 232,
+          "p50": 0.024,
+          "p90": 0.042,
+          "p95": 0.047,
+          "p99": 0.061
+        }
+      }
+    ],
+    "note": "Communication volume is reported as inter-agent queries per scenario; it is the quantity that grows with the number of departments.",
+    "_wall_seconds": 8.4
+  },
+  "e8": {
+    "experiment": "E8_adversarial",
+    "threat_model": {
+      "adversaries": {
+        "A1": "curious authorised department, repeated-query differencing",
+        "A2": "compromised department agent fabricating findings",
+        "A3": "content-level instruction injection via free text",
+        "A4": "consent-token replay after revocation",
+        "A5": "unavailable agents or orchestrator"
+      },
+      "trust_assumptions": [
+        "transport is authenticated and encrypted",
+        "consent service and audit store are trusted",
+        "department agents are authenticated but not assumed honest"
+      ],
+      "out_of_scope": [
+        "compromise of the consent service or audit store",
+        "compromise of the underlying EHR",
+        "transport side channels",
+        "model extraction"
+      ]
+    },
+    "A3_prompt_injection": {
+      "threat": "A3_prompt_injection",
+      "patients_injected": 59,
+      "clean": {
+        "responses": 639,
+        "marker_disclosures": 0,
+        "tier_violations": 0,
+        "utility_f1": 1.0
+      },
+      "injected": {
+        "responses": 639,
+        "marker_disclosures": 0,
+        "tier_violations": 0,
+        "utility_f1": 1.0
+      },
+      "injected_with_mitigations": {
+        "responses": 639,
+        "marker_disclosures": 0,
+        "tier_violations": 0,
+        "utility_f1": 1.0
+      },
+      "mitigations": [
+        "schema-validated responses (no free-text rescue)",
+        "free-text notes withheld below Tier 3"
+      ],
+      "note": "A rule-based backend does not follow instructions and is structurally immune to this threat; it is reported as a negative control. Only a generative backend can be meaningfully attacked here."
+    },
+    "A2_compromised_agent": {
+      "threat": "A2_compromised_agent",
+      "compromised_departments": [
+        "cardiology",
+        "dental"
+      ],
+      "independent_compromise": {
+        "without_mitigation": {
+          "fabricated_alerts": 142,
+          "fabricated_at_critical": 142,
+          "scenarios_affected": 71,
+          "scenarios": 71,
+          "utility_f1": 0.2785
+        },
+        "with_corroboration_requirement": {
+          "fabricated_alerts": 142,
+          "fabricated_at_critical": 0,
+          "scenarios_affected": 71,
+          "scenarios": 71,
+          "downgraded_single_source": 144,
+          "utility_f1": 0.2785
+        }
+      },
+      "colluding_compromise": {
+        "with_corroboration_requirement": {
+          "fabricated_alerts": 71,
+          "fabricated_at_critical": 71,
+          "scenarios_affected": 71,
+          "scenarios": 71,
+          "downgraded_single_source": 2,
+          "utility_f1": 0.2785
+        },
+        "note": "Two compromised agents emitting identical text corroborate one another, so the requirement does not hold. Corroboration bounds independent compromise, not collusion."
+      },
+      "mitigation": "a critical alert must be supported by more than one department, otherwise it is downgraded and marked single-source"
+    },
+    "A1_differencing": {
+      "threat": "A1_repeated_query_differencing",
+      "queries_per_patient": 12,
+      "unbounded": {
+        "reconstruction_curve": {
+          "after_1_responses": 0.0503,
+          "after_20_responses": 0.2075,
+          "after_40_responses": 0.511,
+          "after_60_responses": 0.6165,
+          "after_80_responses": 0.6712,
+          "after_100_responses": 0.6712,
+          "after_120_responses": 0.6712,
+          "after_140_responses": 0.6712,
+          "after_160_responses": 0.6712,
+          "after_180_responses": 0.6712,
+          "after_200_responses": 0.6712
+        },
+        "mean_final_reconstruction": 0.6712,
+        "max_final_reconstruction": 0.9167,
+        "requester_patient_pairs": 20,
+        "responses": 972
+      },
+      "with_query_budget": {
+        "reconstruction_curve": {
+          "after_1_responses": 0.0503,
+          "after_20_responses": 0.6712,
+          "after_40_responses": 0.6712,
+          "after_60_responses": 0.6712,
+          "after_80_responses": 0.6712,
+          "after_100_responses": 0.6712,
+          "after_120_responses": 0.6712,
+          "after_140_responses": 0.6712,
+          "after_160_responses": 0.6712,
+          "after_180_responses": 0.6712,
+          "after_200_responses": 0.6712
+        },
+        "mean_final_reconstruction": 0.6712,
+        "max_final_reconstruction": 0.9167,
+        "requester_patient_pairs": 20,
+        "responses": 243,
+        "queries_blocked": 1620,
+        "budget": 3
+      },
+      "with_tier_1_ceiling": {
+        "reconstruction_curve": {
+          "after_1_responses": 0.0,
+          "after_20_responses": 0.0,
+          "after_40_responses": 0.0,
+          "after_60_responses": 0.0,
+          "after_80_responses": 0.0,
+          "after_100_responses": 0.0,
+          "after_120_responses": 0.0,
+          "after_140_responses": 0.0,
+          "after_160_responses": 0.0,
+          "after_180_responses": 0.0,
+          "after_200_responses": 0.0
+        },
+        "mean_final_reconstruction": 0.0,
+        "max_final_reconstruction": 0.0,
+        "requester_patient_pairs": 20,
+        "responses": 972
+      },
+      "mitigation": "per-patient, per-department-pair query budget of 3",
+      "finding": "A query budget reduces traffic but not what is ultimately learned, because repeated queries at the same tier return substantially the same content. What bounds reconstruction is the disclosure tier itself."
+    },
+    "A4_token_replay": {
+      "threat": "A4_consent_token_replay",
+      "results": {
+        "without_validation": {
+          "after_revocation": {
+            "token_accepted": true,
+            "reason": "not_validated",
+            "consent_service_allows": false,
+            "exchange_would_proceed": false
+          },
+          "different_patient": {
+            "token_accepted": true,
+            "reason": "not_validated",
+            "consent_service_allows": true,
+            "exchange_would_proceed": true
+          },
+          "tier_escalation": {
+            "token_accepted": true,
+            "reason": "not_validated",
+            "consent_service_allows": false,
+            "exchange_would_proceed": false
+          },
+          "reuse_same_token": {
+            "token_accepted": true,
+            "reason": "not_validated",
+            "consent_service_allows": false,
+            "exchange_would_proceed": false
+          }
+        },
+        "with_validation": {
+          "after_revocation": {
+            "token_accepted": true,
+            "reason": "ok",
+            "consent_service_allows": false,
+            "exchange_would_proceed": false
+          },
+          "different_patient": {
+            "token_accepted": false,
+            "reason": "replayed_token",
+            "consent_service_allows": true,
+            "exchange_would_proceed": false
+          },
+          "tier_escalation": {
+            "token_accepted": false,
+            "reason": "replayed_token",
+            "consent_service_allows": false,
+            "exchange_would_proceed": false
+          },
+          "reuse_same_token": {
+            "token_accepted": false,
+            "reason": "replayed_token",
+            "consent_service_allows": false,
+            "exchange_would_proceed": false
+          }
+        }
+      },
+      "mitigation": "tokens bound to patient, department pair and tier, single-use, with a short expiry"
+    },
+    "A5_availability": {
+      "threat": "A5_availability",
+      "rows": [
+        {
+          "agents_unavailable": 0,
+          "fraction": 0.0,
+          "scenarios_completed": 71,
+          "scenarios_failed": 0,
+          "f1": 1.0,
+          "recall": 1.0,
+          "mean_coverage": 1.0
+        },
+        {
+          "agents_unavailable": 2,
+          "fraction": 0.2,
+          "scenarios_completed": 71,
+          "scenarios_failed": 0,
+          "f1": 0.5714,
+          "recall": 0.4,
+          "mean_coverage": 0.798
+        },
+        {
+          "agents_unavailable": 4,
+          "fraction": 0.4,
+          "scenarios_completed": 71,
+          "scenarios_failed": 0,
+          "f1": 0.4615,
+          "recall": 0.3,
+          "mean_coverage": 0.59
+        },
+        {
+          "agents_unavailable": 6,
+          "fraction": 0.6,
+          "scenarios_completed": 71,
+          "scenarios_failed": 0,
+          "f1": 0.4615,
+          "recall": 0.3,
+          "mean_coverage": 0.389
+        },
+        {
+          "agents_unavailable": 10,
+          "fraction": 1.0,
+          "scenarios_completed": 71,
+          "scenarios_failed": 0,
+          "f1": 0.0,
+          "recall": 0.0,
+          "mean_coverage": 0.0
+        },
+        {
+          "agents_unavailable": 0,
+          "fraction": null,
+          "scenarios_completed": 71,
+          "scenarios_failed": 0,
+          "f1": 0.2353,
+          "recall": 0.1333,
+          "note": "orchestrator removed"
+        }
+      ]
+    },
+    "_wall_seconds": 3.7
+  }
+}

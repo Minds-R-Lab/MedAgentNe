@@ -1,0 +1,32 @@
+llm:
+  huggingface:
+    device: auto
+    model_id: BioMistral/BioMistral-7B
+    quantization: 4bit
+  ollama:
+    base_url: http://localhost:11434
+    max_tokens: 1024
+    model: llama3.1:8b
+    temperature: 0.3
+  openai_compatible:
+    api_key: not-needed
+    base_url: http://localhost:8000/v1
+    model: BioMistral/BioMistral-7B
+  provider: mock
+logging:
+  audit_file: data/audit_trail.jsonl
+  level: INFO
+  results_dir: data/results
+performance:
+  emergency_query_timeout_seconds: 3
+  routine_query_timeout_seconds: 10
+privacy:
+  default_disclosure_tier: 2
+  emergency_override_enabled: true
+simulation:
+  conflict_rate: 0.35
+  max_departments_per_patient: 6
+  min_departments_per_patient: 2
+  num_patients: 200
+  pattern_rate: 0.25
+  random_seed: 42

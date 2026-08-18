@@ -1,0 +1,568 @@
+{
+  "timestamp": "2026-02-24T15:19:11.721133",
+  "config": {
+    "base_num_patients": 50,
+    "num_seeds": 3,
+    "patient_counts": [
+      50,
+      100,
+      250,
+      500
+    ],
+    "base_seed": 42
+  },
+  "tier_comparison": {
+    "experiment": "tier_comparison",
+    "num_patients": 50,
+    "results_by_tier": {
+      "1": {
+        "conflict_detection": {
+          "total_conflict_scenarios": 17,
+          "conflicts_detected": 17,
+          "detection_rate": 1.0,
+          "missed": 0
+        },
+        "pattern_detection": {
+          "total_pattern_scenarios": 17,
+          "patterns_detected": 0,
+          "detection_rate": 0.0,
+          "missed": 17
+        },
+        "false_positives": {
+          "routine_scenarios_checked": 0,
+          "false_positives": 0,
+          "false_positive_rate": 0
+        },
+        "performance": {
+          "average_response_time_seconds": 8.370235,
+          "max_response_time_seconds": 16.125,
+          "min_response_time_seconds": 3.021
+        },
+        "privacy_compliance": {
+          "total_events": 772,
+          "consent_denied_count": 0,
+          "consent_denial_rate": 0.0,
+          "tier_distribution": {
+            "1": 615,
+            "2": 157
+          },
+          "query_type_distribution": {
+            "MED_CONFLICT": 396,
+            "observation": 1,
+            "LONG_PATTERN": 219
+          },
+          "unique_patients": 29
+        },
+        "tier": 1,
+        "tier_name": "Flag Only"
+      },
+      "2": {
+        "conflict_detection": {
+          "total_conflict_scenarios": 17,
+          "conflicts_detected": 17,
+          "detection_rate": 1.0,
+          "missed": 0
+        },
+        "pattern_detection": {
+          "total_pattern_scenarios": 17,
+          "patterns_detected": 17,
+          "detection_rate": 1.0,
+          "missed": 0
+        },
+        "false_positives": {
+          "routine_scenarios_checked": 0,
+          "false_positives": 0,
+          "false_positive_rate": 0
+        },
+        "performance": {
+          "average_response_time_seconds": 11.745647,
+          "max_response_time_seconds": 19.411,
+          "min_response_time_seconds": 5.019
+        },
+        "privacy_compliance": {
+          "total_events": 676,
+          "consent_denied_count": 0,
+          "consent_denial_rate": 0.0,
+          "tier_distribution": {
+            "2": 676
+          },
+          "query_type_distribution": {
+            "MED_CONFLICT": 396,
+            "LONG_PATTERN": 219
+          },
+          "unique_patients": 29
+        },
+        "tier": 2,
+        "tier_name": "Clinical Summary"
+      },
+      "3": {
+        "conflict_detection": {
+          "total_conflict_scenarios": 17,
+          "conflicts_detected": 17,
+          "detection_rate": 1.0,
+          "missed": 0
+        },
+        "pattern_detection": {
+          "total_pattern_scenarios": 17,
+          "patterns_detected": 17,
+          "detection_rate": 1.0,
+          "missed": 0
+        },
+        "false_positives": {
+          "routine_scenarios_checked": 0,
+          "false_positives": 0,
+          "false_positive_rate": 0
+        },
+        "performance": {
+          "average_response_time_seconds": 13.526765,
+          "max_response_time_seconds": 23.392,
+          "min_response_time_seconds": 5.872
+        },
+        "privacy_compliance": {
+          "total_events": 691,
+          "consent_denied_count": 0,
+          "consent_denial_rate": 0.0,
+          "tier_distribution": {
+            "3": 615,
+            "2": 76
+          },
+          "query_type_distribution": {
+            "MED_CONFLICT": 396,
+            "renal_risk": 1,
+            "risk_flag": 1,
+            "LONG_PATTERN": 219
+          },
+          "unique_patients": 29
+        },
+        "tier": 3,
+        "tier_name": "Full Context"
+      }
+    }
+  },
+  "consent_restriction": {
+    "experiment": "consent_restriction",
+    "num_patients": 50,
+    "results_by_scenario": {
+      "full": {
+        "conflict_detection": {
+          "total_conflict_scenarios": 17,
+          "conflicts_detected": 17,
+          "detection_rate": 1.0,
+          "missed": 0
+        },
+        "pattern_detection": {
+          "total_pattern_scenarios": 17,
+          "patterns_detected": 17,
+          "detection_rate": 1.0,
+          "missed": 0
+        },
+        "false_positives": {
+          "routine_scenarios_checked": 0,
+          "false_positives": 0,
+          "false_positive_rate": 0
+        },
+        "performance": {
+          "average_response_time_seconds": 12.002706,
+          "max_response_time_seconds": 20.069,
+          "min_response_time_seconds": 5.484
+        },
+        "privacy_compliance": {
+          "total_events": 669,
+          "consent_denied_count": 0,
+          "consent_denial_rate": 0.0,
+          "tier_distribution": {
+            "2": 531,
+            "3": 138
+          },
+          "query_type_distribution": {
+            "MED_CONFLICT": 396,
+            "renal_risk": 1,
+            "medication_conflict": 1,
+            "risk_flag": 1,
+            "LONG_PATTERN": 219
+          },
+          "unique_patients": 29
+        },
+        "scenario": "full"
+      },
+      "partial_30": {
+        "conflict_detection": {
+          "total_conflict_scenarios": 17,
+          "conflicts_detected": 17,
+          "detection_rate": 1.0,
+          "missed": 0
+        },
+        "pattern_detection": {
+          "total_pattern_scenarios": 17,
+          "patterns_detected": 17,
+          "detection_rate": 1.0,
+          "missed": 0
+        },
+        "false_positives": {
+          "routine_scenarios_checked": 0,
+          "false_positives": 0,
+          "false_positive_rate": 0
+        },
+        "performance": {
+          "average_response_time_seconds": 12.127382,
+          "max_response_time_seconds": 18.963,
+          "min_response_time_seconds": 6.147
+        },
+        "privacy_compliance": {
+          "total_events": 683,
+          "consent_denied_count": 0,
+          "consent_denial_rate": 0.0,
+          "tier_distribution": {
+            "2": 545,
+            "3": 138
+          },
+          "query_type_distribution": {
+            "MED_CONFLICT": 396,
+            "medication_conflict": 2,
+            "risk_flag": 1,
+            "LONG_PATTERN": 219,
+            "observation": 2
+          },
+          "unique_patients": 29
+        },
+        "scenario": "partial_30"
+      },
+      "partial_60": {
+        "conflict_detection": {
+          "total_conflict_scenarios": 17,
+          "conflicts_detected": 17,
+          "detection_rate": 1.0,
+          "missed": 0
+        },
+        "pattern_detection": {
+          "total_pattern_scenarios": 17,
+          "patterns_detected": 17,
+          "detection_rate": 1.0,
+          "missed": 0
+        },
+        "false_positives": {
+          "routine_scenarios_checked": 0,
+          "false_positives": 0,
+          "false_positive_rate": 0
+        },
+        "performance": {
+          "average_response_time_seconds": 12.129971,
+          "max_response_time_seconds": 21.663,
+          "min_response_time_seconds": 5.157
+        },
+        "privacy_compliance": {
+          "total_events": 674,
+          "consent_denied_count": 0,
+          "consent_denial_rate": 0.0,
+          "tier_distribution": {
+            "2": 536,
+            "3": 138
+          },
+          "query_type_distribution": {
+            "MED_CONFLICT": 396,
+            "LONG_PATTERN": 219
+          },
+          "unique_patients": 29
+        },
+        "scenario": "partial_60"
+      },
+      "opt_out": {
+        "conflict_detection": {
+          "total_conflict_scenarios": 17,
+          "conflicts_detected": 6,
+          "detection_rate": 0.3529,
+          "missed": 11
+        },
+        "pattern_detection": {
+          "total_pattern_scenarios": 17,
+          "patterns_detected": 0,
+          "detection_rate": 0.0,
+          "missed": 17
+        },
+        "false_positives": {
+          "routine_scenarios_checked": 0,
+          "false_positives": 0,
+          "false_positive_rate": 0
+        },
+        "performance": {
+          "average_response_time_seconds": 2.453735,
+          "max_response_time_seconds": 17.609,
+          "min_response_time_seconds": 0.014
+        },
+        "privacy_compliance": {
+          "total_events": 324,
+          "consent_denied_count": 175,
+          "consent_denial_rate": 0.5401,
+          "tier_distribution": {
+            "0": 175,
+            "3": 138,
+            "2": 11
+          },
+          "query_type_distribution": {
+            "MED_CONFLICT": 237,
+            "renal_risk": 1,
+            "risk_flag": 1,
+            "LONG_PATTERN": 76
+          },
+          "unique_patients": 29
+        },
+        "scenario": "opt_out"
+      }
+    }
+  },
+  "multi_seed_variance": {
+    "experiment": "multi_seed_variance",
+    "num_seeds": 3,
+    "num_patients": 50,
+    "runs": [
+      {
+        "seed": 42,
+        "conflict_detection_rate": 1.0,
+        "pattern_detection_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "avg_response_time_s": 9.687741,
+        "total_conflicts": 17,
+        "total_patterns": 17,
+        "per_conflict": {
+          "methotrexate_nsaid_renal": 1.0,
+          "metformin_renal_failure": 1.0,
+          "warfarin_dental_extraction": 1.0,
+          "beta_blocker_respiratory": 1.0,
+          "anticoagulant_nsaid_bleeding": 1.0,
+          "carbamazepine_warfarin": 1.0,
+          "triple_whammy_aki": 1.0,
+          "ophthalmic_systemic_beta_blocker": 1.0
+        },
+        "per_pattern": {
+          "thyroid_cardiac_connection": 1.0,
+          "ckd_progression": 1.0,
+          "undiagnosed_diabetes": 1.0
+        },
+        "privacy": {
+          "total_events": 1117,
+          "consent_denied_count": 0,
+          "consent_denial_rate": 0.0,
+          "tier_distribution": {
+            "2": 979,
+            "3": 138
+          },
+          "query_type_distribution": {
+            "MED_CONFLICT": 812,
+            "LONG_PATTERN": 219
+          },
+          "unique_patients": 49
+        }
+      },
+      {
+        "seed": 1042,
+        "conflict_detection_rate": 1.0,
+        "pattern_detection_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "avg_response_time_s": 9.379185,
+        "total_conflicts": 17,
+        "total_patterns": 17,
+        "per_conflict": {
+          "metformin_renal_failure": 1.0,
+          "warfarin_dental_extraction": 1.0,
+          "ophthalmic_systemic_beta_blocker": 1.0,
+          "triple_whammy_aki": 1.0,
+          "methotrexate_nsaid_renal": 1.0,
+          "carbamazepine_warfarin": 1.0,
+          "beta_blocker_respiratory": 1.0,
+          "anticoagulant_nsaid_bleeding": 1.0
+        },
+        "per_pattern": {
+          "thyroid_cardiac_connection": 1.0,
+          "undiagnosed_diabetes": 1.0,
+          "ckd_progression": 1.0
+        },
+        "privacy": {
+          "total_events": 1122,
+          "consent_denied_count": 0,
+          "consent_denial_rate": 0.0,
+          "tier_distribution": {
+            "3": 138,
+            "2": 984
+          },
+          "query_type_distribution": {
+            "MED_CONFLICT": 809,
+            "medication_conflict": 1,
+            "risk_flag": 1,
+            "LONG_PATTERN": 218
+          },
+          "unique_patients": 49
+        }
+      },
+      {
+        "seed": 2042,
+        "conflict_detection_rate": 1.0,
+        "pattern_detection_rate": 1.0,
+        "false_positive_rate": 0.05,
+        "avg_response_time_s": 9.52263,
+        "total_conflicts": 17,
+        "total_patterns": 17,
+        "per_conflict": {
+          "ophthalmic_systemic_beta_blocker": 1.0,
+          "anticoagulant_nsaid_bleeding": 1.0,
+          "warfarin_dental_extraction": 1.0,
+          "beta_blocker_respiratory": 1.0,
+          "metformin_renal_failure": 1.0,
+          "carbamazepine_warfarin": 1.0,
+          "methotrexate_nsaid_renal": 1.0,
+          "triple_whammy_aki": 1.0
+        },
+        "per_pattern": {
+          "ckd_progression": 1.0,
+          "thyroid_cardiac_connection": 1.0,
+          "undiagnosed_diabetes": 1.0
+        },
+        "privacy": {
+          "total_events": 1088,
+          "consent_denied_count": 0,
+          "consent_denial_rate": 0.0,
+          "tier_distribution": {
+            "2": 944,
+            "3": 144
+          },
+          "query_type_distribution": {
+            "MED_CONFLICT": 820,
+            "LONG_PATTERN": 198
+          },
+          "unique_patients": 49
+        }
+      }
+    ],
+    "aggregate": {
+      "conflict_detection_rate": {
+        "mean": 1.0,
+        "std": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "pattern_detection_rate": {
+        "mean": 1.0,
+        "std": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "false_positive_rate": {
+        "mean": 0.0167,
+        "std": 0.0289,
+        "min": 0.0,
+        "max": 0.05
+      },
+      "avg_response_time_s": {
+        "mean": 9.5299,
+        "std": 0.1544,
+        "min": 9.3792,
+        "max": 9.6877
+      }
+    },
+    "per_conflict_aggregate": {
+      "anticoagulant_nsaid_bleeding": {
+        "mean": 1.0,
+        "std": 0.0
+      },
+      "beta_blocker_respiratory": {
+        "mean": 1.0,
+        "std": 0.0
+      },
+      "carbamazepine_warfarin": {
+        "mean": 1.0,
+        "std": 0.0
+      },
+      "metformin_renal_failure": {
+        "mean": 1.0,
+        "std": 0.0
+      },
+      "methotrexate_nsaid_renal": {
+        "mean": 1.0,
+        "std": 0.0
+      },
+      "ophthalmic_systemic_beta_blocker": {
+        "mean": 1.0,
+        "std": 0.0
+      },
+      "triple_whammy_aki": {
+        "mean": 1.0,
+        "std": 0.0
+      },
+      "warfarin_dental_extraction": {
+        "mean": 1.0,
+        "std": 0.0
+      }
+    },
+    "per_pattern_aggregate": {
+      "ckd_progression": {
+        "mean": 1.0,
+        "std": 0.0
+      },
+      "thyroid_cardiac_connection": {
+        "mean": 1.0,
+        "std": 0.0
+      },
+      "undiagnosed_diabetes": {
+        "mean": 1.0,
+        "std": 0.0
+      }
+    }
+  },
+  "scalability": {
+    "experiment": "scalability",
+    "results_by_count": {
+      "50": {
+        "patients": 50,
+        "conflict_scenarios": 17,
+        "pattern_scenarios": 17,
+        "routine_scenarios": 20,
+        "total_scenarios": 54,
+        "conflict_detection_rate": 1.0,
+        "pattern_detection_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "avg_response_time_ms": 9416.8,
+        "total_simulation_time_s": 508.85,
+        "audit_events": 1115
+      },
+      "100": {
+        "patients": 100,
+        "conflict_scenarios": 35,
+        "pattern_scenarios": 30,
+        "routine_scenarios": 20,
+        "total_scenarios": 85,
+        "conflict_detection_rate": 1.0,
+        "pattern_detection_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "avg_response_time_ms": 10280.22,
+        "total_simulation_time_s": 874.7,
+        "audit_events": 1743
+      },
+      "250": {
+        "patients": 250,
+        "conflict_scenarios": 87,
+        "pattern_scenarios": 67,
+        "routine_scenarios": 20,
+        "total_scenarios": 174,
+        "conflict_detection_rate": 1.0,
+        "pattern_detection_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "avg_response_time_ms": 10746.45,
+        "total_simulation_time_s": 1871.88,
+        "audit_events": 3578
+      },
+      "500": {
+        "patients": 500,
+        "conflict_scenarios": 175,
+        "pattern_scenarios": 130,
+        "routine_scenarios": 20,
+        "total_scenarios": 325,
+        "conflict_detection_rate": 1.0,
+        "pattern_detection_rate": 1.0,
+        "false_positive_rate": 0.05,
+        "avg_response_time_ms": 10616.73,
+        "total_simulation_time_s": 3455.19,
+        "audit_events": 6546
+      }
+    }
+  },
+  "total_experiment_time_s": 10718.38
+}

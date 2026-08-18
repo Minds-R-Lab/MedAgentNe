@@ -1,0 +1,68 @@
+cff-version: 1.2.0
+title: >-
+  MedAgentNet: Federated Multi-Agent AI for Privacy-Preserving
+  Cross-Departmental Clinical Intelligence
+message: >-
+  If you use this software or the benchmark, please cite the
+  accompanying paper.
+type: software
+authors:
+  - given-names: Mohamed
+    family-names: Mabrok
+    email: m.a.mabrok@qu.edu.qa
+    orcid: 'https://orcid.org/0000-0003-3638-4424'
+    affiliation: >-
+      Department of Mathematics and Statistics, Qatar University,
+      Doha, Qatar
+  - given-names: Yalda
+    family-names: Zafari
+    orcid: 'https://orcid.org/0009-0004-9737-7134'
+    affiliation: >-
+      Department of Mathematics and Statistics, Qatar University,
+      Doha, Qatar
+  - given-names: Yang
+    family-names: Cao
+    orcid: 'https://orcid.org/0000-0002-6424-8633'
+    affiliation: >-
+      Department of Computer Science, Institute of Science Tokyo,
+      Tokyo, Japan
+  - given-names: Naoto
+    family-names: Yanai
+    orcid: 'https://orcid.org/0000-0002-0817-6188'
+    affiliation: >-
+      Graduate School of Information Science and Technology,
+      Osaka University, Suita, Japan
+  - given-names: Essam A.
+    family-names: Rashed
+    orcid: 'https://orcid.org/0000-0001-6571-9807'
+    affiliation: >-
+      Graduate School of Information Science, University of Hyogo,
+      Kobe, Japan
+repository-code: 'https://github.com/Minds-R-Lab/MedAgentNe'
+license: MIT
+keywords:
+  - agentic AI
+  - multi-agent systems
+  - federated inference
+  - clinical decision support
+  - data privacy
+  - consent management
+preferred-citation:
+  type: article
+  title: >-
+    MedAgentNet: Federated Multi-Agent AI for Privacy-Preserving
+    Cross-Departmental Clinical Intelligence
+  authors:
+    - given-names: Mohamed
+      family-names: Mabrok
+    - given-names: Yalda
+      family-names: Zafari
+    - given-names: Yang
+      family-names: Cao
+    - given-names: Naoto
+      family-names: Yanai
+    - given-names: Essam A.
+      family-names: Rashed
+  journal: Applied Soft Computing
+  year: 2026
+  notes: Under review.
