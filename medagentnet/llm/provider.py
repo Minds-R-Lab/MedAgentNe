@@ -18,6 +18,8 @@ class BaseLLMProvider(ABC):
     # comparison table (calls, latency, approximate token volume, and how often
     # the backend failed to honour the JSON contract).
     def _init_stats(self):
+        import threading
+        self._stats_lock = threading.Lock()
         self.n_calls = 0
         self.total_latency_s = 0.0
         self.prompt_chars = 0
@@ -59,14 +61,18 @@ class BaseLLMProvider(ABC):
                 completion: str, elapsed: float):
         if not hasattr(self, "n_calls"):
             self._init_stats()
-        self.n_calls += 1
-        self.total_latency_s += elapsed
-        self.prompt_chars += len(system_prompt) + len(user_prompt)
-        self.completion_chars += len(completion or "")
         stripped = (completion or "").strip()
         looks_json = stripped.startswith("{") or "```" in stripped or "{" in stripped
-        if not looks_json:
-            self.format_failures += 1
+        # Locked: several scenarios may be in flight at once, and `+=` on an
+        # attribute is not atomic. Without this the reported call count, token
+        # volume and format-failure rate undercount at high concurrency.
+        with self._stats_lock:
+            self.n_calls += 1
+            self.total_latency_s += elapsed
+            self.prompt_chars += len(system_prompt) + len(user_prompt)
+            self.completion_chars += len(completion or "")
+            if not looks_json:
+                self.format_failures += 1
 
     @abstractmethod
     def generate(self, system_prompt: str, user_prompt: str) -> str:
@@ -557,12 +563,16 @@ class OllamaProvider(BaseLLMProvider):
 
     def _check_prompt_fits(self, system_prompt: str, user_prompt: str):
         """Warn if a prompt approaches the configured context window."""
+        if not hasattr(self, "n_calls"):
+            self._init_stats()
         n = len(system_prompt) + len(user_prompt)
-        self.max_prompt_chars_seen = max(self.max_prompt_chars_seen, n)
+        with self._stats_lock:
+            self.max_prompt_chars_seen = max(self.max_prompt_chars_seen, n)
         # ~4 characters per token, and leave room for the completion.
         budget = (self.num_ctx - self.max_tokens) * 4
         if n > budget:
-            self.truncation_suspected += 1
+            with self._stats_lock:
+                self.truncation_suspected += 1
             logger.warning(
                 f"prompt of ~{n // 4} tokens may not fit num_ctx={self.num_ctx} "
                 f"with num_predict={self.max_tokens}; raise --num-ctx")

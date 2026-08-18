@@ -508,6 +508,15 @@ class R1Experiments:
                 "base_seed": self.base_seed,
                 "num_patients": self.num_patients,
                 "provider": (self.llm.describe() if self.llm else "from config"),
+                "concurrency": self.concurrency,
+                "latency_note": (
+                    "Per-scenario latency is wall-clock and therefore includes "
+                    "queueing at the model server. It is comparable across "
+                    "systems only at concurrency 1. E7 pins its patient and "
+                    "department sweeps to 1 for this reason; take reported "
+                    "latency from there."
+                    if self.concurrency > 1 else
+                    "Run sequentially; per-scenario latency is per-request."),
             }
         }
         t0 = time.time()

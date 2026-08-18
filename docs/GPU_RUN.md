@@ -26,9 +26,15 @@ export OLLAMA_FLASH_ATTENTION=1
 ## Two settings that matter
 
 **`--concurrency`.** Scenarios are independent of one another, so the harness
-can evaluate several at once. It defaults to 1, which leaves a large card
-almost idle. Set it to match `OLLAMA_NUM_PARALLEL`; 8 is a reasonable starting
-point on an H100.
+can evaluate several at once. It defaults to 1, which leaves a large card almost
+idle. Set it to match `OLLAMA_NUM_PARALLEL`; on an H100 running an 8B model,
+16–24 is comfortable.
+
+One caveat: per-scenario latency is wall-clock, so at concurrency above 1 it
+includes queueing at the model server and is *not* per-request latency. The run
+metadata records the concurrency used and the generated tables carry a warning
+header. Take the latency figures reported in the paper from E7, whose patient
+and department sweeps are pinned to concurrency 1 for exactly this reason.
 
 Concurrency is a throughput knob only. Results are reassembled in scenario
 order before scoring, so a run at any concurrency produces byte-identical
@@ -55,9 +61,27 @@ python run_r1.py \
   --experiments e9 e1 e2 e3 e4 e5 e7 e8
 ```
 
-Roughly 45–90 minutes on an H100 at concurrency 8. The same run took an
-estimated 6–9 hours sequentially on a consumer card. E2 dominates: six
-restriction levels × ten sampled graphs × 200 patients.
+### Cost
+
+One run at 200 patients is 232 scenarios and about 1,400 backend calls. The full
+suite performs 158 such runs — **roughly 222,000 calls** — because several
+experiments sweep: E2 is six restriction levels × ten sampled graphs, E4 is ten
+configurations × three seeds plus the paired comparisons.
+
+Measured against sustained aggregate throughput, on one H100:
+
+| Concurrency | `OLLAMA_NUM_PARALLEL` | llama3.1:8b, full suite |
+|---|---|---|
+| 8 | 8 | ~9 h |
+| 16 | 16 | ~4–5 h |
+| 24 | 24 | ~3–4 h |
+
+An 8B model occupies 5 GB of an 80 GB card, so parallelism is limited by KV
+cache rather than weights and 16–24 is comfortable. Start it in the evening.
+
+The **backend matrix is cheap by comparison** — E6 runs two seeds per model, not
+the whole suite, so each arm is 2,800 calls: minutes for the 7–8B models and
+under an hour for 70B.
 
 Run it under `tmux` or `nohup` — a dropped SSH session or a closed Jupyter tab
 will otherwise kill it:
@@ -76,14 +100,20 @@ practical: several model families, and two sizes within one family.
 python run_r1.py \
   --provider ollama --model llama3.1:8b \
   --patients 200 --concurrency 8 --num-ctx 8192 \
-  --backend-matrix llama3.1:8b llama3.1:70b qwen2.5:7b mistral:7b phi3:mini \
+  --backend-matrix llama3.1:8b llama3.1:70b \
+                   qwen2.5:7b qwen2.5:14b qwen2.5:32b \
+                   mistral:7b phi3:mini \
   --include-mock-in-matrix \
   --experiments e6 --tag backends
 ```
 
 Every model must be pulled first; the harness refuses to substitute one model
 for another, so a results file cannot be labelled with a model that never ran.
-Allow two to four hours, most of it the 70B arm.
+Allow two to three hours, most of it the 70B arm.
+
+This list gives two size ladders rather than a flat set of models — llama3.1 at
+8B and 70B, qwen2.5 at 7B, 14B and 32B — which is what separates a claim about
+model *family* from a claim about model *scale*.
 
 Reduce `OLLAMA_NUM_PARALLEL` and `--concurrency` to 4 for the 70B model if you
 see the GPU running out of memory: each parallel request holds its own KV
