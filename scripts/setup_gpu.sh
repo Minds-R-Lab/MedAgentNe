@@ -56,15 +56,37 @@ say "Start the server"
 #   KEEP_ALIVE         -1, never unload between experiments
 #   FLASH_ATTENTION    faster attention kernels on Ampere and later
 export OLLAMA_HOST=127.0.0.1:11434
-export OLLAMA_NUM_PARALLEL=8
+export OLLAMA_NUM_PARALLEL=16
 export OLLAMA_MAX_LOADED_MODELS=1
 export OLLAMA_KEEP_ALIVE=-1
 export OLLAMA_FLASH_ATTENTION=1
 
 if curl -sf "http://$OLLAMA_HOST/api/tags" >/dev/null 2>&1; then
   echo "a server is already listening on $OLLAMA_HOST"
-  echo "if it was not started with the settings above, restart it:"
-  echo "  pkill ollama   # or: sudo systemctl stop ollama"
+  if systemctl list-unit-files 2>/dev/null | grep -q '^ollama.service'; then
+    # The install script leaves a systemd unit whose environment does NOT
+    # include the exports above. Without this the server serves one request at
+    # a time and every experiment runs at single-stream speed.
+    echo "configuring the systemd unit for parallel serving"
+    sudo mkdir -p /etc/systemd/system/ollama.service.d
+    sudo tee /etc/systemd/system/ollama.service.d/override.conf >/dev/null <<UNIT
+[Service]
+Environment="OLLAMA_NUM_PARALLEL=${OLLAMA_NUM_PARALLEL}"
+Environment="OLLAMA_MAX_LOADED_MODELS=${OLLAMA_MAX_LOADED_MODELS}"
+Environment="OLLAMA_KEEP_ALIVE=${OLLAMA_KEEP_ALIVE}"
+Environment="OLLAMA_FLASH_ATTENTION=${OLLAMA_FLASH_ATTENTION}"
+UNIT
+    sudo systemctl daemon-reload
+    sudo systemctl restart ollama
+    for _ in $(seq 1 40); do
+      curl -sf "http://$OLLAMA_HOST/api/tags" >/dev/null 2>&1 && break
+      sleep 1
+    done
+    systemctl show ollama -p Environment | tr ' ' '\n' | grep OLLAMA || true
+  else
+    echo "not a systemd unit; restart it yourself with the exports above:"
+    echo "  pkill ollama && nohup ollama serve > ~/ollama.log 2>&1 &"
+  fi
 else
   nohup ollama serve > "$HOME/ollama.log" 2>&1 &
   for _ in $(seq 1 40); do
@@ -99,7 +121,7 @@ Put these in your shell before running experiments (the script exported them
 for this shell only):
 
   export OLLAMA_HOST=127.0.0.1:11434
-  export OLLAMA_NUM_PARALLEL=8
+  export OLLAMA_NUM_PARALLEL=16
   export OLLAMA_MAX_LOADED_MODELS=1
   export OLLAMA_KEEP_ALIVE=-1
   export OLLAMA_FLASH_ATTENTION=1

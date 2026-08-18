@@ -616,6 +616,15 @@ class OllamaProvider(BaseLLMProvider):
         """Auto-detect whether to use /api/chat or /api/generate."""
         if self._use_chat_api is not None:
             return
+        import threading
+        if not hasattr(self, "_detect_lock"):
+            self._detect_lock = threading.Lock()
+        with self._detect_lock:
+            if self._use_chat_api is not None:
+                return
+            self._detect_api_version_locked()
+
+    def _detect_api_version_locked(self):
         import requests
         try:
             # Try /api/chat with a minimal request

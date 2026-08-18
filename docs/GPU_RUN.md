@@ -13,15 +13,46 @@ pip install -r requirements.txt
 ./scripts/setup_gpu.sh --with-70b        # omit the flag to skip the 70B model
 ```
 
-Then, in the shell you will run experiments from:
+### The one setting that is easy to get wrong
+
+`OLLAMA_NUM_PARALLEL` must be set **in the environment of the Ollama server
+process**, not in the shell you launch experiments from. If Ollama was installed
+with its own install script it runs as a systemd unit with its own environment,
+and exports in your shell have no effect on it. The symptom is a run that
+proceeds at single-stream speed no matter what `--concurrency` you pass —
+roughly 0.1 scenarios per second on an H100 instead of 1–2.
+
+If Ollama is a systemd service:
 
 ```bash
-export OLLAMA_HOST=127.0.0.1:11434
-export OLLAMA_NUM_PARALLEL=8
-export OLLAMA_MAX_LOADED_MODELS=1
-export OLLAMA_KEEP_ALIVE=-1
-export OLLAMA_FLASH_ATTENTION=1
+sudo mkdir -p /etc/systemd/system/ollama.service.d
+sudo tee /etc/systemd/system/ollama.service.d/override.conf >/dev/null <<'EOF'
+[Service]
+Environment="OLLAMA_NUM_PARALLEL=16"
+Environment="OLLAMA_MAX_LOADED_MODELS=1"
+Environment="OLLAMA_KEEP_ALIVE=-1"
+Environment="OLLAMA_FLASH_ATTENTION=1"
+EOF
+sudo systemctl daemon-reload && sudo systemctl restart ollama
+systemctl show ollama -p Environment      # confirm it took
 ```
+
+If you are running `ollama serve` yourself, export the variables *before*
+starting it, in that same shell.
+
+**Verify before committing hours to a run:**
+
+```bash
+python scripts/bench_backend.py --model llama3.1:8b
+```
+
+It reports throughput at concurrency 1, 4, 8 and 16. Speed-up should rise with
+concurrency. If it stays at 1.00x the server is serialising and the fix above
+has not taken effect.
+
+KV cache scales with `num_ctx` × parallelism. At 8192 context an 8B model needs
+about 1 GB per slot, so 16 slots is comfortable on an 80 GB card. A 70B model
+needs about 2.7 GB per slot on top of 42 GB of weights — use 4, not 16.
 
 ## Two settings that matter
 
