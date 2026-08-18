@@ -78,11 +78,14 @@ class R1Experiments:
 
     def e1_tiers(self, seeds=(42, 1042, 2042)) -> dict:
         rows = {}
+        step, nsteps = 0, 3 * len(seeds)
         for tier in (1, 2, 3):
             per_seed = []
             leak = []
             reid = []
             for s in seeds:
+                step += 1
+                logger.info(f"  [E1 {step}/{nsteps}] tier {tier}, seed {s}")
                 r = self.runner(seed=s)
                 results = r.run(force_tier=tier)
                 per_seed.append(evaluate_run(results))
@@ -120,10 +123,14 @@ class R1Experiments:
                    n_graphs=10, seed=None) -> dict:
         seed = self.base_seed if seed is None else seed
         rows = []
+        step, nsteps = 0, len(fractions) * n_graphs
         for frac in fractions:
             trials = []
             denial_rates = []
             for g in range(n_graphs):
+                step += 1
+                logger.info(f"  [E2 {step}/{nsteps}] revoked {frac:.0%}, "
+                            f"graph {g + 1}/{n_graphs}")
                 r = self.runner(seed=seed)
                 r.generate()
                 rng = random.Random((seed * 7919) ^ (g * 104729) ^ int(frac * 1000))
@@ -216,8 +223,10 @@ class R1Experiments:
 
     def e3_variance(self, seeds=(42, 1042, 2042, 3042, 4042)) -> dict:
         dev, held = [], []
-        for s in seeds:
+        for i, s in enumerate(seeds, 1):
+            logger.info(f"  [E3 {i}/{len(seeds)}] seed {s}, development family")
             dev.append(evaluate_run(self.runner(seed=s).run()))
+            logger.info(f"  [E3 {i}/{len(seeds)}] seed {s}, held-out family")
             held.append(evaluate_run(
                 self.runner(seed=s, use_heldout=True).run()))
         return {
@@ -235,7 +244,9 @@ class R1Experiments:
     def e4_ablations(self, seeds=(42, 1042, 2042)) -> dict:
         rows = {}
         reference_grades = {}
-        for name, kw in bl.ARCHITECTURE_VARIANTS.items():
+        nvar = len(bl.ARCHITECTURE_VARIANTS)
+        for vi, (name, kw) in enumerate(bl.ARCHITECTURE_VARIANTS.items(), 1):
+            logger.info(f"  [E4 {vi}/{nvar}] {name}")
             per_seed, grade_sets = [], []
             queries = []
             for s in seeds:
@@ -298,6 +309,7 @@ class R1Experiments:
         }
 
         for name, fn in bl.EXTERNAL_BASELINES.items():
+            logger.info(f"  [E5] baseline: {name}")
             per_seed, grades = [], None
             for s in seeds:
                 r = self.runner(seed=s)
@@ -331,7 +343,8 @@ class R1Experiments:
         """`providers` maps a display name to a BaseLLMProvider instance."""
         rows = {}
         grade_ref = None
-        for name, provider in providers.items():
+        for pi, (name, provider) in enumerate(providers.items(), 1):
+            logger.info(f"  [E6 {pi}/{len(providers)}] backend: {name}")
             per_seed, grades = [], None
             try:
                 provider.reset_stats()
@@ -378,6 +391,7 @@ class R1Experiments:
                        concurrency_levels=(1, 2, 4, 8)) -> dict:
         by_patients = []
         for n in patient_counts:
+            logger.info(f"  [E7] patients={n}")
             r = self.runner(num_patients=n, concurrency=1)
             res = r.run(concurrency=1)
             ev = evaluate_run(res)
@@ -389,6 +403,7 @@ class R1Experiments:
 
         by_departments = []
         for k in department_counts:
+            logger.info(f"  [E7] departments={k}")
             r = self.runner(n_departments=k, concurrency=1)
             res = r.run(concurrency=1)
             ev = evaluate_run(res)
@@ -401,6 +416,7 @@ class R1Experiments:
 
         by_concurrency = []
         for c in concurrency_levels:
+            logger.info(f"  [E7] concurrency={c}")
             r = self.runner(concurrency=c)
             res = r.run(concurrency=c)
             ev = evaluate_run(res)
@@ -531,12 +547,17 @@ class R1Experiments:
             "e8": lambda: self.e8_adversarial(),
             "e9": lambda: self.e9_context_audit(),
         }
-        for key in which:
-            logger.info(f"── running {key} ──")
+        for i, key in enumerate(which, 1):
+            logger.info(f"{'=' * 62}")
+            logger.info(f"  experiment {key.upper()}  ({i} of {len(which)})")
+            logger.info(f"{'=' * 62}")
             started = time.time()
             try:
                 out[key] = table[key]()
                 out[key]["_wall_seconds"] = round(time.time() - started, 1)
+                logger.info(f"  {key.upper()} done in "
+                            f"{out[key]['_wall_seconds'] / 60:.1f} min "
+                            f"(total so far {(time.time() - t0) / 60:.1f} min)")
             except Exception as e:
                 logger.exception(f"{key} failed")
                 out[key] = {"error": f"{type(e).__name__}: {e}"}

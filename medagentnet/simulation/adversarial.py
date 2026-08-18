@@ -431,6 +431,13 @@ def run_availability(make_runner, seed: int, num_patients: int,
 
 
 def run_all_adversarial(make_runner, seed: int = 42, num_patients: int = 60) -> dict:
+    import logging
+    log = logging.getLogger("medagentnet.experiments_v2")
+    log.info("  [E8] A3 prompt injection"); _a3 = run_prompt_injection(make_runner, seed, num_patients)
+    log.info("  [E8] A2 compromised agent"); _a2 = run_compromised_agent(make_runner, seed, num_patients)
+    log.info("  [E8] A1 differencing");      _a1 = run_differencing_attack(make_runner, seed, num_patients)
+    log.info("  [E8] A4 token replay");      _a4 = run_token_replay(make_runner, seed)
+    log.info("  [E8] A5 availability");      _a5 = run_availability(make_runner, seed, num_patients)
     return {
         "threat_model": {
             "adversaries": {
@@ -451,9 +458,9 @@ def run_all_adversarial(make_runner, seed: int = 42, num_patients: int = 60) -> 
                 "transport side channels", "model extraction",
             ],
         },
-        "A3_prompt_injection": run_prompt_injection(make_runner, seed, num_patients),
-        "A2_compromised_agent": run_compromised_agent(make_runner, seed, num_patients),
-        "A1_differencing": run_differencing_attack(make_runner, seed, num_patients),
-        "A4_token_replay": run_token_replay(make_runner, seed),
-        "A5_availability": run_availability(make_runner, seed, num_patients),
+        "A3_prompt_injection": _a3,
+        "A2_compromised_agent": _a2,
+        "A1_differencing": _a1,
+        "A4_token_replay": _a4,
+        "A5_availability": _a5,
     }

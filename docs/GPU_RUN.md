@@ -83,12 +83,27 @@ The **backend matrix is cheap by comparison** — E6 runs two seeds per model, n
 the whole suite, so each arm is 2,800 calls: minutes for the 7–8B models and
 under an hour for 70B.
 
-Run it under `tmux` or `nohup` — a dropped SSH session or a closed Jupyter tab
-will otherwise kill it:
+### Keeping it alive, and watching it
+
+A closed Jupyter terminal tab kills whatever is running in it. `nohup` detaches
+the process from the tab while still letting you follow the output:
 
 ```bash
-tmux new -s med
-# ... start the run, then Ctrl-b d to detach; tmux attach -t med to return
+nohup python run_r1.py ... > ~/reported.log 2>&1 &
+tail -f ~/reported.log
+```
+
+`Ctrl-c` stops the `tail`, not the run. Reattach to the output at any time with
+the same `tail -f`. `tmux` is an alternative if you prefer it, but it is not
+required.
+
+The run prints a heading for each experiment, a line per sub-step of every
+sweep, and a progress line with rate and ETA roughly eight times per run:
+
+```
+  experiment E2  (3 of 8)
+  [E2 14/60] revoked 20%, graph 4/10
+    58/232 scenarios  1.4/s  elapsed 0.7m  eta 2.1m
 ```
 
 ## The backend matrix

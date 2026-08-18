@@ -241,15 +241,37 @@ class HardRunner:
         self.orchestrator.reset_counters()
         wall_start = time.time()
 
+        total = len(self.specs)
+        every = max(20, total // 8)
+        done = [0]
+        lock = threading.Lock()
+
+        def _tick():
+            """Progress heartbeat, so a multi-hour run shows it is alive."""
+            with lock:
+                done[0] += 1
+                n = done[0]
+            if n % every and n != total:
+                return
+            el = time.time() - wall_start
+            rate = n / el if el else 0
+            eta = (total - n) / rate if rate else 0
+            logger.info(f"    {n}/{total} scenarios  {rate:.1f}/s  "
+                        f"elapsed {el/60:.1f}m  eta {eta/60:.1f}m")
+
         if concurrency <= 1:
-            self.results = [self._run_one(s, force_tier) for s in self.specs]
+            self.results = []
+            for spec in self.specs:
+                self.results.append(self._run_one(spec, force_tier))
+                _tick()
         else:
-            results = [None] * len(self.specs)
+            results = [None] * total
             with ThreadPoolExecutor(max_workers=concurrency) as pool:
                 futures = {pool.submit(self._run_one, s, force_tier): i
                            for i, s in enumerate(self.specs)}
                 for fut in as_completed(futures):
                     results[futures[fut]] = fut.result()
+                    _tick()
             self.results = [r for r in results if r is not None]
 
         self.wall_seconds = time.time() - wall_start
