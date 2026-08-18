@@ -625,9 +625,20 @@ class OllamaProvider(BaseLLMProvider):
             self._detect_api_version_locked()
 
     def _detect_api_version_locked(self):
+        """Choose /api/chat unless the server explicitly lacks it.
+
+        /api/chat applies the model's own chat template. /api/generate is given
+        a hand-rolled "### System: ... ### User:" string, which is not the
+        template llama3 or qwen expect, and instruction-following and JSON
+        compliance both suffer as a result.
+
+        A timeout must therefore NOT be read as "old server". The probe fires
+        while the model is still loading -- minutes for a 70B -- and a 30 second
+        limit meant a cold start silently downgraded the whole run to the worse
+        endpoint. Only a 404 means the endpoint is genuinely absent.
+        """
         import requests
         try:
-            # Try /api/chat with a minimal request
             resp = requests.post(
                 f"{self.base_url}/api/chat",
                 json={
@@ -636,18 +647,28 @@ class OllamaProvider(BaseLLMProvider):
                     "stream": False,
                     "options": {"num_predict": 1},
                 },
-                timeout=30,
+                timeout=self.request_timeout,
             )
-            if resp.status_code == 200:
-                self._use_chat_api = True
-                logger.info("Ollama: using /api/chat endpoint")
+            if resp.status_code == 404:
+                self._use_chat_api = False
+                logger.warning("Ollama: /api/chat returned 404; falling back to "
+                               "/api/generate. Response quality will be lower "
+                               "because the model's chat template is not applied.")
                 return
-        except Exception:
-            pass
-
-        # Fall back to /api/generate
-        self._use_chat_api = False
-        logger.info("Ollama: using /api/generate endpoint (older version detected)")
+            self._use_chat_api = True
+            logger.info(f"Ollama: using /api/chat endpoint "
+                        f"(probe returned {resp.status_code})")
+            return
+        except requests.exceptions.Timeout:
+            self._use_chat_api = True
+            logger.info("Ollama: /api/chat probe timed out, which usually means "
+                        "the model is still loading. Using /api/chat.")
+            return
+        except Exception as e:
+            self._use_chat_api = True
+            logger.info(f"Ollama: /api/chat probe failed ({type(e).__name__}); "
+                        f"using /api/chat anyway, since every server since 2024 "
+                        f"provides it.")
 
     def describe(self) -> str:
         return (f"Ollama ({self.model}, T={self.temperature}, "
@@ -707,13 +728,15 @@ class OllamaProvider(BaseLLMProvider):
     def _generate_legacy(self, system_prompt: str, user_prompt: str) -> str:
         """Use the older /api/generate endpoint (compatible with all Ollama versions)."""
         import requests
-        # Combine system + user prompt for the generate endpoint
-        combined_prompt = f"### System:\n{system_prompt}\n\n### User:\n{user_prompt}\n\n### Assistant:\n"
+        # `system` is passed separately and Ollama inserts it via the model's
+        # template, so the prompt must NOT repeat it -- doing so gave the model
+        # the system instructions twice, once inside unfamiliar "### System:"
+        # markers.
         resp = requests.post(
             f"{self.base_url}/api/generate",
             json={
                 "model": self.model,
-                "prompt": combined_prompt,
+                "prompt": user_prompt,
                 "system": system_prompt,
                 "stream": False,
                 "options": self._options(),

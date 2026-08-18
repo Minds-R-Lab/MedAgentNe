@@ -153,6 +153,7 @@ class HardRunner:
         self.patients: list[PatientRecord] = []
         self.specs: list[scen.ScenarioSpec] = []
         self.results: list[dict] = []
+        self.failed_scenarios: list[dict] = []
 
     # ── data ─────────────────────────────────────────────────────────────
 
@@ -244,7 +245,29 @@ class HardRunner:
         total = len(self.specs)
         every = max(20, total // 8)
         done = [0]
+        failed = []
         lock = threading.Lock()
+
+        def _guarded(spec, tier):
+            """Run one scenario; never let a single failure kill the run.
+
+            A model backend can return a shape nothing else produces, and over a
+            multi-hour sweep that will happen at least once. Losing an entire
+            experiment to it is worse than losing one scenario, so failures are
+            recorded and reported rather than raised. They are excluded from
+            scoring: a harness failure is not evidence that the system missed a
+            finding.
+            """
+            try:
+                return self._run_one(spec, tier)
+            except Exception as e:
+                with lock:
+                    failed.append({"scenario": spec.scenario_name,
+                                   "patient": spec.patient.patient_id,
+                                   "error": f"{type(e).__name__}: {e}"})
+                logger.warning(f"    scenario failed ({spec.scenario_name}): "
+                               f"{type(e).__name__}: {e}")
+                return None
 
         def _tick():
             """Progress heartbeat, so a multi-hour run shows it is alive."""
@@ -262,12 +285,14 @@ class HardRunner:
         if concurrency <= 1:
             self.results = []
             for spec in self.specs:
-                self.results.append(self._run_one(spec, force_tier))
+                r = _guarded(spec, force_tier)
+                if r is not None:
+                    self.results.append(r)
                 _tick()
         else:
             results = [None] * total
             with ThreadPoolExecutor(max_workers=concurrency) as pool:
-                futures = {pool.submit(self._run_one, s, force_tier): i
+                futures = {pool.submit(_guarded, s, force_tier): i
                            for i, s in enumerate(self.specs)}
                 for fut in as_completed(futures):
                     results[futures[fut]] = fut.result()
@@ -275,6 +300,12 @@ class HardRunner:
             self.results = [r for r in results if r is not None]
 
         self.wall_seconds = time.time() - wall_start
+        self.failed_scenarios = failed
+        if failed:
+            pct = 100.0 * len(failed) / max(1, total)
+            level = logger.error if pct > 1.0 else logger.warning
+            level(f"    {len(failed)}/{total} scenarios failed ({pct:.1f}%). "
+                  f"They are excluded from scoring. First: {failed[0]['error']}")
         return self.results
 
     # ── reporting helpers ────────────────────────────────────────────────

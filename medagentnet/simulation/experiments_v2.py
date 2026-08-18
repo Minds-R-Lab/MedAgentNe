@@ -77,6 +77,19 @@ class R1Experiments:
             **kw,
         )
 
+    @staticmethod
+    def _with_failures(ev: dict, runner) -> dict:
+        """Attach the scenario-failure count, so it cannot pass unnoticed."""
+        f = getattr(runner, "failed_scenarios", []) or []
+        ev["harness_failures"] = {
+            "n_failed_scenarios": len(f),
+            "examples": f[:3],
+            "note": "Scenarios the harness could not complete. Excluded from "
+                    "scoring rather than counted as misses, since a harness "
+                    "failure is not evidence about detection.",
+        }
+        return ev
+
     def _provider_stats(self):
         try:
             return self.llm.stats if self.llm else {}

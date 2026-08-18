@@ -1009,19 +1009,38 @@ class OrchestratorAgent:
             "",
             "DISCLOSED EVIDENCE:",
         ]
+        def _label(item, *keys, default="unnamed"):
+            """One field of a model-produced object, as a string.
+
+            A backend may emit a key whose value is null rather than omitting
+            the key, so `.get(k, "")` returns None and any join over it raises.
+            This is the shape the deterministic backend never produces and a
+            real model produces regularly.
+            """
+            if not isinstance(item, dict):
+                return str(item) if item is not None else default
+            for k in keys:
+                v = item.get(k)
+                if v is not None and str(v).strip():
+                    return str(v).strip()
+            return default
+
         for r in responses:
             meds = ", ".join(
-                (m.get("name") or m.get("category", "")) if isinstance(m, dict) else str(m)
-                for m in r.medications_reported) or "none reported"
+                _label(m, "name", "category") for m in r.medications_reported
+            ) or "none reported"
             conds = ", ".join(
-                (c.get("name", "") if isinstance(c, dict) else str(c))
-                for c in r.conditions_reported) or "none reported"
+                _label(c, "name", "code") for c in r.conditions_reported
+            ) or "none reported"
             labs = "; ".join(
-                f"{l.get('test_name')} {l.get('value')} ({l.get('date','')})"
-                for l in r.lab_results_reported if isinstance(l, dict)) or "none reported"
+                f"{_label(l, 'test_name', 'name', default='test')} "
+                f"{_label(l, 'value', default='?')} "
+                f"({_label(l, 'date', default='date unknown')})"
+                for l in r.lab_results_reported
+            ) or "none reported"
             lines.append(f"- {r.source_agent}: medications: {meds}. "
                          f"conditions: {conds}. results: {labs}. "
-                         f"note: {r.summary[:200]}")
+                         f"note: {(r.summary or '')[:200]}")
         lines += [
             "",
             "Identify only interactions or patterns that require evidence from "

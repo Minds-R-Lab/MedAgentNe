@@ -307,12 +307,34 @@ gcloud compute scp <instance>:~/MedAgentNe/medagentnet/medagentnet-results.tar.g
 Or open `data/results_r1/latest_tables.tex` in the Jupyter file browser and
 download it directly.
 
+## Checking the endpoint that was used
+
+Ollama exposes both `/api/chat` and `/api/generate`. Only `/api/chat` applies the
+model's own chat template; `/api/generate` receives a hand-assembled prompt that
+is not the format llama3 or qwen expect, and instruction-following and JSON
+compliance are both measurably worse through it. The backend probes for
+`/api/chat` on the first call and now falls back only on an explicit 404 — a
+probe that times out because the model is still loading is no longer read as
+"old server".
+
+Confirm which one a run used before trusting its numbers:
+
+```bash
+grep -m1 "api/chat\|api/generate" ~/reported.log
+```
+
+`using /api/chat endpoint` is what you want. If a run says
+`falling back to /api/generate`, its outputs are not comparable with one that
+did not, and it should be repeated.
+
 ## If something goes wrong
 
 | Symptom | Cause |
 |---|---|
 | `ProviderUnavailable` at startup | Server not running, or the model is not pulled. `ollama list` to check. This is deliberate — the harness will not silently fall back to the rule-based backend. |
 | `ollama ps` shows `100% CPU` | The CUDA runtime was not found at install time. See `~/ollama.log`; reinstalling after the driver is present usually fixes it. |
-| Run dies partway | Use `tmux`. Experiments are independent, so you can also rerun just the missing ones with `--experiments e2 e7`. |
+| Run dies partway | Rerun the same command with `--resume`; completed experiments are skipped. |
+| An experiment reports `harness_failures` | Individual scenarios the backend broke. Under about 1% they are noise and are excluded from scoring; above that, something systematic is wrong and the run should be repeated. |
+| A run used `/api/generate` | See above. Repeat it; the outputs are not comparable. |
 | `truncation_suspected` > 0 | Raise `--num-ctx` to 16384 and rerun. |
 | Out of memory with 70B | Lower `OLLAMA_NUM_PARALLEL` and `--concurrency` to 2–4. |
