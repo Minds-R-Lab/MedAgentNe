@@ -120,8 +120,16 @@ def run_centralized_rules(specs, **_) -> list[dict]:
     return out
 
 
-def run_centralized_llm(specs, llm, **_) -> list[dict]:
+def run_centralized_llm(specs, llm, concurrency: int = 1, **_) -> list[dict]:
     """A single agent holding the entire cross-departmental record."""
+    if concurrency > 1:
+        from concurrent.futures import ThreadPoolExecutor
+        out = [None] * len(specs)
+        with ThreadPoolExecutor(max_workers=concurrency) as pool:
+            for i, r in enumerate(pool.map(
+                    lambda sp: run_centralized_llm([sp], llm)[0], specs)):
+                out[i] = r
+        return out
     out = []
     system = (
         "You are a clinical decision support system with access to a patient's "

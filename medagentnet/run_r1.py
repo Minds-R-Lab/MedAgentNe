@@ -50,7 +50,9 @@ def build_provider(args):
     if args.provider == "ollama":
         p = OllamaProvider(base_url=args.ollama_url, model=args.model,
                            temperature=args.temperature,
-                           max_tokens=args.max_tokens)
+                           max_tokens=args.max_tokens,
+                           num_ctx=args.num_ctx,
+                           request_timeout=args.request_timeout)
         if not p.is_available():
             raise ProviderUnavailable(
                 f"Ollama model '{args.model}' is not available at "
@@ -73,7 +75,8 @@ def build_backend_matrix(args) -> dict:
     out = {}
     for model in args.backend_matrix or []:
         p = OllamaProvider(base_url=args.ollama_url, model=model,
-                           temperature=args.temperature, max_tokens=args.max_tokens)
+                           temperature=args.temperature, max_tokens=args.max_tokens,
+                           num_ctx=args.num_ctx, request_timeout=args.request_timeout)
         if not p.is_available():
             raise ProviderUnavailable(
                 f"Backend matrix: '{model}' is not pulled. Run `ollama pull {model}`.")
@@ -92,8 +95,20 @@ def main():
     ap.add_argument("--openai-url", default="http://localhost:8000/v1")
     ap.add_argument("--temperature", type=float, default=0.3)
     ap.add_argument("--max-tokens", type=int, default=1024)
+    ap.add_argument("--num-ctx", type=int, default=8192,
+                    help="context window for the Ollama backend. Ollama's own "
+                         "default is 2048, which silently truncates a Tier-3 "
+                         "prompt carrying a full record.")
+    ap.add_argument("--request-timeout", type=int, default=600,
+                    help="per-request timeout in seconds; raise it when running "
+                         "many scenarios in parallel against one server.")
 
     ap.add_argument("--patients", type=int, default=150)
+    ap.add_argument("--concurrency", type=int, default=1,
+                    help="scenarios evaluated in parallel. Scenarios are "
+                         "independent and results are reassembled in order, so "
+                         "this changes throughput only. Match it to the model "
+                         "server's parallelism (e.g. OLLAMA_NUM_PARALLEL).")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--experiments", nargs="+", default=DEFAULT_EXPERIMENTS,
                     choices=ALL_EXPERIMENTS)
@@ -127,13 +142,14 @@ def main():
     print(f"  patients     : {args.patients}")
     print(f"  base seed    : {args.seed}")
     print(f"  experiments  : {', '.join(args.experiments)}")
+    print(f"  concurrency  : {args.concurrency}")
     if matrix:
         print(f"  backend matrix: {', '.join(matrix)}")
     print("=" * 72)
 
     exp = R1Experiments(config_dir=args.config_dir, llm_provider=provider,
                         base_seed=args.seed, num_patients=args.patients,
-                        out_dir=args.out_dir)
+                        out_dir=args.out_dir, concurrency=args.concurrency)
     results = exp.run_all(which=args.experiments, providers=matrix)
     path = exp.save(results, tag=args.tag or args.provider)
 

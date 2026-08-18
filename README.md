@@ -126,14 +126,19 @@ python run_r1.py --provider mock --patients 200 --tag validation
 About 80 seconds. Writes `data/results_r1/<tag>_<timestamp>/results.json` and
 `tables.tex`.
 
-With a language model:
+On a GPU box, see `docs/GPU_RUN.md` — there is a setup script, and
+`--concurrency` matters a great deal. In short:
 
 ```bash
-ollama serve &
-ollama pull llama3.1:8b
+./scripts/setup_gpu.sh
+cd medagentnet
 python run_r1.py --provider ollama --model llama3.1:8b --patients 200 \
+                 --concurrency 8 --num-ctx 8192 \
                  --tag reported --experiments e9 e1 e2 e3 e4 e5 e7 e8
 ```
+
+About 45–90 minutes on an H100; the same run is 6–9 hours sequentially on a
+consumer card.
 
 Backend matrix (pull each model first):
 

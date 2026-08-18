@@ -87,7 +87,8 @@ class HardRunner:
                  query_budget: int = 0,
                  corroborate_critical: bool = False,
                  n_departments: Optional[int] = None,
-                 persist_audit: bool = False):
+                 persist_audit: bool = False,
+                 concurrency: int = 1):
         self.config_dir = config_dir
         self.seed = seed
         self.num_patients = num_patients
@@ -141,6 +142,13 @@ class HardRunner:
             query_budget=query_budget,
             corroborate_critical=corroborate_critical,
         )
+
+        # Default degree of parallelism for run(). Scenarios are independent,
+        # so this is a throughput knob only: results are reassembled in spec
+        # order, so a run at any concurrency is identical to a sequential one.
+        # It matters when the backend is a model server that can serve several
+        # requests at once (set OLLAMA_NUM_PARALLEL to match).
+        self.concurrency = max(1, int(concurrency))
 
         self.patients: list[PatientRecord] = []
         self.specs: list[scen.ScenarioSpec] = []
@@ -223,12 +231,13 @@ class HardRunner:
         }
 
     def run(self, force_tier: Optional[int] = None,
-            concurrency: int = 1) -> list[dict]:
+            concurrency: Optional[int] = None) -> list[dict]:
         if not self.patients:
             self.generate()
         if not self.specs:
             self.build_scenarios()
 
+        concurrency = self.concurrency if concurrency is None else max(1, int(concurrency))
         self.orchestrator.reset_counters()
         wall_start = time.time()
 

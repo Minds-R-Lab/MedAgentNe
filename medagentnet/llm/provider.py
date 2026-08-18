@@ -42,6 +42,10 @@ class BaseLLMProvider(ABC):
             "format_failure_rate": round(self.format_failures / self.n_calls, 4)
             if self.n_calls else 0.0,
             "errors": self.errors,
+            **({"truncation_suspected": self.truncation_suspected,
+                "max_prompt_tokens_seen": self.max_prompt_chars_seen // 4,
+                "num_ctx": self.num_ctx}
+               if hasattr(self, "num_ctx") else {}),
         }
 
     def reset_stats(self):
@@ -524,13 +528,44 @@ class OllamaProvider(BaseLLMProvider):
 
     def __init__(self, base_url: str = "http://localhost:11434",
                  model: str = "llama3:8b-instruct",
-                 temperature: float = 0.3, max_tokens: int = 1024):
+                 temperature: float = 0.3, max_tokens: int = 1024,
+                 num_ctx: int = 8192, request_timeout: int = 600):
         self.base_url = base_url.rstrip("/")
         self.model = model
         self.temperature = temperature
         self.max_tokens = max_tokens
+        # Ollama defaults to a 2048-token context. A Tier-3 prompt carrying a
+        # full departmental record with a longitudinal laboratory series and
+        # clinical notes exceeds that, and Ollama truncates SILENTLY from the
+        # start of the prompt -- which would remove the system prompt and the
+        # clinical context while still returning a plausible-looking answer.
+        # Set it explicitly. `truncation_suspected` counts prompts that come
+        # close to the limit so a run can be checked afterwards.
+        self.num_ctx = num_ctx
+        self.request_timeout = request_timeout
+        self.truncation_suspected = 0
+        self.max_prompt_chars_seen = 0
         self._use_chat_api = None  # Auto-detect on first call
         self._available_models = []
+
+    def _options(self) -> dict:
+        return {
+            "temperature": self.temperature,
+            "num_predict": self.max_tokens,
+            "num_ctx": self.num_ctx,
+        }
+
+    def _check_prompt_fits(self, system_prompt: str, user_prompt: str):
+        """Warn if a prompt approaches the configured context window."""
+        n = len(system_prompt) + len(user_prompt)
+        self.max_prompt_chars_seen = max(self.max_prompt_chars_seen, n)
+        # ~4 characters per token, and leave room for the completion.
+        budget = (self.num_ctx - self.max_tokens) * 4
+        if n > budget:
+            self.truncation_suspected += 1
+            logger.warning(
+                f"prompt of ~{n // 4} tokens may not fit num_ctx={self.num_ctx} "
+                f"with num_predict={self.max_tokens}; raise --num-ctx")
 
     def is_available(self) -> bool:
         try:
@@ -596,13 +631,15 @@ class OllamaProvider(BaseLLMProvider):
         logger.info("Ollama: using /api/generate endpoint (older version detected)")
 
     def describe(self) -> str:
-        return f"Ollama ({self.model}, T={self.temperature})"
+        return (f"Ollama ({self.model}, T={self.temperature}, "
+                f"num_ctx={self.num_ctx})")
 
     def generate(self, system_prompt: str, user_prompt: str) -> str:
         import requests
         import time as _time
 
         self._detect_api_version()
+        self._check_prompt_fits(system_prompt, user_prompt)
         t0 = _time.time()
 
         try:
@@ -641,12 +678,9 @@ class OllamaProvider(BaseLLMProvider):
                     {"role": "user", "content": user_prompt},
                 ],
                 "stream": False,
-                "options": {
-                    "temperature": self.temperature,
-                    "num_predict": self.max_tokens,
-                },
+                "options": self._options(),
             },
-            timeout=120,
+            timeout=self.request_timeout,
         )
         resp.raise_for_status()
         return resp.json()["message"]["content"]
@@ -663,12 +697,9 @@ class OllamaProvider(BaseLLMProvider):
                 "prompt": combined_prompt,
                 "system": system_prompt,
                 "stream": False,
-                "options": {
-                    "temperature": self.temperature,
-                    "num_predict": self.max_tokens,
-                },
+                "options": self._options(),
             },
-            timeout=120,
+            timeout=self.request_timeout,
         )
         resp.raise_for_status()
         return resp.json().get("response", "")

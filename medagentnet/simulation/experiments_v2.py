@@ -44,12 +44,16 @@ logger = logging.getLogger("medagentnet.experiments_v2")
 class R1Experiments:
 
     def __init__(self, config_dir="config", llm_provider=None,
-                 base_seed=42, num_patients=150, out_dir="data/results_r1"):
+                 base_seed=42, num_patients=150, out_dir="data/results_r1",
+                 concurrency=1):
         self.config_dir = config_dir
         self.llm = llm_provider
         self.base_seed = base_seed
         self.num_patients = num_patients
         self.out_dir = out_dir
+        # Applies to every experiment except E7, which varies concurrency
+        # deliberately and pins its other sweeps to 1 so they stay comparable.
+        self.concurrency = max(1, int(concurrency))
         os.makedirs(out_dir, exist_ok=True)
 
     # ── helper ───────────────────────────────────────────────────────────
@@ -60,6 +64,7 @@ class R1Experiments:
             llm_provider=self.llm,
             seed=self.base_seed if seed is None else seed,
             num_patients=self.num_patients if num_patients is None else num_patients,
+            concurrency=kw.pop("concurrency", self.concurrency),
             **kw,
         )
 
@@ -298,7 +303,7 @@ class R1Experiments:
                 r = self.runner(seed=s)
                 r.generate()
                 specs = r.build_scenarios()
-                res = fn(specs, llm=r.llm)
+                res = fn(specs, llm=r.llm, concurrency=self.concurrency)
                 per_seed.append(evaluate_run(res))
                 if grades is None:
                     grades = [grade_scenario(x) for x in res]
@@ -373,8 +378,8 @@ class R1Experiments:
                        concurrency_levels=(1, 2, 4, 8)) -> dict:
         by_patients = []
         for n in patient_counts:
-            r = self.runner(num_patients=n)
-            res = r.run()
+            r = self.runner(num_patients=n, concurrency=1)
+            res = r.run(concurrency=1)
             ev = evaluate_run(res)
             by_patients.append({
                 "patients": n, **r.throughput_report(),
@@ -384,8 +389,8 @@ class R1Experiments:
 
         by_departments = []
         for k in department_counts:
-            r = self.runner(n_departments=k)
-            res = r.run()
+            r = self.runner(n_departments=k, concurrency=1)
+            res = r.run(concurrency=1)
             ev = evaluate_run(res)
             by_departments.append({
                 "departments": k, **r.throughput_report(),
@@ -396,7 +401,7 @@ class R1Experiments:
 
         by_concurrency = []
         for c in concurrency_levels:
-            r = self.runner()
+            r = self.runner(concurrency=c)
             res = r.run(concurrency=c)
             ev = evaluate_run(res)
             by_concurrency.append({
