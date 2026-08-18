@@ -62,7 +62,17 @@ costs concurrency. A 70B model needs roughly 1.4 GB per slot at 4096 on top of
 
 Ollama's scheduler is built for interactive use rather than batch throughput,
 and on a large card it commonly plateaus around 2-3x however many slots it is
-given. Two responses, in order of risk.
+given. Confirm that is what you are seeing rather than a misconfiguration:
+
+```bash
+ollama ps                                     # must say 100% GPU
+journalctl -u ollama --no-pager | grep -o 'Parallel:[0-9]*' | tail -1
+```
+
+If the slot count matches what you asked for and the model is fully on the GPU,
+the setting is right and the ceiling is the backend's. Measured on an H100 with
+llama3.1:8b, 16 slots, 4096 context: **2.5x over single-stream, about 570
+tokens per second aggregate**. Two responses, in order of risk.
 
 **Cheap: shrink the sweeps.** E2 and E4 are roughly three quarters of the cost
 of the suite — E2 is six restriction levels times ten sampled graphs, E4 is ten

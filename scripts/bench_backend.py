@@ -83,7 +83,7 @@ def main():
     print(f"server env : OLLAMA_NUM_PARALLEL is set in the SERVER's environment,")
     print(f"             not this shell. See the note printed at the end.\n")
     print(f"{'concurrency':>12}{'calls':>8}{'wall s':>9}{'calls/s':>10}"
-          f"{'speed-up':>10}{'mean s':>9}")
+          f"{'speed-up':>10}{'mean s':>9}{'out tok':>9}{'tok/s':>9}")
 
     base = None
     for c in args.levels:
@@ -110,12 +110,26 @@ def main():
         wall = time.time() - t0
         rate = n / wall
         base = base or rate
+        st = p.stats
+        out_tok = st.get("approx_completion_tokens", 0) / max(1, st.get("calls", 1))
         print(f"{c:>12}{n:>8}{wall:>9.1f}{rate:>10.2f}{rate / base:>9.2f}x"
-              f"{statistics.mean(lat):>9.2f}")
+              f"{statistics.mean(lat):>9.2f}{out_tok:>9.0f}{out_tok * rate:>9.0f}")
 
     print()
     print("Interpretation")
     print("--------------")
+    print("'out tok' is the mean completion length. If it sits near the")
+    print("num_predict cap the model is rambling and capping it lower will")
+    print("speed everything up proportionally; if it is well under, decode")
+    print("length is not the bottleneck and there is nothing to gain there.")
+    print()
+    print("A llama.cpp-based server (Ollama) typically plateaus at 2-4x however")
+    print("many slots it is given -- confirm the slot count in the server log")
+    print("before concluding it is misconfigured:")
+    print("  journalctl -u ollama --no-pager | grep -o 'Parallel:[0-9]*' | tail -1")
+    print("If it already says the number you asked for, and 'ollama ps' shows")
+    print("100% GPU, then this is the backend's ceiling rather than a setting.")
+    print()
     print("Speed-up should rise roughly with concurrency until the GPU saturates.")
     print("If it stays near 1.00x, the server is serialising requests. Fix it by")
     print("setting the variable in the SERVER's environment and restarting it:")
