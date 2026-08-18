@@ -224,6 +224,10 @@ are set out in the manuscript and summarised in `docs/CHANGELOG_R1.md`.
 See `CITATION.cff`. The paper is under review; this file is updated when it
 appears.
 
-## License
+## License and status
 
 MIT — see `LICENSE`.
+
+Research software. Not a medical device, not validated for clinical use, and
+not to be used in the care of patients. All records are synthetic. See
+`NOTICE.md`.
