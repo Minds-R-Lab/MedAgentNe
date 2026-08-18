@@ -134,6 +134,11 @@ def main():
     ap.add_argument("--out-dir", default="data/results_r1")
     ap.add_argument("--tag", default="")
     ap.add_argument("--config-dir", default="config")
+    ap.add_argument("--resume", action="store_true",
+                    help="skip experiments already recorded in "
+                         "<out-dir>/checkpoint.json. Every experiment is "
+                         "checkpointed as it finishes, so a run that dies "
+                         "part-way can be restarted without repeating work.")
     ap.add_argument("--quiet", action="store_true")
     args = ap.parse_args()
 
@@ -168,7 +173,8 @@ def main():
                         base_seed=args.seed, num_patients=args.patients,
                         out_dir=args.out_dir, concurrency=args.concurrency,
                         n_seeds=args.seeds, consent_graphs=args.consent_graphs)
-    results = exp.run_all(which=args.experiments, providers=matrix)
+    results = exp.run_all(which=args.experiments, providers=matrix,
+                          resume=args.resume)
     path = exp.save(results, tag=args.tag or args.provider)
 
     print("\n" + "=" * 72)

@@ -531,8 +531,26 @@ class R1Experiments:
 
     # ── driver ───────────────────────────────────────────────────────────
 
-    def run_all(self, which=None, providers=None) -> dict:
+    def run_all(self, which=None, providers=None, resume=False) -> dict:
         which = which or ["e9", "e1", "e2", "e3", "e4", "e5", "e7", "e8"]
+
+        # A full run is many hours. Completed experiments are checkpointed as
+        # they finish, so a crash, a preemption or an idle shutdown costs only
+        # the experiment in flight rather than everything before it.
+        ckpt = os.path.join(self.out_dir, "checkpoint.json")
+        done = {}
+        if resume and os.path.exists(ckpt):
+            try:
+                with open(ckpt) as f:
+                    done = json.load(f)
+                have = [k for k in which if k in done and "error" not in done[k]]
+                if have:
+                    logger.info(f"resuming: {', '.join(have)} already complete "
+                                f"in {ckpt}")
+            except Exception as e:
+                logger.warning(f"could not read checkpoint {ckpt}: {e}")
+                done = {}
+
         out = {
             "meta": {
                 "timestamp": datetime.now().isoformat(),
@@ -565,6 +583,11 @@ class R1Experiments:
             "e9": lambda: self.e9_context_audit(),
         }
         for i, key in enumerate(which, 1):
+            if resume and key in done and "error" not in done[key]:
+                logger.info(f"  {key.upper()} already complete, skipping "
+                            f"({i} of {len(which)})")
+                out[key] = done[key]
+                continue
             logger.info(f"{'=' * 62}")
             logger.info(f"  experiment {key.upper()}  ({i} of {len(which)})")
             logger.info(f"{'=' * 62}")
@@ -578,6 +601,16 @@ class R1Experiments:
             except Exception as e:
                 logger.exception(f"{key} failed")
                 out[key] = {"error": f"{type(e).__name__}: {e}"}
+
+            # checkpoint after every experiment, complete or failed
+            try:
+                tmp = ckpt + ".tmp"
+                with open(tmp, "w") as f:
+                    json.dump(out, f, indent=2, default=str)
+                os.replace(tmp, ckpt)
+            except Exception as e:
+                logger.warning(f"could not write checkpoint: {e}")
+
         out["meta"]["total_seconds"] = round(time.time() - t0, 1)
         if self.llm:
             try:

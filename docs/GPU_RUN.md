@@ -183,6 +183,31 @@ The **backend matrix is cheap by comparison** — E6 runs two seeds per model, n
 the whole suite, so each arm is 2,800 calls: minutes for the 7–8B models and
 under an hour for 70B.
 
+### Surviving a long run
+
+Every experiment is checkpointed to `data/results_r1/checkpoint.json` as it
+finishes, so a crash, a preemption or an idle shutdown costs only the experiment
+in flight. Restart with `--resume` and it picks up where it stopped:
+
+```bash
+python run_r1.py ... --resume
+```
+
+On a managed notebook instance, check the idle-shutdown setting before starting.
+Idle detection usually watches kernel and terminal activity, not CPU load, so a
+background job can be shut down underneath you:
+
+```bash
+# Vertex AI Workbench: check, then disable for the duration of the run
+sudo journalctl -u jupyter --no-pager | grep -i idle | tail -5
+gcloud compute instances describe "$(hostname)" --zone <zone> \
+  --format="value(metadata.items)" | tr ',' '\n' | grep -i idle
+```
+
+Disable it in the console under the instance's settings, or set the
+`idle-timeout-seconds` metadata key to `0`, and remember to restore it
+afterwards.
+
 ### Keeping it alive, and watching it
 
 A closed Jupyter terminal tab kills whatever is running in it. `nohup` detaches
