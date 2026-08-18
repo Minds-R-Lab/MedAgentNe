@@ -307,25 +307,33 @@ gcloud compute scp <instance>:~/MedAgentNe/medagentnet/medagentnet-results.tar.g
 Or open `data/results_r1/latest_tables.tex` in the Jupyter file browser and
 download it directly.
 
-## Checking the endpoint that was used
+## Preflight
 
-Ollama exposes both `/api/chat` and `/api/generate`. Only `/api/chat` applies the
-model's own chat template; `/api/generate` receives a hand-assembled prompt that
-is not the format llama3 or qwen expect, and instruction-following and JSON
-compliance are both measurably worse through it. The backend probes for
-`/api/chat` on the first call and now falls back only on an explicit 404 — a
-probe that times out because the model is still loading is no longer read as
-"old server".
+Every run makes one real generation call before starting and prints the reply:
 
-Confirm which one a run used before trusting its numbers:
-
-```bash
-grep -m1 "api/chat\|api/generate" ~/reported.log
+```
+  preflight ok : {"status": "ok"}
 ```
 
-`using /api/chat endpoint` is what you want. If a run says
-`falling back to /api/generate`, its outputs are not comparable with one that
-did not, and it should be repeated.
+If the backend cannot answer, the run stops with the curl command to reproduce
+it. This matters because a backend that errors on every call does not stop a
+run: the agent converts each failure into an `llm_error` finding, every scenario
+scores as a miss, and the output is a complete-looking results file full of
+zeros. One call at startup rules that out.
+
+## The endpoint used
+
+Ollama exposes `/api/chat` and `/api/generate`. Only `/api/chat` applies the
+model's own chat template; `/api/generate` receives a hand-assembled prompt in a
+format llama3 and qwen do not expect, and instruction-following and JSON
+compliance are both measurably worse through it.
+
+There is no longer a probe. `/api/chat` has existed since Ollama 0.1.14, so it
+is assumed present, and the backend falls back only when a real call returns
+404. The two probe-based failures this replaced are worth knowing about, because
+both produced a run that looked healthy: a probe that timed out while the model
+was loading was read as "old server", and a probe answered with 500 during load
+was equally uninformative.
 
 ## If something goes wrong
 

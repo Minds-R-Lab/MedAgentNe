@@ -74,6 +74,24 @@ class BaseLLMProvider(ABC):
             if not looks_json:
                 self.format_failures += 1
 
+    def preflight(self) -> tuple[bool, str]:
+        """One real generation, to fail loudly instead of silently.
+
+        A backend that errors on every call still lets a run "complete": the
+        agent turns each failure into an llm_error finding, every scenario
+        scores as a miss, and the result is a plausible-looking file full of
+        zeros. Checking once at startup costs a second and rules that out.
+        """
+        try:
+            out = self.generate(
+                "You are a clinical assistant. Reply only with JSON.",
+                'Return exactly this and nothing else: {"status": "ok"}')
+        except Exception as e:
+            return False, f"{type(e).__name__}: {e}"
+        if not (out or "").strip():
+            return False, "backend returned an empty response"
+        return True, (out or "").strip().replace("\n", " ")[:160]
+
     @abstractmethod
     def generate(self, system_prompt: str, user_prompt: str) -> str:
         """Generate a response given system and user prompts."""
@@ -613,62 +631,21 @@ class OllamaProvider(BaseLLMProvider):
             return False
 
     def _detect_api_version(self):
-        """Auto-detect whether to use /api/chat or /api/generate."""
-        if self._use_chat_api is not None:
-            return
-        import threading
-        if not hasattr(self, "_detect_lock"):
-            self._detect_lock = threading.Lock()
-        with self._detect_lock:
-            if self._use_chat_api is not None:
-                return
-            self._detect_api_version_locked()
+        """Use /api/chat; fall back only if a real call says it is absent.
 
-    def _detect_api_version_locked(self):
-        """Choose /api/chat unless the server explicitly lacks it.
+        This used to probe the endpoint on first use, and the probe caused more
+        trouble than it prevented. A probe that timed out while the model was
+        loading was read as "old server" and silently downgraded a whole run to
+        /api/generate, which does not apply the model's chat template. A probe
+        that returned 500 during load was equally uninformative.
 
-        /api/chat applies the model's own chat template. /api/generate is given
-        a hand-rolled "### System: ... ### User:" string, which is not the
-        template llama3 or qwen expect, and instruction-following and JSON
-        compliance both suffer as a result.
-
-        A timeout must therefore NOT be read as "old server". The probe fires
-        while the model is still loading -- minutes for a 70B -- and a 30 second
-        limit meant a cold start silently downgraded the whole run to the worse
-        endpoint. Only a 404 means the endpoint is genuinely absent.
+        /api/chat has existed since Ollama 0.1.14 (January 2024), so assuming it
+        is present is safe. `generate()` already handles a 404 by switching to
+        the legacy endpoint and retrying, which is the only signal that actually
+        means the endpoint is missing.
         """
-        import requests
-        try:
-            resp = requests.post(
-                f"{self.base_url}/api/chat",
-                json={
-                    "model": self.model,
-                    "messages": [{"role": "user", "content": "hi"}],
-                    "stream": False,
-                    "options": {"num_predict": 1},
-                },
-                timeout=self.request_timeout,
-            )
-            if resp.status_code == 404:
-                self._use_chat_api = False
-                logger.warning("Ollama: /api/chat returned 404; falling back to "
-                               "/api/generate. Response quality will be lower "
-                               "because the model's chat template is not applied.")
-                return
+        if self._use_chat_api is None:
             self._use_chat_api = True
-            logger.info(f"Ollama: using /api/chat endpoint "
-                        f"(probe returned {resp.status_code})")
-            return
-        except requests.exceptions.Timeout:
-            self._use_chat_api = True
-            logger.info("Ollama: /api/chat probe timed out, which usually means "
-                        "the model is still loading. Using /api/chat.")
-            return
-        except Exception as e:
-            self._use_chat_api = True
-            logger.info(f"Ollama: /api/chat probe failed ({type(e).__name__}); "
-                        f"using /api/chat anyway, since every server since 2024 "
-                        f"provides it.")
 
     def describe(self) -> str:
         return (f"Ollama ({self.model}, T={self.temperature}, "

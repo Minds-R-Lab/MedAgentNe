@@ -169,6 +169,26 @@ def main():
         print(f"  backend matrix: {', '.join(matrix)}")
     print("=" * 72)
 
+    # One real call before committing hours to the run. A backend that errors on
+    # every request would otherwise produce a complete-looking results file in
+    # which every scenario scored as a miss.
+    if hasattr(provider, "preflight"):
+        ok, detail = provider.preflight()
+        if not ok:
+            print(f"\nERROR: the backend did not answer a test request.\n"
+                  f"  {detail}\n"
+                  f"  Check the server is healthy:\n"
+                  f"    curl -s {getattr(provider, 'base_url', '')}/api/chat "
+                  f"-d '{{\"model\":\"{getattr(provider, 'model', '')}\","
+                  f"\"messages\":[{{\"role\":\"user\",\"content\":\"hi\"}}],"
+                  f"\"stream\":false}}'\n")
+            return 2
+        print(f"  preflight ok : {detail}")
+        try:
+            provider.reset_stats()
+        except Exception:
+            pass
+
     exp = R1Experiments(config_dir=args.config_dir, llm_provider=provider,
                         base_seed=args.seed, num_patients=args.patients,
                         out_dir=args.out_dir, concurrency=args.concurrency,
