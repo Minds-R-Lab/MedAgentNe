@@ -62,9 +62,12 @@ def build_provider(args):
     if args.provider == "openai_compatible":
         p = OpenAICompatibleProvider(base_url=args.openai_url, model=args.model,
                                      temperature=args.temperature,
-                                     max_tokens=args.max_tokens)
+                                     max_tokens=args.max_tokens,
+                                     request_timeout=args.request_timeout)
         if not p.is_available():
-            raise ProviderUnavailable(f"No endpoint at {args.openai_url}")
+            raise ProviderUnavailable(
+                f"No endpoint at {args.openai_url} serving '{args.model}'. "
+                f"See the log line above for what it does serve.")
         return p
     if args.provider == "huggingface":
         return HuggingFaceProvider(model_id=args.model)
@@ -95,10 +98,14 @@ def main():
     ap.add_argument("--openai-url", default="http://localhost:8000/v1")
     ap.add_argument("--temperature", type=float, default=0.3)
     ap.add_argument("--max-tokens", type=int, default=1024)
-    ap.add_argument("--num-ctx", type=int, default=8192,
+    ap.add_argument("--num-ctx", type=int, default=4096,
                     help="context window for the Ollama backend. Ollama's own "
                          "default is 2048, which silently truncates a Tier-3 "
-                         "prompt carrying a full record.")
+                         "prompt carrying a full record. The measured "
+                         "worst-case prompt here is ~720 tokens, so 4096 "
+                         "leaves ample margin; raising it further only "
+                         "reserves KV cache and reduces the number of "
+                         "concurrent slots the server can fit.")
     ap.add_argument("--request-timeout", type=int, default=600,
                     help="per-request timeout in seconds; raise it when running "
                          "many scenarios in parallel against one server.")

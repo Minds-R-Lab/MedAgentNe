@@ -50,9 +50,44 @@ It reports throughput at concurrency 1, 4, 8 and 16. Speed-up should rise with
 concurrency. If it stays at 1.00x the server is serialising and the fix above
 has not taken effect.
 
-KV cache scales with `num_ctx` × parallelism. At 8192 context an 8B model needs
-about 1 GB per slot, so 16 slots is comfortable on an 80 GB card. A 70B model
-needs about 2.7 GB per slot on top of 42 GB of weights — use 4, not 16.
+KV cache scales with `num_ctx` × parallelism, and Ollama silently reduces the
+number of slots it opens if the product does not fit comfortably. That is the
+usual reason a run scales to only 2-3x instead of 10x or more. The measured
+worst-case prompt in this system is **720 tokens**, so the default is 4096
+rather than 8192: a larger window reserves cache for text that never arrives and
+costs concurrency. A 70B model needs roughly 1.4 GB per slot at 4096 on top of
+42 GB of weights — use 4 to 8 slots there, not 16.
+
+### If Ollama still will not scale
+
+Ollama's scheduler is built for interactive use rather than batch throughput.
+If `bench_backend.py` plateaus around 2-3x, vLLM will do considerably better on
+the same card, and the harness speaks to it through the existing
+OpenAI-compatible backend:
+
+```bash
+pip install vllm
+python -m vllm.entrypoints.openai.api_server \
+  --model meta-llama/Llama-3.1-8B-Instruct \
+  --served-model-name llama3.1:8b \
+  --max-model-len 4096 --gpu-memory-utilization 0.90 &
+
+python scripts/bench_backend.py --provider openai_compatible --model llama3.1:8b
+```
+
+Then run the experiments against it:
+
+```bash
+python run_r1.py --provider openai_compatible --model llama3.1:8b \
+                 --openai-url http://127.0.0.1:8000/v1 \
+                 --patients 200 --concurrency 32 --tag reported \
+                 --experiments e9 e1 e2 e3 e4 e5 e7 e8
+```
+
+`--served-model-name` matters: the backend verifies that the endpoint actually
+serves the model named in the results file, and refuses to run otherwise, so a
+results file cannot be mislabelled. vLLM needs the HuggingFace weights rather
+than the Ollama copy, and gated repositories require `huggingface-cli login`.
 
 ## Two settings that matter
 

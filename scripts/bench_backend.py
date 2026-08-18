@@ -24,7 +24,8 @@ from concurrent.futures import ThreadPoolExecutor
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
                                 "medagentnet"))
 
-from llm.provider import OllamaProvider  # noqa: E402
+from llm.provider import (  # noqa: E402
+    OllamaProvider, OpenAICompatibleProvider)
 
 SYSTEM = ("You are a specialized medical AI agent for the Cardiology department. "
           "Answer only from the data given. Respond ONLY with valid JSON.")
@@ -54,16 +55,27 @@ relevant to the query. Return structured JSON."""
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="llama3.1:8b")
-    ap.add_argument("--url", default="http://127.0.0.1:11434")
-    ap.add_argument("--num-ctx", type=int, default=8192)
+    ap.add_argument("--url", default=None,
+                    help="default: 11434 for ollama, 8000/v1 for vllm")
+    ap.add_argument("--provider", default="ollama",
+                    choices=["ollama", "openai_compatible"])
+    ap.add_argument("--num-ctx", type=int, default=4096)
     ap.add_argument("--levels", type=int, nargs="+", default=[1, 4, 8, 16])
     ap.add_argument("--calls-per-level", type=int, default=None)
     args = ap.parse_args()
 
-    p = OllamaProvider(base_url=args.url, model=args.model, temperature=0.3,
-                       max_tokens=1024, num_ctx=args.num_ctx, request_timeout=600)
+    if args.provider == "ollama":
+        url = args.url or "http://127.0.0.1:11434"
+        p = OllamaProvider(base_url=url, model=args.model, temperature=0.3,
+                           max_tokens=1024, num_ctx=args.num_ctx,
+                           request_timeout=600)
+    else:
+        url = args.url or "http://127.0.0.1:8000/v1"
+        p = OpenAICompatibleProvider(base_url=url, model=args.model,
+                                     temperature=0.3, max_tokens=1024,
+                                     request_timeout=600)
     if not p.is_available():
-        print(f"ERROR: {args.model} is not available at {args.url}")
+        print(f"ERROR: {args.model} is not available at {url}")
         return 2
 
     print(f"model      : {args.model}")

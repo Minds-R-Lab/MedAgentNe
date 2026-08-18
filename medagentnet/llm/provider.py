@@ -535,7 +535,7 @@ class OllamaProvider(BaseLLMProvider):
     def __init__(self, base_url: str = "http://localhost:11434",
                  model: str = "llama3:8b-instruct",
                  temperature: float = 0.3, max_tokens: int = 1024,
-                 num_ctx: int = 8192, request_timeout: int = 600):
+                 num_ctx: int = 4096, request_timeout: int = 600):
         self.base_url = base_url.rstrip("/")
         self.model = model
         self.temperature = temperature
@@ -730,24 +730,49 @@ class OpenAICompatibleProvider(BaseLLMProvider):
     def __init__(self, base_url: str = "http://localhost:8000/v1",
                  model: str = "BioMistral/BioMistral-7B",
                  api_key: str = "not-needed",
-                 temperature: float = 0.3, max_tokens: int = 1024):
+                 temperature: float = 0.3, max_tokens: int = 1024,
+                 request_timeout: int = 600):
         self.base_url = base_url.rstrip("/")
         self.model = model
         self.api_key = api_key
         self.temperature = temperature
         self.max_tokens = max_tokens
+        self.request_timeout = request_timeout
+        self.served_model = None
 
     def is_available(self) -> bool:
+        """Check the endpoint is up AND is serving the model we asked for.
+
+        Same guarantee as the Ollama backend: a results file must not be
+        labelled with a model that never ran.
+        """
         try:
             import requests
-            resp = requests.get(f"{self.base_url}/models", timeout=5,
+            resp = requests.get(f"{self.base_url}/models", timeout=10,
                                 headers={"Authorization": f"Bearer {self.api_key}"})
-            return resp.status_code == 200
-        except Exception:
+            if resp.status_code != 200:
+                return False
+            served = [m.get("id", "") for m in resp.json().get("data", [])]
+            if not served:
+                return False
+            if self.model in served:
+                self.served_model = self.model
+                return True
+            # A server started with --served-model-name may expose one entry.
+            if len(served) == 1:
+                logger.error(
+                    f"endpoint serves '{served[0]}' but '{self.model}' was "
+                    f"requested. Pass --model {served[0]}, or restart the "
+                    f"server with --served-model-name {self.model}.")
+            else:
+                logger.error(f"'{self.model}' not served here. Available: {served}")
+            return False
+        except Exception as e:
+            logger.warning(f"OpenAI-compatible endpoint check failed: {e}")
             return False
 
     def describe(self) -> str:
-        return f"OpenAI-compatible ({self.model}, T={self.temperature})"
+        return f"OpenAI-compatible ({self.served_model or self.model}, T={self.temperature})"
 
     def generate(self, system_prompt: str, user_prompt: str) -> str:
         import time as _time
@@ -770,7 +795,7 @@ class OpenAICompatibleProvider(BaseLLMProvider):
                 "max_tokens": self.max_tokens,
             },
             headers={"Authorization": f"Bearer {self.api_key}"},
-            timeout=60,
+            timeout=self.request_timeout,
         )
         resp.raise_for_status()
         return resp.json()["choices"][0]["message"]["content"]
