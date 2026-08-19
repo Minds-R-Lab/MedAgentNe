@@ -930,6 +930,34 @@ class OrchestratorAgent:
 
     # ── Cross-departmental synthesis ─────────────────────────────────────
 
+    @staticmethod
+    def _in_effect(item) -> bool:
+        """Whether a reported item is current, per the responding department.
+
+        The centralized comparator filters on ``m.active`` before evaluating
+        any rule. The federated path could not, because the response schema
+        carried no status, so a discontinued drug was reassembled as a current
+        one and the drug-matched negative controls all raised alerts.
+
+        A missing status counts as in effect: an agent that omits the field
+        should not have its findings silently discarded.
+        """
+        if not isinstance(item, dict):
+            return True
+        v = item.get("active")
+        if isinstance(v, bool):
+            return v
+        if isinstance(v, (int, float)):
+            return bool(v)
+        if isinstance(v, str) and v.strip().lower() in (
+                "false", "no", "0", "discontinued", "resolved", "inactive"):
+            return False
+        s = str(item.get("status", "")).strip().lower()
+        if s in ("discontinued", "resolved", "inactive", "stopped", "former",
+                 "past", "ceased", "historical"):
+            return False
+        return True
+
     def _assemble_evidence(self, context: dict, responses: list[AgentResponse]):
         """Build the shared clinical picture from what departments disclosed.
 
@@ -945,6 +973,8 @@ class OrchestratorAgent:
         for r in responses:
             dept = r.source_agent
             for m in r.medications_reported:
+                if not self._in_effect(m):
+                    continue
                 if isinstance(m, dict):
                     ev.add_drug(m.get("name", ""), m.get("category", ""), dept)
                     if not m.get("name") and m.get("category"):
@@ -952,6 +982,8 @@ class OrchestratorAgent:
                 elif isinstance(m, str):
                     ev.add_drug(m, "", dept)
             for c in r.conditions_reported:
+                if not self._in_effect(c):
+                    continue
                 if isinstance(c, dict):
                     ev.add_condition(c.get("name", ""), dept)
                 elif isinstance(c, str):

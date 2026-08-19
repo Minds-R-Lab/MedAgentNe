@@ -45,6 +45,9 @@ def main() -> int:
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--concurrency", type=int, default=16)
     ap.add_argument("--num-ctx", type=int, default=4096)
+    ap.add_argument("--temperature", type=float, default=0.0,
+                    help="0.0 for reported runs: the mode comparison is only "
+                         "meaningful if sampling noise is not part of it")
     ap.add_argument("--request-timeout", type=int, default=600)
     ap.add_argument("--modes", nargs="+", default=list(MODES), choices=MODES)
     ap.add_argument("--out", default="data/results_r1/specificity_diagnosis.json")
@@ -60,6 +63,7 @@ def main() -> int:
             {"provider": args.provider,
              args.provider: {"model": args.model,
                              "num_ctx": args.num_ctx,
+                             "temperature": args.temperature,
                              "request_timeout": args.request_timeout}},
             strict=True)
     except ProviderUnavailable as e:

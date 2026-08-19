@@ -39,8 +39,12 @@ CRITICAL RULES:
    beyond what the query specifically asks for.
 4. Your response must be structured JSON with these fields:
    - findings: list of clinical findings relevant to the query
-   - medications_reported: medications relevant to the query (name, category, relevance)
-   - conditions_reported: conditions relevant to the query
+   - medications_reported: medications relevant to the query, each with
+     name, category, relevance, and "active": true or false. Set active to
+     false for anything marked DISCONTINUED.
+   - conditions_reported: conditions relevant to the query, each with name and
+     "active": true or false. Set active to false for anything marked
+     RESOLVED.
    - risk_flags: list of risk flag strings
    - summary: brief text summary
 
