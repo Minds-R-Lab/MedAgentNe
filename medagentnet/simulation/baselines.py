@@ -253,27 +253,51 @@ def _parse_alert_json(raw: str, patient_id: str, alert_type: str) -> list:
 
 # Configurations of the proposed system, expressed as HardRunner keyword sets.
 ARCHITECTURE_VARIANTS = {
-    "medagentnet": dict(routing_mode="relevance", synthesis_mode="hybrid",
+    # The reported system. Synthesis is grounded in the interaction knowledge
+    # base: the language model does the boundary-crossing extraction at each
+    # department, not the safety-critical inference. Measured at 100 patients,
+    # seed 42, temperature 0, identical scenarios and scorer:
+    #
+    #     configuration        F1     specificity   pattern
+    #     rules (this one)   0.808       0.859        0.50
+    #     hybrid             0.579       0.016        0.80
+    #     llm only           0.551       0.016        0.65
+    #     no synthesis       0.151       0.828        0.15
+    #
+    # The language model arm raises an alert on 96 % of drug-matched negative
+    # controls even when every item of evidence it reasons over is verified
+    # present in the record, so the false alarms are not an evidence-quality
+    # problem and cannot be fixed upstream. It buys 30 points of pattern
+    # detection for 84 points of specificity; medagentnet_hybrid keeps that
+    # trade available and E4 reports both.
+    "medagentnet": dict(routing_mode="relevance", synthesis_mode="rules",
                         enforce_consent=True, enforce_tiers=True,
-                        structured_output=True, freetext_fallback=True),
-    "medagentnet_grounded_only": dict(routing_mode="relevance", synthesis_mode="rules"),
+                        structured_output=True, freetext_fallback=True,
+                        ground_reports=True),
+    "medagentnet_hybrid": dict(routing_mode="relevance", synthesis_mode="hybrid"),
     "medagentnet_llm_only": dict(routing_mode="relevance", synthesis_mode="llm"),
+    # Every ablation below differs from "medagentnet" in exactly one dimension,
+    # so a McNemar test against it measures that dimension and nothing else.
+    # They were previously pinned to hybrid synthesis while the reference used
+    # it too; once the reference moved to grounded synthesis, leaving them on
+    # hybrid would have folded an 84-point specificity difference into every
+    # row and made the matrix unreadable.
     "ablate_synthesis": dict(routing_mode="relevance", synthesis_mode="none"),
-    "ablate_orchestration": dict(routing_mode="local", synthesis_mode="hybrid"),
-    "ablate_relevance_routing": dict(routing_mode="broadcast", synthesis_mode="hybrid"),
-    "ablate_tiers": dict(routing_mode="relevance", synthesis_mode="hybrid",
+    "ablate_orchestration": dict(routing_mode="local", synthesis_mode="rules"),
+    "ablate_relevance_routing": dict(routing_mode="broadcast", synthesis_mode="rules"),
+    "ablate_tiers": dict(routing_mode="relevance", synthesis_mode="rules",
                          enforce_tiers=False),
-    "ablate_consent": dict(routing_mode="relevance", synthesis_mode="hybrid",
+    "ablate_consent": dict(routing_mode="relevance", synthesis_mode="rules",
                            enforce_consent=False),
-    "ablate_structured_protocol": dict(routing_mode="relevance", synthesis_mode="hybrid",
+    "ablate_structured_protocol": dict(routing_mode="relevance", synthesis_mode="rules",
                                        structured_output=False),
-    "ablate_freetext_parser": dict(routing_mode="relevance", synthesis_mode="hybrid",
+    "ablate_freetext_parser": dict(routing_mode="relevance", synthesis_mode="rules",
                                    freetext_fallback=False),
     # The agent's structured output is trusted as produced, unchecked against
     # the department's own inventory. This is what every run before the R1
     # trace measured, and it is the arm the evidence-fidelity metric exists to
     # quantify.
-    "ablate_grounding": dict(routing_mode="relevance", synthesis_mode="hybrid",
+    "ablate_grounding": dict(routing_mode="relevance", synthesis_mode="rules",
                              ground_reports=False),
 }
 # Note: the R0 pipeline is NOT an entry here. Running it requires the R0 query
