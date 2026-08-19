@@ -68,13 +68,29 @@ class R1Experiments:
     # ── helper ───────────────────────────────────────────────────────────
 
     def runner(self, seed=None, num_patients=None, **kw) -> HardRunner:
+        """A runner configured as the reported system unless told otherwise.
+
+        This used to pass only the caller's kwargs, so every experiment that
+        did not name a variant -- E1, E2, E3, E7, E9 and E5's reference arm --
+        silently inherited HardRunner's constructor defaults instead of the
+        reported configuration. When the operating point moved to grounded
+        synthesis, those experiments went on running the hybrid one: E1 came
+        back with specificity 0.008 where the diagnostic measured 0.859 for the
+        configuration the paper describes.
+
+        Starting from ARCHITECTURE_VARIANTS["medagentnet"] makes the reported
+        system the single point of truth, and an ablation still overrides it by
+        passing its own switches.
+        """
+        cfg = dict(bl.ARCHITECTURE_VARIANTS["medagentnet"])
+        cfg.update(kw)
         return HardRunner(
             config_dir=self.config_dir,
             llm_provider=self.llm,
             seed=self.base_seed if seed is None else seed,
             num_patients=self.num_patients if num_patients is None else num_patients,
-            concurrency=kw.pop("concurrency", self.concurrency),
-            **kw,
+            concurrency=cfg.pop("concurrency", self.concurrency),
+            **cfg,
         )
 
     @staticmethod
@@ -510,8 +526,11 @@ class R1Experiments:
         # this is what the R0 pipeline was actually measuring.
         # R0 pipeline: legacy contexts AND no cross-departmental synthesis,
         # with the context whitelist disabled so the leak is actually carried.
+        # R0 had no grounding filter and no cross-departmental synthesis, so
+        # both are disabled here; leaving the filter on would credit the R0
+        # pipeline with a control it did not have.
         legacy = self.runner(routing_mode="relevance", synthesis_mode="none",
-                             strict_context=False)
+                             strict_context=False, ground_reports=False)
         legacy.generate()
         legacy_specs = []
         rng = random.Random(self.base_seed)
