@@ -45,7 +45,12 @@ from simulation.runner_v2 import HardRunner
 from simulation.baselines import _evidence_from_record
 from protocol.interactions import evaluate_rules, evaluate_patterns
 
-NEGATIVE_COHORTS = ("matched_negative", "clean_control")
+# The generator labels cohorts "distractor" and "control"; the evaluation
+# renames them "matched_negative" and "clean_control" for reporting. Import
+# the constants so the two cannot drift apart again.
+from data.generator_hard import COHORT_DISTRACTOR, COHORT_CONTROL
+
+NEGATIVE_COHORTS = (COHORT_DISTRACTOR, COHORT_CONTROL)
 
 
 def _ev_summary(ev):
@@ -112,6 +117,11 @@ def main() -> int:
                    routing_mode="relevance", synthesis_mode="rules")
     r.generate()
     specs = [s for s in r.build_scenarios() if s.cohort in NEGATIVE_COHORTS]
+    if not specs:
+        seen = sorted({s.cohort for s in r.specs})
+        print(f"ERROR: no scenarios in cohorts {NEGATIVE_COHORTS}; "
+              f"the generator emitted {seen}")
+        return 2
     print(f"{len(specs)} negative controls\n")
 
     orch = r.orchestrator
