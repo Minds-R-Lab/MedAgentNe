@@ -36,6 +36,7 @@ from data.generator_hard import (
     COHORT_AMBIGUOUS, COHORT_CONTROL,
 )
 from simulation import scenarios as scen
+from simulation.fidelity import evidence_fidelity
 
 logger = logging.getLogger("medagentnet.runner_v2")
 
@@ -83,6 +84,7 @@ class HardRunner:
                  structured_output: bool = True,
                  freetext_fallback: bool = True,
                  strict_context: bool = True,
+                 ground_reports: bool = True,
                  validate_tokens: bool = False,
                  query_budget: int = 0,
                  corroborate_critical: bool = False,
@@ -127,6 +129,7 @@ class HardRunner:
                 structured_output=structured_output,
                 freetext_fallback=freetext_fallback,
                 strict_context=strict_context,
+                ground_reports=ground_reports,
             )
             for dept_id, cfg in self.dept_config.items()
         }
@@ -228,8 +231,24 @@ class HardRunner:
                 for r in out["responses"]
             ],
             "privacy_report": out["privacy_report"],
+            "evidence_fidelity": self._fidelity(spec, out["responses"]),
             "elapsed_seconds": round(elapsed, 3),
         }
+
+    def _fidelity(self, spec, responses) -> dict:
+        """Score the assembled evidence against the record it should reproduce.
+
+        Re-assembled here rather than returned from process_request so the
+        orchestrator keeps no per-request state, which would not survive
+        concurrency. _assemble_evidence is pure, so this is the same object the
+        synthesis step reasoned over.
+        """
+        try:
+            ev = self.orchestrator._assemble_evidence(
+                spec.clinical_context, responses)
+            return evidence_fidelity(ev, spec.patient)
+        except Exception as e:
+            return {"error": f"{type(e).__name__}: {e}"}
 
     def run(self, force_tier: Optional[int] = None,
             concurrency: Optional[int] = None) -> list[dict]:

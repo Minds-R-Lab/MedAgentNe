@@ -36,6 +36,16 @@ from simulation.evaluation import evaluate_run
 
 MODES = ("rules", "llm", "hybrid", "none")
 
+# Each entry is (label, HardRunner kwargs). The grounding filter is varied on
+# the configuration that matters, so the ablation and the operating point are
+# measured in the same run.
+def _plan(modes, grounding):
+    plan = [(m, dict(synthesis_mode=m, ground_reports=True)) for m in modes]
+    if grounding:
+        plan += [(f"{m}/ungrounded", dict(synthesis_mode=m, ground_reports=False))
+                 for m in modes if m in ("rules", "hybrid")]
+    return plan
+
 
 def main() -> int:
     ap = argparse.ArgumentParser()
@@ -50,6 +60,9 @@ def main() -> int:
                          "meaningful if sampling noise is not part of it")
     ap.add_argument("--request-timeout", type=int, default=600)
     ap.add_argument("--modes", nargs="+", default=list(MODES), choices=MODES)
+    ap.add_argument("--grounding-ablation", action="store_true",
+                    help="also run rules and hybrid with the grounding filter "
+                         "off, which is the pre-fix behaviour")
     ap.add_argument("--out", default="data/results_r1/specificity_diagnosis.json")
     args = ap.parse_args()
 
@@ -77,15 +90,16 @@ def main() -> int:
     print(f"preflight ok : {detail}\n")
 
     rows, t0 = {}, time.time()
-    for mode in args.modes:
+    for label, kw in _plan(args.modes, args.grounding_ablation):
+        mode = label
         print("=" * 66)
-        print(f"  synthesis_mode = {mode}")
+        print(f"  {label}")
         print("=" * 66)
         started = time.time()
         r = HardRunner(config_dir="config", llm_provider=llm,
                        seed=args.seed, num_patients=args.patients,
                        concurrency=args.concurrency,
-                       routing_mode="relevance", synthesis_mode=mode)
+                       routing_mode="relevance", **kw)
         ev = evaluate_run(r.run())
         c = ev["classification"]
         rows[mode] = {
@@ -96,6 +110,15 @@ def main() -> int:
             "pattern_localised": ev["pattern_detection"]["localised_or_better"]["rate"],
             "false_alarm_matched_negatives": ev["false_alarms"]["matched_negatives"]["rate"],
             "false_alarm_clean_controls": ev["false_alarms"]["clean_controls"]["rate"],
+            "evidence_precision": (ev.get("evidence_fidelity", {})
+                                   .get("overall_precision", {}).get("rate")),
+            "med_precision": (ev.get("evidence_fidelity", {})
+                              .get("medications/precision", {}).get("rate")),
+            "lab_recall": (ev.get("evidence_fidelity", {})
+                           .get("lab_results/recall", {}).get("rate")),
+            "scenarios_with_fabrication": (
+                ev.get("evidence_fidelity", {})
+                .get("scenarios_with_any_fabrication", {}).get("rate")),
             "mean_alerts_per_scenario": round(
                 sum(x["num_alerts"] for x in r.results) / max(1, len(r.results)), 2)
             if getattr(r, "results", None) else None,
@@ -112,12 +135,15 @@ def main() -> int:
 
     print("=" * 78)
     print(f"{'mode':10} {'prec':>7} {'recall':>7} {'F1':>7} {'spec':>7} "
-          f"{'FA-neg':>7} {'conf':>7} {'patt':>7}")
+          f"{'FA-neg':>7} {'conf':>7} {'patt':>7} {'evid-P':>7} {'lab-R':>7}")
     print("-" * 78)
+    def _f(x):
+        return f"{x:7.3f}" if isinstance(x, (int, float)) else f"{'-':>7}"
     for m, v in rows.items():
         print(f"{m:10} {v['precision']:7.3f} {v['recall']:7.3f} {v['f1']:7.3f} "
               f"{v['specificity']:7.3f} {v['false_alarm_matched_negatives']:7.3f} "
-              f"{v['conflict_localised']:7.3f} {v['pattern_localised']:7.3f}")
+              f"{v['conflict_localised']:7.3f} {v['pattern_localised']:7.3f}"
+              f"{_f(v.get('evidence_precision'))}{_f(v.get('lab_recall'))}")
     print("=" * 78)
     print(f"written to {args.out}  ({out['total_minutes']} min)")
     return 0

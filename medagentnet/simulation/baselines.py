@@ -269,6 +269,12 @@ ARCHITECTURE_VARIANTS = {
                                        structured_output=False),
     "ablate_freetext_parser": dict(routing_mode="relevance", synthesis_mode="hybrid",
                                    freetext_fallback=False),
+    # The agent's structured output is trusted as produced, unchecked against
+    # the department's own inventory. This is what every run before the R1
+    # trace measured, and it is the arm the evidence-fidelity metric exists to
+    # quantify.
+    "ablate_grounding": dict(routing_mode="relevance", synthesis_mode="hybrid",
+                             ground_reports=False),
 }
 # Note: the R0 pipeline is NOT an entry here. Running it requires the R0 query
 # construction as well as the missing synthesis step, and with R1 contexts

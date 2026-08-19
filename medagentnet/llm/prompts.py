@@ -45,8 +45,19 @@ CRITICAL RULES:
    - conditions_reported: conditions relevant to the query, each with name and
      "active": true or false. Set active to false for anything marked
      RESOLVED.
+   - lab_results_reported: laboratory results relevant to the query, each with
+     test_name, value, unit and date. "value" must be a bare number, with the
+     unit in its own field: {{"test_name": "eGFR", "value": 62.0,
+     "unit": "mL/min", "date": "2024-03-11"}}. Report the result even when it is
+     normal -- a normal value is what rules an interaction out.
    - risk_flags: list of risk flag strings
    - summary: brief text summary
+
+5. Report ONLY medications, conditions and laboratory results that appear in
+   the records shown to you. Do not add a medication because a diagnosis or a
+   laboratory result implies one, and do not add a diagnosis because a
+   medication implies one. If your records do not contain it, it does not go in
+   your response.
 
 DISCLOSURE TIERS:
 - Tier 1 (Flag Only): Only state "relevant concern exists" - no specifics

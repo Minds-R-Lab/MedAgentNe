@@ -377,6 +377,13 @@ def evaluate_run(results: list, provider_stats: dict = None,
     # A "loose" score reproducing the R0 criterion, reported alongside the
     # strict one so the two can be compared directly in the paper.
     loose_tp = sum(1 for g in positives if g.alerted)
+    fids = [r["evidence_fidelity"] for r in results
+            if isinstance(r.get("evidence_fidelity"), dict)
+            and "error" not in r["evidence_fidelity"]]
+    if fids:
+        from simulation.fidelity import aggregate_fidelity
+        out["evidence_fidelity"] = aggregate_fidelity(fids)
+
     out["legacy_loose_criterion"] = {
         "note": "R0 criterion: any actionable alert counts as a detection, "
                 "with no check that it matches the planted finding.",

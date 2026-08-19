@@ -4,6 +4,7 @@ DepartmentAgent: Specialized agent per medical department.
 OrchestratorAgent: Routes queries and synthesizes responses.
 """
 import json
+import re
 import logging
 from typing import Optional
 
@@ -48,7 +49,8 @@ class DepartmentAgent:
                  enforce_tiers: bool = True,
                  structured_output: bool = True,
                  freetext_fallback: bool = True,
-                 strict_context: bool = True):
+                 strict_context: bool = True,
+                 ground_reports: bool = True):
         self.department_id = department_id
         self.config = department_config
         self.name = department_config.get("name", department_id)
@@ -67,6 +69,18 @@ class DepartmentAgent:
         self.structured_output = structured_output
         self.freetext_fallback = freetext_fallback
         self.strict_context = strict_context
+        # ground_reports=False -> the agent's structured output is returned as
+        #                         the model produced it, unchecked against the
+        #                         department's own inventory. This is the state
+        #                         measured in the R1 trace: across 64 negative
+        #                         controls, 60 carried at least one medication
+        #                         the record did not contain, because the model
+        #                         inferred prescriptions from laboratory tests
+        #                         and diagnoses from prescriptions.
+        self.ground_reports = ground_reports
+
+        # Fidelity ledger: what the model claimed that its records do not hold.
+        self.fabrication_log: list[dict] = []
 
         # Local patient data store (only this department's slice)
         self.patient_store: dict[str, dict] = {}
@@ -98,6 +112,99 @@ class DepartmentAgent:
             else:
                 dropped.append(k)
         return clean, dropped
+
+    # ── grounding ────────────────────────────────────────────────────────
+
+    @staticmethod
+    def _norm(text) -> str:
+        """Lowercased, stripped of ICD codes and punctuation, for matching.
+
+        Agents habitually append the code -- "Upper Respiratory Infection
+        (J06)" for a record holding "Upper Respiratory Infection" -- so an
+        equality test would reject a faithful report.
+        """
+        t = str(text or "").lower()
+        t = re.sub(r"\([^)]*\)", " ", t)          # trailing (J06), (H36)
+        t = re.sub(r"[^a-z0-9 ]+", " ", t)
+        return " ".join(t.split())
+
+    @classmethod
+    def _matches_inventory(cls, claimed: str, inventory: list[str]) -> bool:
+        c = cls._norm(claimed)
+        if not c:
+            return False
+        for known in inventory:
+            k = cls._norm(known)
+            if not k:
+                continue
+            if c == k or c in k or k in c:
+                return True
+        return False
+
+    def _ground_response(self, response: "AgentResponse",
+                          patient_data: dict) -> "AgentResponse":
+        """Drop reported items this department's records do not contain.
+
+        The orchestrator cannot perform this check: by construction it never
+        sees a record, so it has nothing to compare a claim against. The
+        department that owns the data is the only party that can, which makes
+        the filter belong here rather than at the synthesis step. It is the
+        output-side counterpart of ALLOWED_CONTEXT_KEYS on the input side.
+
+        Matching is deliberately permissive -- substring either way, codes and
+        punctuation stripped -- so that a faithful report phrased differently
+        survives. Only a claim with no counterpart at all is removed.
+        """
+        meds = [m.get("name", "") for m in patient_data.get("medications", [])]
+        cats = [m.get("category", "") for m in patient_data.get("medications", [])]
+        conds = [c.get("name", "") for c in patient_data.get("conditions", [])]
+        codes = [c.get("code", "") for c in patient_data.get("conditions", [])]
+        labs = [l.get("test_name", "") for l in patient_data.get("lab_results", [])]
+
+        # A department's own visit notes are part of what it holds. Ophthalmology
+        # recording "patient reports systemic metoprolol" is disclosing its own
+        # record, not inventing one, and the benchmark plants interaction limbs
+        # in notes precisely to test that path (record_quality flag
+        # "note_only_limb"). Restricting the inventory to the structured lists
+        # would suppress those true positives.
+        notes = self._norm(" ".join(
+            str(v.get("notes", "")) for v in patient_data.get("visits", [])))
+
+        def in_notes(claimed) -> bool:
+            c = self._norm(claimed)
+            return bool(c) and len(c) > 2 and c in notes
+
+        def keep(items, inventory, kind, name_keys):
+            kept = []
+            for it in items:
+                if isinstance(it, dict):
+                    claimed = next((it[k] for k in name_keys
+                                    if it.get(k)), "")
+                elif isinstance(it, str):
+                    claimed = it
+                else:
+                    continue
+                if self._matches_inventory(claimed, inventory) or in_notes(claimed):
+                    kept.append(it)
+                else:
+                    self.fabrication_log.append({
+                        "department": self.department_id,
+                        "patient_id": response.patient_id,
+                        "kind": kind,
+                        "claimed": str(claimed)[:80],
+                    })
+            return kept
+
+        response.medications_reported = keep(
+            response.medications_reported, meds + cats, "medication",
+            ("name", "category"))
+        response.conditions_reported = keep(
+            response.conditions_reported, conds + codes, "condition",
+            ("name", "code"))
+        response.lab_results_reported = keep(
+            response.lab_results_reported, labs, "lab",
+            ("test_name", "name"))
+        return response
 
     def process_query(self, query: ClinicalQuery) -> AgentResponse:
         """Process an incoming clinical query and return a response."""
@@ -132,6 +239,12 @@ class DepartmentAgent:
 
         # Parse and filter response based on disclosure tier
         response = self._parse_response(raw_response, query, tier)
+
+        # Then discard anything the model claimed that this department does not
+        # hold. Without this the synthesis layer reasons over invented evidence
+        # and cannot tell that it is doing so.
+        if self.ground_reports:
+            response = self._ground_response(response, patient_data)
 
         # Record what actually crossed the department boundary, for the
         # information-leakage metric (see simulation/privacy.py).
