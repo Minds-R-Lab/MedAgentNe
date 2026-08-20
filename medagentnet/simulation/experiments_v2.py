@@ -275,9 +275,15 @@ class R1Experiments:
             "seeds": list(seeds),
             "development_family": aggregate_runs(dev),
             "heldout_family": aggregate_runs(held),
-            "note": "The held-out family was written after the prompts, the routing "
-                    "rules and the interaction table were frozen; no held-out drug "
-                    "or disease appears in any prompt.",
+            "note": "The held-out family was written after the prompts and the "
+                    "routing rules were frozen; no held-out drug or disease appears "
+                    "in any prompt. Its relationship to the interaction knowledge "
+                    "base differs by task and the two halves must not be averaged: "
+                    "none of the six held-out CONFLICTS has a rule, so the grounded "
+                    "arm cannot detect them at all and anything recovered comes from "
+                    "the department agents' own clinical knowledge; all three "
+                    "held-out PATTERNS do have rules, so for patterns the family "
+                    "holds out the prompts but not the table.",
         }
 
     # ── E4: ablations ────────────────────────────────────────────────────
