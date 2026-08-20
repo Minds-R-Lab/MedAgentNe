@@ -195,6 +195,60 @@ def table_baselines(e5) -> str:
     return "\n".join(L)
 
 
+def table_coverage(e5) -> str:
+    """Development family against held-out, for every architecture.
+
+    This is the table that says what the architecture is for. On the
+    development family a rule engine holding the table that planted the
+    findings, applied to a complete record, is unbeatable. None of the held-out
+    conflicts has an entry in that table, so the same engine cannot detect one
+    at any level of access, while a federation of language-model agents can.
+    """
+    pretty = {
+        "medagentnet": "MedAgentNet",
+        "centralized_rules": "Conventional CDSS on aggregated record",
+        "centralized_llm": "Centralized single agent (full record)",
+        "direct_retrieval": "Federated retrieval, no reasoning layer",
+    }
+    dev = e5.get("rows", {})
+    held = e5.get("heldout_family", {}).get("rows", {})
+    if not held:
+        return ""
+    L = [r"\begin{table*}[!t]", r"\centering",
+         r"\caption{Degradation on drugs and presentations named in no prompt. "
+         r"The held-out family holds out the prompts, not the interaction "
+         r"knowledge base, which contains a rule for every held-out conflict "
+         r"and pattern. A rule engine on a complete record has nothing to "
+         r"recognise; the federated arms must recognise and disclose an "
+         r"unfamiliar drug before any rule can fire, and the difference is the "
+         r"cost of that indirection.}",
+         r"\label{tab:r1_coverage}", r"\small",
+         r"\begin{tabular}{lccccc}", r"\toprule",
+         r"\textbf{System} & \textbf{Data} & "
+         r"\multicolumn{2}{c}{\textbf{Development family}} & "
+         r"\multicolumn{2}{c}{\textbf{Held-out family}} \\",
+         r"\cmidrule(lr){3-4}\cmidrule(lr){5-6}",
+         r" & \textbf{centralised} & \textbf{conflicts} & \textbf{patterns} & "
+         r"\textbf{conflicts} & \textbf{patterns} \\",
+         r"\midrule"]
+
+    def _rate(block, key):
+        v = (block or {}).get(key)
+        if isinstance(v, dict) and "rate" in v:
+            return f"{v['rate']:.3f}"
+        return "--"
+
+    for key, label in pretty.items():
+        d, h = dev.get(key), held.get(key)
+        if not h:
+            continue
+        L.append(f"{label} & {'yes' if h.get('data_centralised') else 'no'} & "
+                 f"{_rate(d, 'conflict_detection')} & {_rate(d, 'pattern_detection')} & "
+                 f"{_rate(h, 'conflict_detection')} & {_rate(h, 'pattern_detection')} \\\\")
+    L += [r"\bottomrule", r"\end{tabular}", r"\end{table*}", ""]
+    return "\n".join(L)
+
+
 def table_backends(e6) -> str:
     L = [r"\begin{table*}[!t]", r"\centering",
          r"\caption{Backend comparison. The coordination, consent and disclosure "
@@ -396,7 +450,7 @@ def generate_all_tables(results: dict) -> str:
     builders = [
         ("e9", table_context_audit), ("e1", table_tiers), ("e2", table_consent),
         ("e3", table_variance), ("e3", table_per_scenario),
-        ("e4", table_ablation), ("e5", table_baselines),
+        ("e4", table_ablation), ("e5", table_baselines), ("e5", table_coverage),
         ("e6", table_backends), ("e7", table_scalability), ("e8", table_adversarial),
     ]
     for key, fn in builders:

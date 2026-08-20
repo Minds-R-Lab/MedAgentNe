@@ -353,6 +353,10 @@ class R1Experiments:
             "f1": agg["across_runs"]["classification/f1"],
             "precision": agg["across_runs"]["classification/precision"],
             "recall": agg["across_runs"]["classification/recall"],
+            # Reported per task as well as pooled, so this row can be set beside
+            # the held-out block, where the two tasks behave oppositely.
+            "conflict_detection": agg["pooled"]["conflict_detection/localised_or_better"],
+            "pattern_detection": agg["pooled"]["pattern_detection/localised_or_better"],
             "latency_s": agg["across_runs"]["latency_seconds/mean"],
             "data_centralised": False,
         }
@@ -373,18 +377,96 @@ class R1Experiments:
                 "f1": a["across_runs"]["classification/f1"],
                 "precision": a["across_runs"]["classification/precision"],
                 "recall": a["across_runs"]["classification/recall"],
+                "conflict_detection": a["pooled"]["conflict_detection/localised_or_better"],
+                "pattern_detection": a["pooled"]["pattern_detection/localised_or_better"],
                 "latency_s": a["across_runs"]["latency_seconds/mean"],
                 "data_centralised": name.startswith("centralized"),
             }
             if med_grades and grades and len(med_grades) == len(grades):
                 rows[name]["vs_medagentnet"] = paired_comparison(med_grades, grades)
 
+        heldout = self._e5_heldout(seeds)
+
         return {"experiment": "E5_baselines", "seeds": list(seeds), "rows": rows,
+                "heldout_family": heldout,
                 "note": "All systems are run on identical patients and identical "
                         "queries and scored by the same criterion. The centralized "
                         "arms require the record to be aggregated in one place, "
                         "which is the configuration the architecture is intended "
                         "to avoid."}
+
+    def _e5_heldout(self, seeds) -> dict:
+        """The same systems on drugs and presentations that appear in no prompt.
+
+        The held-out family holds out the prompts, not the knowledge base: every
+        held-out conflict and pattern has a rule (tests/test_heldout_family.py
+        asserts this by firing the rules, after an earlier check compared
+        template names against rule ids, never matched, and passed vacuously).
+        So this measures how each architecture degrades on unfamiliar drug
+        names, record shapes and presentations -- not coverage beyond the table.
+
+        It is worth running against the baselines because the architectures
+        should degrade differently. A rule engine on a complete record depends
+        on nothing it has to be prompted about and should be nearly flat; a
+        federation whose agents must first recognise and disclose an unfamiliar
+        drug has two more places to fail. The size of that difference is the
+        cost of the indirection, and it is not otherwise measured.
+
+        Conflicts and patterns are reported apart because Section 9.5 shows they
+        behave differently, patterns being limited by evidence delivery rather
+        than by recognition.
+        """
+        rows = {}
+        med_grades = None
+        med_per_seed = []
+        for i, s in enumerate(seeds, 1):
+            logger.info(f"  [E5 held-out {i}/{len(seeds)}] medagentnet, seed {s}")
+            r = self.runner(seed=s, use_heldout=True)
+            res = r.run()
+            med_per_seed.append(evaluate_run(res))
+            if med_grades is None:
+                med_grades = [grade_scenario(x) for x in res]
+        a = aggregate_runs(med_per_seed)
+        rows["medagentnet"] = {
+            "f1": a["across_runs"]["classification/f1"],
+            "conflict_detection": a["pooled"]["conflict_detection/localised_or_better"],
+            "pattern_detection": a["pooled"]["pattern_detection/localised_or_better"],
+            "precision": a["across_runs"]["classification/precision"],
+            "data_centralised": False,
+        }
+
+        for name, fn in bl.EXTERNAL_BASELINES.items():
+            logger.info(f"  [E5 held-out] baseline: {name}")
+            per_seed, grades = [], None
+            for s in seeds:
+                r = self.runner(seed=s, use_heldout=True)
+                r.generate()
+                specs = r.build_scenarios()
+                res = fn(specs, llm=r.llm, concurrency=self.concurrency)
+                per_seed.append(evaluate_run(res))
+                if grades is None:
+                    grades = [grade_scenario(x) for x in res]
+            b = aggregate_runs(per_seed)
+            rows[name] = {
+                "f1": b["across_runs"]["classification/f1"],
+                "conflict_detection": b["pooled"]["conflict_detection/localised_or_better"],
+                "pattern_detection": b["pooled"]["pattern_detection/localised_or_better"],
+                "precision": b["across_runs"]["classification/precision"],
+                "data_centralised": name.startswith("centralized"),
+            }
+            if med_grades and grades and len(med_grades) == len(grades):
+                rows[name]["vs_medagentnet"] = paired_comparison(med_grades, grades)
+
+        return {"rows": rows,
+                "note": "The held-out family holds out the prompts, not the "
+                        "knowledge base: every held-out conflict and pattern has "
+                        "a rule. These rows therefore measure how each "
+                        "architecture degrades on unfamiliar drug names and "
+                        "presentations. A rule engine on a complete record has "
+                        "nothing to recognise and should be nearly flat; the "
+                        "federated arms must recognise and disclose an unfamiliar "
+                        "drug before any rule can fire, and the difference is the "
+                        "cost of that indirection."}
 
     # ── E6: backend matrix ───────────────────────────────────────────────
 
