@@ -43,7 +43,10 @@ def table_tiers(e1) -> str:
          r"information exposure. Detection uses the strict, ground-truth-matched "
          r"criterion; exposure is the mean fraction of each responding "
          r"department's identifiable facts that crossed the boundary. "
-         r"Mean $\pm$ s.d. over three seeds.}",
+         r"Mean $\pm$ s.d. over three seeds. Latency is wall-clock at "
+         r"concurrency~16 and includes queueing at a shared model server; "
+         r"per-request latency is in the scalability table, whose sweeps are "
+         r"pinned to concurrency~1.}",
          r"\label{tab:r1_tiers}", r"\small",
          r"\begin{tabular}{lccc}", r"\toprule",
          r"\textbf{Metric} & \textbf{Tier 1} & \textbf{Tier 2} & \textbf{Tier 3} \\",
@@ -63,6 +66,7 @@ def table_tiers(e1) -> str:
         ("Precision", ("aggregate", "classification/precision"), "msd"),
         ("Recall", ("aggregate", "classification/recall"), "msd"),
         ("F1", ("aggregate", "classification/f1"), "msd"),
+        ("Specificity", ("aggregate", "classification/specificity"), "msd"),
         ("Field exposure (\\%)", ("leakage", "mean_field_exposure"), "pctmsd"),
         ("Items disclosed per response", ("leakage", "mean_items_disclosed"), "msd"),
         ("Mean anonymity set", ("leakage", "mean_anonymity_set"), "msd"),
@@ -174,7 +178,9 @@ def table_baselines(e5) -> str:
     }
     L = [r"\begin{table}[!t]", r"\centering",
          r"\caption{Comparison against systems that differ in architecture rather "
-         r"than in backend. All rows use identical patients, queries and scoring.}",
+         r"than in backend. All rows use identical patients, queries and scoring. "
+         r"Latency is wall-clock at concurrency~16 and includes queueing at a "
+         r"shared model server; per-request latency is in the scalability table.}",
          r"\label{tab:r1_baselines}", r"\small",
          r"\begin{tabular}{lcccccc}", r"\toprule",
          r"\textbf{System} & \textbf{Data} & \textbf{Precision} & \textbf{Recall} & "
@@ -452,6 +458,8 @@ def table_variance(e3) -> str:
          f"{_msd(held.get('classification/recall', {}))} \\\\",
          f"F1 & {_msd(dev.get('classification/f1', {}))} & "
          f"{_msd(held.get('classification/f1', {}))} \\\\",
+         f"Specificity & {_msd(dev.get('classification/specificity', {}))} & "
+         f"{_msd(held.get('classification/specificity', {}))} \\\\",
          r"\bottomrule", r"\end{tabular}", r"\end{table}", ""]
     return "\n".join(_fit(L))
 
