@@ -88,7 +88,7 @@ def table_tiers(e1) -> str:
         L.append(f"{label} & " + " & ".join(cells) + r" \\")
 
     L += [r"\bottomrule", r"\end{tabular}", r"\end{table}", ""]
-    return "\n".join(L)
+    return "\n".join(_fit(L))
 
 
 def table_consent(e2) -> str:
@@ -124,9 +124,10 @@ def table_consent(e2) -> str:
 
 def table_ablation(e4) -> str:
     pretty = {
-        "medagentnet": "MedAgentNet (full)",
-        "medagentnet_grounded_only": "\\quad grounded synthesis only",
+        "medagentnet": "MedAgentNet (grounded synthesis, reported)",
+        "medagentnet_hybrid": "\\quad grounded + model synthesis",
         "medagentnet_llm_only": "\\quad model synthesis only",
+        "ablate_grounding": "-- agent grounding filter",
         "ablate_synthesis": "-- cross-departmental synthesis",
         "ablate_orchestration": "-- orchestration (single department)",
         "ablate_relevance_routing": "-- relevance routing (broadcast)",
@@ -142,9 +143,9 @@ def table_ablation(e4) -> str:
          r"\label{tab:r1_ablation}", r"\small",
          r"\begin{tabular}{lccccccc}", r"\toprule",
          r"\textbf{Configuration} & \textbf{Conflict det.} & \textbf{Pattern det.} & "
-         r"\textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{Queries/} & "
+         r"\textbf{False alarm} & \textbf{Precision} & \textbf{F1} & \textbf{Queries/} & "
          r"\textbf{$p$} \\",
-         r" & \textbf{(\%, CI)} & \textbf{(\%, CI)} & & & & \textbf{scenario} & \\",
+         r" & \textbf{(\%, CI)} & \textbf{(\%, CI)} & \textbf{(matched neg.)} & & & \textbf{scenario} & \\",
          r"\midrule"]
     for key, label in pretty.items():
         row = e4.get("rows", {}).get(key)
@@ -156,12 +157,12 @@ def table_ablation(e4) -> str:
             (f"{p:.3f}" if isinstance(p, float) else "--"))
         L.append(
             f"{label} & {_ci(row['conflict_detection'])} & "
-            f"{_ci(row['pattern_detection'])} & {_msd(row['precision'])} & "
-            f"{_msd(row['recall'])} & {_msd(row['f1'])} & "
+            f"{_ci(row['pattern_detection'])} & {_ci(row['false_alarms_matched'])} & "
+            f"{_msd(row['precision'])} & {_msd(row['f1'])} & "
             f"{_ms(row['queries_per_scenario'], 'mean', 1)} & {p_txt} \\\\"
         )
     L += [r"\bottomrule", r"\end{tabular}", r"\end{table*}", ""]
-    return "\n".join(L)
+    return "\n".join(_fit(L))
 
 
 def table_baselines(e5) -> str:
@@ -192,7 +193,7 @@ def table_baselines(e5) -> str:
                  f"{_msd(row['f1'])} & {_ms(row.get('latency_s', {}), 'mean', 4)} & "
                  f"{p_txt} \\\\")
     L += [r"\bottomrule", r"\end{tabular}", r"\end{table}", ""]
-    return "\n".join(L)
+    return "\n".join(_fit(L))
 
 
 def table_coverage(e5) -> str:
@@ -268,7 +269,7 @@ def table_backends(e6) -> str:
             f"{row.get('approx_completion_tokens') or 0} \\\\"
         )
     L += [r"\bottomrule", r"\end{tabular}", r"\end{table*}", ""]
-    return "\n".join(L)
+    return "\n".join(_fit(L))
 
 
 def table_scalability(e7) -> str:
@@ -299,7 +300,7 @@ def table_scalability(e7) -> str:
                  f"{row['scenarios_per_second']:.2f} & {lat.get('p50', 0):.2f} & "
                  f"{lat.get('p95', 0):.2f} & {row['f1']:.3f} \\\\")
     L += [r"\bottomrule", r"\end{tabular}", r"\end{table}", ""]
-    return "\n".join(L)
+    return "\n".join(_fit(L))
 
 
 def table_adversarial(e8) -> str:
@@ -376,6 +377,28 @@ def table_adversarial(e8) -> str:
     return "\n".join(L)
 
 
+def _fit(lines: list) -> list:
+    """Wrap a tabular in \\resizebox so a wide table cannot overrun the margin.
+
+    cas-sc is a single-column class, so table* gains no width and a seven- or
+    eight-column table with confidence intervals overflows. The \\ifdim guard
+    shrinks a table that is too wide and leaves a narrow one alone; a plain
+    \\resizebox to \\textwidth also *enlarges* every narrow table, which turns a
+    four-column table into a poster.
+    """
+    out = []
+    for ln in lines:
+        if ln.startswith(r"\begin{tabular}"):
+            out.append(r"\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{%")
+            out.append(ln)
+        elif ln.startswith(r"\end{tabular}"):
+            out.append(ln)
+            out.append(r"}")
+        else:
+            out.append(ln)
+    return out
+
+
 def table_context_audit(e9) -> str:
     r0 = e9.get("r0_construction", {})
     r1 = e9.get("r1_construction", {})
@@ -430,7 +453,7 @@ def table_variance(e3) -> str:
          f"F1 & {_msd(dev.get('classification/f1', {}))} & "
          f"{_msd(held.get('classification/f1', {}))} \\\\",
          r"\bottomrule", r"\end{tabular}", r"\end{table}", ""]
-    return "\n".join(L)
+    return "\n".join(_fit(L))
 
 
 def generate_all_tables(results: dict) -> str:
@@ -529,4 +552,4 @@ def table_per_scenario(e3) -> str:
             L.append(f"\\quad {pretty_q.get(flag, flag.replace('_',' '))} & "
                      f"{_rate(k, n)} \\\\")
     L += [r"\bottomrule", r"\end{tabular}", r"\end{table}", ""]
-    return "\n".join(L)
+    return "\n".join(_fit(L))
